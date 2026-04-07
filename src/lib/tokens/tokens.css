@@ -1,0 +1,23 @@
+/**
+ * Design tokens — Source de vérité unique.
+ * Toutes les valeurs proviennent exclusivement des maquettes Figma.
+ * Ne jamais ajouter de valeur sans l'avoir extraite d'une frame Figma.
+ *
+ * Tailwind v4 : les tokens sont des CSS custom properties dans @theme.
+ * Ils sont utilisables via les classes Tailwind (ex: bg-brand-primary, text-heading-xl).
+ */
+
+@theme {
+  /* COULEURS — TODO: à remplir lors du premier import Figma */
+  /* Exemple: --color-brand-primary: #...; */
+
+  /* TYPOGRAPHIE — TODO: à remplir lors du premier import Figma */
+  /* Exemple: --font-heading: "NomPolice", sans-serif; */
+  /* Exemple: --text-heading-xl: 3rem; */
+
+  /* ESPACEMENTS — TODO: à remplir lors du premier import Figma */
+
+  /* BORDER RADIUS — TODO: à remplir lors du premier import Figma */
+
+  /* OMBRES — TODO: à remplir lors du premier import Figma */
+}
