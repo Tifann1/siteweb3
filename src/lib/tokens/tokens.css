@@ -4,20 +4,137 @@
  * Ne jamais ajouter de valeur sans l'avoir extraite d'une frame Figma.
  *
  * Tailwind v4 : les tokens sont des CSS custom properties dans @theme.
- * Ils sont utilisables via les classes Tailwind (ex: bg-brand-primary, text-heading-xl).
  */
 
 @theme {
-  /* COULEURS — TODO: à remplir lors du premier import Figma */
-  /* Exemple: --color-brand-primary: #...; */
+  /* ─── COULEURS ─────────────────────────────────────────────
+     Sources :
+       - Header (node 448:3478)
+       - Hero Section (node 437:2084)
+  */
 
-  /* TYPOGRAPHIE — TODO: à remplir lors du premier import Figma */
-  /* Exemple: --font-heading: "NomPolice", sans-serif; */
-  /* Exemple: --text-heading-xl: 3rem; */
+  /* Orange — Header + Hero gradient */
+  --color-brand-orange: #FF7E33;           /* soulignement lien actif nav */
+  --color-brand-orange-light: #FFB692;     /* texte lien actif + gradient titre début */
+  --color-brand-orange-cta-from: #FF7B32;  /* gradient bouton CTA début */
+  --color-brand-orange-cta-to: #FF9660;    /* gradient bouton CTA fin */
 
-  /* ESPACEMENTS — TODO: à remplir lors du premier import Figma */
+  /* Texte — navigation */
+  --color-text-light: #CBD5E1;             /* liens inactifs nav */
 
-  /* BORDER RADIUS — TODO: à remplir lors du premier import Figma */
+  /* Texte — Hero */
+  --color-text-heading: #DFE1F8;           /* titre principal hero */
+  --color-text-body-warm: #DFC0B3;         /* description hero (opacity 80%) */
 
-  /* OMBRES — TODO: à remplir lors du premier import Figma */
+  /* Badge hero */
+  --color-badge-blue: #B8C3FF;             /* dot + texte badge */
+  --color-badge-blue-bg: rgba(148, 160, 221, 0.1);  /* fond badge pill */
+
+  /* Fonds — UI (node 537:6375) */
+  --color-deep-navy: #040936;              /* fond dropdown, Figma: --site-bleu0 */
+  --color-dropdown-open: #313445;          /* fond menu déroulant ouvert */
+  --color-cta-text-dark: #632600;          /* texte sur bouton gradient orange */
+
+  /* Tabs pôles (node 533:5346) */
+  --color-nav-bg: #090F42;               /* fond container tabs, Figma: --site-bleu1 */
+  --color-tab-active: #D35E19;           /* tab actif, orange foncé */
+
+  /* Texte secondaire (node 620:4916) */
+  --color-text-muted: #64748B;           /* sous-titre carte mini (slate-500) */
+
+  /* Highlight hero variante pôle (node 448:3508) */
+  --color-highlight-pole: #FBA275;       /* orange pêche clair, highlight titre pôle */
+
+  /* Cards offres (node 443:2391) */
+  --color-card-bg: #434674;               /* fond carte offre, Figma: --bleuclair1 */
+  --color-stat-card-purple: #433d7a;      /* gradient start carte stat (node 517:3197) */
+  --color-divider: #C0CCDA;               /* séparateur, Figma: greyscale/smoke/extra-dark */
+  --color-beige-badge: #DBD3D3;           /* badge "meilleure vente", Figma: --site-beige1 */
+
+  /* Bento Grid — Pôle Conseil (node 448:4201) */
+  --color-conseil-orange: #9f3d00;        /* gradient feature card (bas → transparent) */
+  --color-secondary-400: #ff5d00;         /* border bouton CTA, Figma: --secondary-400 */
+  --color-cta-orange-deep: #d75d14;       /* gradient fin bouton CTA section */
+
+  /* Couleurs CTA cartes */
+  --color-offer-orange: #FF6D1E;          /* CTA Conseil */
+  --color-offer-blue: #4746E9;            /* CTA Développement/Agent */
+  --color-offer-yellow: #E6B002;          /* CTA DevOps */
+  --color-offer-green: #46BA87;           /* CTA IA */
+
+  /* ─── TYPOGRAPHIE ──────────────────────────────────────────
+     Sources :
+       - Header (node 448:3478) : Google Sans
+       - Hero Section (node 437:2084) : Google Sans Bold + Inter
+
+     ⚠ "Google Sans" est propriétaire Google — à charger via fichier custom.
+     ✅ "Inter" est disponible sur Google Fonts (chargé dans layout via next/font).
+  */
+  --font-sans: "Google Sans", sans-serif;  /* titres, nav — propriétaire Google */
+  --font-body: "Inter", var(--font-inter-fallback, sans-serif);  /* corps de texte */
+  --font-ui: "Manrope", var(--font-manrope-fallback, sans-serif); /* labels UI, tabs pôles (node 533:5346) */
+
+  /* ─── TAILLES DE TEXTE ────────────────────────────────────
+     Source : styles nommés dans Figma
+  */
+  /* Style "corps MAJ" — Labels formulaire (node 537:6375) */
+  --text-label: 0.8125rem;               /* 13px */
+  --text-label--line-height: 0.6875rem;  /* 11px */
+
+  /* Style "Titre 1" — Card heading (node 443:2391) */
+  --text-card-title: 2.5rem;             /* 40px */
+  --text-card-title--line-height: 2.5rem; /* 40px */
+
+  /* Style "Titre 2" — Tab labels (node 443:2391) */
+  --text-tab: 1.375rem;                  /* 22px */
+
+  /* Style "Sous titre" — Header */
+  --text-nav: 1rem;                       /* 16px */
+  --text-nav--line-height: 1.25rem;       /* 20px */
+
+  /* Style "Titre 0" — Hero */
+  --text-hero-title: 4.5rem;             /* 72px */
+  --text-hero-title--line-height: 4.5rem; /* 72px */
+  --text-hero-title--letter-spacing: -0.1125rem; /* -1.8px */
+
+  /* Style "Body large" — Hero description */
+  --text-body-lg: 1.125rem;              /* 18px */
+  --text-body-lg--line-height: 1.828125rem; /* 29.25px */
+
+  /* Badge */
+  --text-badge: 0.75rem;                 /* 12px */
+  --text-badge--letter-spacing: 0.1125rem; /* 1.8px */
+
+  /* ─── BORDER RADIUS ───────────────────────────────────────
+     Source : Header (node 448:3478)
+  */
+  --radius-nav: 10px;
+  --radius-cta: 6px;
+  --radius-badge: 8px;
+  --radius-pill: 9999px;                 /* badge pill hero */
+  --radius-card: 24px;                   /* carte formulaire (node 537:6320) */
+  --radius-input: 12px;                  /* champs dropdown (node 537:6326) */
+  --radius-offer-card: 18px;             /* carte offre (node 443:2391) */
+  --radius-offer-img: 16px;              /* image header carte offre */
+  --radius-offer-btn: 14px;              /* bouton CTA carte offre */
+  --radius-pill-sm: 15px;                /* bouton "Découvrir le pôle" */
+
+  /* Stat value — "Titre 1.5" (node 517:3197) */
+  --text-stat-value: 2rem;                       /* 32px */
+  --text-stat-value--line-height: 2rem;          /* 32px */
+
+  /* Sector badge label (node 517:3197) */
+  --text-sector-badge: 0.625rem;                 /* 10px */
+  --text-sector-badge--letter-spacing: 0.0625rem; /* 1px */
+
+  /* ─── OMBRES ──────────────────────────────────────────────
+     Source : Header (node 448:3478)
+  */
+  --shadow-cta: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+  /* Badge dot glow — Hero (node 437:2088) */
+  --shadow-badge-dot: 0px 0px 8px 0px #B8C3FF;
+
+  /* Carte formulaire (node 537:6320) */
+  --shadow-card: 0px 25px 50px 0px rgba(0, 0, 0, 0.25);
 }
