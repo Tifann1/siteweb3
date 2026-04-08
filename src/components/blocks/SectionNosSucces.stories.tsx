@@ -69,8 +69,7 @@ export const UneSeuleCard: Story = {
 export const SansCTA: Story = {
   args: {
     ...Default.args,
-    ctaLabel: undefined,
-    onCtaClick: undefined,
+    ctaLabel: "",
   },
 };
 

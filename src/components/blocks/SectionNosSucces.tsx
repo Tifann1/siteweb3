@@ -10,7 +10,7 @@ interface Stat {
 
 export interface ReferenceSuccesCard {
   image: string;
-  imageAlt?: string;
+  imageAlt: string;
   logo?: string;
   logoAlt?: string;
   sector: string;
@@ -58,28 +58,31 @@ export function SectionNosSucces({
           </p>
         </div>
 
-        <button
-          onClick={onCtaClick}
-          className="flex items-center gap-2 text-brand-orange-light font-sans hover:opacity-80 transition-opacity"
-          style={{ fontSize: "var(--text-tab)" }}
-        >
-          {ctaLabel}
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            aria-hidden="true"
+        {ctaLabel && (
+          <button
+            type="button"
+            onClick={onCtaClick}
+            className="flex items-center gap-2 text-brand-orange-light font-sans transition-opacity hover:opacity-80"
+            style={{ fontSize: "var(--text-tab)" }}
           >
-            <path
-              d="M3 8h10M9 4l4 4-4 4"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
+            {ctaLabel}
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M3 8h10M9 4l4 4-4 4"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Cards grid */}
@@ -93,8 +96,8 @@ export function SectionNosSucces({
             >
               <img
                 src={card.image}
-                alt={card.imageAlt ?? ""}
-                className="w-full h-full object-cover"
+                alt={card.imageAlt}
+                className="h-full w-full object-cover"
               />
 
               {/* Gradient overlay — opacity 80% */}
@@ -111,7 +114,7 @@ export function SectionNosSucces({
                 <div className="absolute top-6 left-6 h-10 w-[132px]">
                   <img
                     src={card.logo}
-                    alt={card.logoAlt ?? ""}
+                    alt={card.logoAlt ?? "Logo client"}
                     className="h-full w-full object-contain object-left"
                   />
                 </div>
@@ -120,11 +123,11 @@ export function SectionNosSucces({
               {/* Sector badge + title */}
               <div className="absolute bottom-6 left-6 flex flex-col gap-2">
                 <span
-                  className="bg-brand-orange text-cta-text-dark font-body font-semibold uppercase self-start px-3 py-1 rounded-full"
+                  className="self-start rounded-full bg-brand-orange px-3 py-1 font-body font-semibold uppercase text-cta-text-dark"
                   style={{
                     fontSize: "var(--text-sector-badge)",
                     letterSpacing: "var(--text-sector-badge--letter-spacing)",
-                    lineHeight: "15px",
+                    lineHeight: 1.5,
                   }}
                 >
                   {card.sector}

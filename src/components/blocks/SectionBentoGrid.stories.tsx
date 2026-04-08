@@ -1,9 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { SectionBentoGrid } from "./SectionBentoGrid";
 
-// Asset temporaire issu du MCP Figma (expiration 7 jours)
 const TEAM_IMAGE =
   "https://www.figma.com/api/mcp/asset/c8c8e959-880b-4b70-8d17-473bc6a353ac";
+
+const defaultFeatureCard = {
+  image: TEAM_IMAGE,
+  imageAlt: "Équipe du pôle conseil",
+  title: "L'équipe du pôle conseil",
+  description:
+    "Nos ingénieurs, spécialistes IA et experts produit conçoivent des agents IA utiles, robustes et pensés pour vos usages métier.",
+} as const;
 
 const meta: Meta<typeof SectionBentoGrid> = {
   title: "Blocks/SectionBentoGrid",
@@ -12,7 +19,7 @@ const meta: Meta<typeof SectionBentoGrid> = {
     layout: "fullscreen",
     backgrounds: {
       default: "dark",
-      values: [{ name: "dark", value: "#040936" }],
+      values: [{ name: "dark", value: "var(--color-deep-navy)" }],
     },
   },
   tags: ["autodocs"],
@@ -24,13 +31,7 @@ type Story = StoryObj<typeof SectionBentoGrid>;
 export const Default: Story = {
   args: {
     title: "Agents IA & aide à la décision",
-    featureCard: {
-      image: TEAM_IMAGE,
-      imageAlt: "Équipe du pôle conseil",
-      title: "L'équipe du pôle conseil",
-      description:
-        "Nos ingénieurs, spécialistes IA et experts produit conçoivent des agents IA utiles, robustes et pensés pour vos usages métier.",
-    },
+    featureCard: { ...defaultFeatureCard },
     wideCard: {
       title: "Stratégie augmentée par l'IA",
       description:
@@ -66,7 +67,7 @@ export const TitrePersonnalise: Story = {
     ...Default.args,
     title: "Développement & expertise technique",
     featureCard: {
-      ...Default.args.featureCard!,
+      ...defaultFeatureCard,
       title: "L'équipe du pôle développement",
       description:
         "Des développeurs full-stack et experts cloud qui conçoivent vos applications de demain.",
