@@ -22,6 +22,13 @@ interface HeroSectionProps {
   description?: string;
   /** Alignement du contenu (défaut : "left") */
   align?: "left" | "right";
+  /**
+   * Taille du titre.
+   * - "default" : 72px (page home)
+   * - "compact" : 60px (pages produits/pôles)
+   * Figma node 519:3938 → Display Large 60px/75px/-3px
+   */
+  titleSize?: "default" | "compact";
 }
 
 export function HeroSection({
@@ -32,8 +39,10 @@ export function HeroSection({
   highlightColor = "#FBA275",
   description = "Nous imaginons et déployons des agents IA sur mesure, connectés à vos usages, pour accélérer vos opérations et renforcer votre impact.",
   align = "left",
+  titleSize = "default",
 }: HeroSectionProps) {
   const isRight = align === "right";
+  const isCompact = titleSize === "compact";
 
   return (
     <section className="relative flex flex-col items-center justify-center px-8 overflow-hidden">
@@ -69,11 +78,19 @@ export function HeroSection({
             "font-sans font-bold text-text-heading whitespace-pre-line",
             isRight ? "text-right" : "text-left",
           ].join(" ")}
-          style={{
-            fontSize: "var(--text-hero-title)",
-            lineHeight: "var(--text-hero-title--line-height)",
-            letterSpacing: "var(--text-hero-title--letter-spacing)",
-          }}
+          style={
+            isCompact
+              ? {
+                  fontSize: "var(--text-product-hero)",
+                  lineHeight: "var(--text-product-hero--line-height)",
+                  letterSpacing: "var(--text-product-hero--letter-spacing)",
+                }
+              : {
+                  fontSize: "var(--text-hero-title)",
+                  lineHeight: "var(--text-hero-title--line-height)",
+                  letterSpacing: "var(--text-hero-title--letter-spacing)",
+                }
+          }
         >
           {renderTitleWithHighlight(title, highlightWord, highlightStyle, highlightColor)}
         </h1>

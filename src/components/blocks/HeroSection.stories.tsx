@@ -55,3 +55,17 @@ export const RightAligned: Story = {
     align: "right",
   },
 };
+
+/** Variante page produits — titre compact 60px (node 519:3938) */
+export const Produits: Story = {
+  args: {
+    eyebrow: "NOS PRODUITS IA, PENSÉS POUR LE TERRAIN",
+    title: "Des produits IA conçus pour\nvos usages métier.",
+    highlightWord: "usages",
+    highlightStyle: "solid",
+    highlightColor: "#FBA275",
+    description:
+      "Nous créons des agents IA robustes, utiles et déployables, pensés pour automatiser, assister et accélérer vos opérations.",
+    titleSize: "compact",
+  },
+};
