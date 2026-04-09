@@ -13,8 +13,12 @@ interface FeatureCardData {
 export interface BentoCardData {
   title: string;
   description: string;
-  /** "highlight" = gradient orange + border brand-orange-light */
-  variant?: "default" | "highlight";
+  /**
+   * "highlight" = gradient orange + border orange (Conseil)
+   * "highlight-blue" = gradient bleu + border blue (Développement, node 533:5378)
+   * "highlight-yellow" = gradient jaune + border yellow (DevOps, node 533:5649)
+   */
+  variant?: "default" | "highlight" | "highlight-blue" | "highlight-yellow";
 }
 
 interface SectionBentoGridProps {
@@ -24,6 +28,19 @@ interface SectionBentoGridProps {
   bottomCards: [BentoCardData, BentoCardData];
   ctaLabel?: string;
   onCtaClick?: () => void;
+  /**
+   * Couleur "from" du gradient overlay de la feature card.
+   * Défaut : --color-conseil-orange (orange foncé, Conseil)
+   * Ex: "--color-feature-devops-from" pour DevOps
+   */
+  featureCardGradientFrom?: string;
+  /**
+   * Variante de couleur du bouton CTA.
+   * - "default" : gradient orange (Conseil)
+   * - "blue" : gradient bleu (Développement)
+   * - "yellow" : gradient jaune (DevOps)
+   */
+  ctaVariant?: "default" | "blue" | "yellow";
 }
 
 export function SectionBentoGrid({
@@ -33,6 +50,8 @@ export function SectionBentoGrid({
   bottomCards,
   ctaLabel = "Je réserve un rendez-vous avec un expert.",
   onCtaClick,
+  featureCardGradientFrom = "var(--color-conseil-orange)",
+  ctaVariant = "default",
 }: SectionBentoGridProps) {
   return (
     <section className="bg-deep-navy w-full px-8 pt-[120px] pb-16 flex flex-col gap-[48px] items-center">
@@ -57,8 +76,7 @@ export function SectionBentoGrid({
           <div
             className="absolute inset-0"
             style={{
-              background:
-                "linear-gradient(to top, var(--color-conseil-orange), rgba(15,18,34,0) 50%)",
+              background: `linear-gradient(to top, ${featureCardGradientFrom}, rgba(15,18,34,0) 50%)`,
             }}
           />
           <div className="relative mt-auto p-10 flex flex-col">
@@ -112,11 +130,23 @@ export function SectionBentoGrid({
         <button
           type="button"
           onClick={onCtaClick}
-          className="flex items-center gap-3 h-10 w-[559px] rounded-[var(--radius-input)] border-[0.5px] border-secondary-400 px-[14px] mt-[50px] text-white"
-          style={{
-            background:
-              "linear-gradient(to right, var(--color-cta-gradient-start), var(--color-cta-orange-deep))",
-          }}
+          className="flex items-center gap-3 h-10 w-[559px] rounded-[var(--radius-input)] border-[0.5px] px-[14px] mt-[50px] text-white"
+          style={
+            ctaVariant === "yellow"
+              ? {
+                  background: "linear-gradient(to right, var(--color-cta-devops-from), var(--color-cta-devops-to))",
+                  borderColor: "var(--color-bento-devops-border)",
+                }
+              : ctaVariant === "blue"
+              ? {
+                  background: "linear-gradient(to right, var(--color-cta-gradient-start), var(--color-tab-active-dev))",
+                  borderColor: "var(--color-bento-dev-border)",
+                }
+              : {
+                  background: "linear-gradient(to right, var(--color-cta-gradient-start), var(--color-cta-orange-deep))",
+                  borderColor: "var(--color-secondary-400)",
+                }
+          }
         >
           <svg
             width="20"
@@ -152,22 +182,34 @@ export function SectionBentoGrid({
 
 function BentoCard({ title, description, variant = "default" }: BentoCardData) {
   const isHighlight = variant === "highlight";
+  const isHighlightBlue = variant === "highlight-blue";
+  const isHighlightYellow = variant === "highlight-yellow";
+  const isAccent = isHighlight || isHighlightBlue || isHighlightYellow;
+
+  const borderClass = isHighlight
+    ? "border-brand-orange-light"
+    : isHighlightBlue
+    ? "border-[color:var(--color-bento-dev-border)]"
+    : isHighlightYellow
+    ? "border-[color:var(--color-bento-devops-border)]"
+    : "border-card-border";
+
+  const bgStyle = isHighlight
+    ? { background: "linear-gradient(132.86deg, rgba(255,126,62,0.1) 0%, var(--color-bento-highlight-end) 100%)" }
+    : isHighlightBlue
+    ? { background: "linear-gradient(132.86deg, var(--color-bento-dev-gradient-start) 0%, var(--color-bento-dev-end) 100%)" }
+    : isHighlightYellow
+    ? { background: "linear-gradient(132.86deg, var(--color-bento-devops-gradient-start) 0%, var(--color-bento-dev-end) 100%)" }
+    : undefined;
 
   return (
     <div
-      className={
-        isHighlight
-          ? "rounded-[var(--radius-card)] border border-brand-orange-light flex flex-col gap-[50px] px-[33px] py-[51px]"
-          : "rounded-[var(--radius-card)] bg-card-bg border border-card-border flex flex-col justify-between px-[33px] py-[51px]"
-      }
-      style={
-        isHighlight
-          ? {
-              background:
-                "linear-gradient(132.86deg, rgba(255,126,62,0.1) 0%, var(--color-bento-highlight-end) 100%)",
-            }
-          : undefined
-      }
+      className={[
+        "rounded-[var(--radius-card)] border flex flex-col gap-[50px] px-[33px] py-[51px]",
+        !isAccent && "bg-card-bg",
+        borderClass,
+      ].filter(Boolean).join(" ")}
+      style={bgStyle}
     >
       <h3
         className="font-sans text-white"

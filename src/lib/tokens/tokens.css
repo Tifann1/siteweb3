@@ -59,6 +59,24 @@
   --color-card-border: rgba(88,66,56,0.1); /* border subtile cartes bento */
   --color-cta-gradient-start: rgba(255,182,146,0.17); /* gradient debut bouton CTA section */
 
+  /* Bento Grid -- Pole Développement (node 533:5378) */
+  --color-bento-dev-border: #3D3CE8;       /* border highlight carte dev (blue) */
+  --color-bento-dev-gradient-start: rgba(83, 82, 234, 0); /* gradient start carte dev */
+  --color-bento-dev-end: #1c1f2f;          /* gradient end carte dev */
+
+  /* Tab active -- Pole Développement (node I533:5506;294:1421) */
+  --color-tab-active-dev: #2827B2;         /* tab actif, bleu dev */
+
+  /* Bento Grid -- Pole DevOps & Infrastructure (node 533:5649) */
+  --color-bento-devops-border: #E6AD00;              /* border highlight carte devops (yellow) */
+  --color-bento-devops-gradient-start: rgba(230, 184, 11, 0.1); /* gradient start carte devops */
+  --color-feature-devops-from: #443c10;              /* feature card gradient from (olive) */
+  --color-cta-devops-from: rgba(133, 123, 88, 0.35); /* CTA button gradient start devops */
+  --color-cta-devops-to: #ccac39;                    /* CTA button gradient end devops */
+
+  /* Tab active -- Pole DevOps (node I533:5777;294:1422) */
+  --color-tab-active-devops: #C9AA3A;      /* tab actif, jaune devops */
+
   /* Couleurs CTA cartes (node 443:2391) */
   --color-offer-orange: #FF6D1E;           /* CTA Conseil */
   --color-offer-blue: #4746E9;             /* CTA Developpement/Agent */

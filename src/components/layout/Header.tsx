@@ -19,9 +19,9 @@ interface HeaderProps {
 }
 
 const DEFAULT_NAV_ITEMS: NavItem[] = [
-  { label: "Ingénieur augmenté", href: "/" },
-  { label: "Nos pôles", href: "/poles" },
-  { label: "Nos références", href: "/references" },
+  { label: "Ingénieur augmenté", href: "/accueil" },
+  { label: "Nos pôles", href: "/nos-poles/developpement" },
+  { label: "Nos références", href: "/all-references" },
   { label: "Nos produits IA", href: "/produits" },
   { label: "Actualités", href: "/actualite" },
 ];
