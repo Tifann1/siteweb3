@@ -4,7 +4,7 @@ interface HeroSectionProps {
   /**
    * Titre principal. Utiliser \n pour les sauts de ligne.
    */
-  title: string;
+  title?: string;
   /**
    * Mot(s) du titre à mettre en évidence.
    * La correspondance est insensible à la casse.
@@ -106,7 +106,8 @@ function renderTitleWithHighlight(
 ): React.ReactNode {
   if (!highlightWord) return title;
 
-  const regex = new RegExp(`(${highlightWord})`, "gi");
+  const escaped = highlightWord.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`(${escaped})`, "gi");
   const parts = title.split(regex);
 
   return parts.map((part, i) => {
