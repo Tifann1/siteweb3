@@ -69,7 +69,7 @@ export function ArticleCard({
           </span>
           {readingTime && (
             <>
-              <span className="size-1 rounded-full bg-[#334155] shrink-0" />
+              <span className="size-1 rounded-full bg-dropdown-open shrink-0" />
               <span
                 className="font-body font-normal text-text-muted uppercase tracking-[1.2px]"
                 style={{ fontSize: "12px", lineHeight: "16px" }}

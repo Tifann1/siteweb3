@@ -39,9 +39,9 @@ export function AugmentedSection({
       <div className="flex flex-1 flex-col gap-[50px] items-start">
         {/* Eyebrow badge */}
         {eyebrow && (
-          <div className="flex items-center gap-2 px-[17px] py-[9px] rounded-full bg-[rgba(148,160,221,0.1)] border border-[rgba(148,160,221,0.2)] w-fit">
+          <div className="flex items-center gap-2 px-[17px] py-[9px] rounded-full bg-badge-blue-bg border border-badge-blue-border w-fit">
             <span className="size-2 rounded-full bg-badge-blue shrink-0" />
-            <span className="font-body font-normal text-badge-blue tracking-[1px] text-[10px] uppercase whitespace-nowrap">
+            <span className="font-body font-normal text-badge-blue tracking-[var(--text-sector-badge--letter-spacing)] text-[length:var(--text-sector-badge)] uppercase whitespace-nowrap">
               {eyebrow}
             </span>
           </div>
@@ -57,7 +57,7 @@ export function AugmentedSection({
 
         {/* Description */}
         <p
-          className="font-sans text-[#94a3b8] max-w-[519px]"
+          className="font-sans text-meta-secondary max-w-[519px]"
           style={{ fontSize: "22px" }}
         >
           {description}
@@ -67,7 +67,7 @@ export function AugmentedSection({
         <div className="flex flex-col gap-6 w-full">
           {features.map((feature, i) => (
             <div key={i} className="flex gap-4 items-start">
-              <div className="flex items-center justify-center size-12 rounded-full bg-[#313445] shrink-0">
+              <div className="flex items-center justify-center size-12 rounded-full bg-dropdown-open shrink-0">
                 {feature.iconSrc ? (
                   <div className="relative size-5">
                     <Image
@@ -89,7 +89,7 @@ export function AugmentedSection({
                   {feature.title}
                 </span>
                 <span
-                  className="font-body font-normal text-[#64748b]"
+                  className="font-body font-normal text-text-muted"
                   style={{ fontSize: "16px", lineHeight: "20px" }}
                 >
                   {feature.description}

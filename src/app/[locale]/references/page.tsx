@@ -25,7 +25,7 @@ export default function ReferencesPage() {
     <div className="min-h-screen bg-deep-navy flex flex-col">
       <Header ctaLabel="Je lance mon projet" ctaHref="/#contact" />
 
-      <main className="flex flex-col gap-[120px] px-[32px] pb-[80px]">
+      <main className="flex flex-col gap-[120px] px-8 pb-[80px]">
         {/* Hero */}
         <ReferenceHero
           eyebrow="ÉTUDE DE CAS : ARMATIS"
@@ -37,7 +37,7 @@ export default function ReferencesPage() {
         />
 
         {/* Quote + Bento */}
-        <section className="flex flex-col gap-6 w-full max-w-[1045px] mx-auto">
+        <section className="flex flex-col gap-6 w-full max-w-[1280px] mx-auto">
           <QuoteBlock
             quote="L'intégration d'une intelligence artificielle au cœur des process ouvre des perspectives fortes en matière de performance, de qualité de service et d'accompagnement des conseillers"
             attribution="Strategic Vision 2025"
@@ -76,7 +76,7 @@ export default function ReferencesPage() {
         </section>
 
         {/* Section Ingénieur Augmenté */}
-        <section className="w-full max-w-[1165px] mx-auto">
+        <section className="w-full max-w-[1280px] mx-auto">
           <AugmentedSection
             eyebrow="Innovation IA"
             title="L'Ingénieur Augmenté au service d'Armatis"
@@ -114,7 +114,7 @@ export default function ReferencesPage() {
         </section>
 
         {/* CTA Banner */}
-        <section className="w-full max-w-[1101px] mx-auto">
+        <section className="w-full max-w-[1280px] mx-auto">
           <CtaBanner
             title="Prêt à augmenter\nvos projets ?"
             description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."

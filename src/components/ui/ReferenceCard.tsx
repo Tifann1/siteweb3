@@ -70,7 +70,7 @@ export function ReferenceCard({
       <div className="flex flex-col gap-5 items-start p-8 w-full">
         {/* Badge catégorie */}
         <div className="flex items-center gap-2 pb-4">
-          <span className="size-2 rounded-full bg-[#ec8305] shrink-0" />
+          <span className="size-2 rounded-full bg-brand-orange shrink-0" />
           <span
             className="font-body font-semibold bg-clip-text text-transparent uppercase whitespace-nowrap"
             style={{

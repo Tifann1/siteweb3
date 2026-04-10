@@ -34,8 +34,8 @@ export default async function ProduitDetailPage({ params }: Props) {
     <div className="bg-nav-bg min-h-screen flex flex-col">
       {/* Blobs décoratifs */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute size-96 rounded-full bg-[rgba(255,182,146,0.1)] blur-[60px] left-1/2 translate-x-1/4 top-[10%]" />
-        <div className="absolute size-[500px] rounded-full bg-[rgba(184,195,255,0.05)] blur-[75px] right-1/3 top-[5%]" />
+        <div className="absolute size-96 rounded-full bg-brand-orange-light/10 blur-[60px] left-1/2 translate-x-1/4 top-[10%]" />
+        <div className="absolute size-[500px] rounded-full bg-badge-blue/5 blur-[75px] right-1/3 top-[5%]" />
       </div>
 
       <Header />

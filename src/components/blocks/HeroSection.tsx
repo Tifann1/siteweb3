@@ -48,8 +48,8 @@ export function HeroSection({
     <section className="relative flex flex-col items-center justify-center px-8 overflow-hidden">
       {/* Blobs décoratifs */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute size-96 rounded-full bg-[rgba(255,182,146,0.1)] blur-[60px] left-1/2 -translate-x-1/2 top-1/3" />
-        <div className="absolute size-[500px] rounded-full bg-[rgba(184,195,255,0.05)] blur-[75px] right-1/4 bottom-1/4" />
+        <div className="absolute size-96 rounded-full bg-brand-orange-light/10 blur-[60px] left-1/2 -translate-x-1/2 top-1/3" />
+        <div className="absolute size-[500px] rounded-full bg-badge-blue/5 blur-[75px] right-1/4 bottom-1/4" />
       </div>
 
       {/* Contenu */}

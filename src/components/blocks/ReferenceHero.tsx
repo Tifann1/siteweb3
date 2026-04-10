@@ -67,19 +67,19 @@ export function ReferenceHero({
 
       {/* Blobs décoratifs */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute size-96 rounded-full bg-[rgba(255,182,146,0.1)] blur-[60px] left-1/3 top-1/3" />
-        <div className="absolute size-[500px] rounded-full bg-[rgba(184,195,255,0.05)] blur-[75px] right-1/3 bottom-1/4" />
+        <div className="absolute size-96 rounded-full bg-brand-orange-light/10 blur-[60px] left-1/3 top-1/3" />
+        <div className="absolute size-[500px] rounded-full bg-badge-blue/5 blur-[75px] right-1/3 bottom-1/4" />
       </div>
 
       <div className="relative flex flex-col gap-[30px] max-w-[720px]">
         {/* Eyebrow */}
         {eyebrow && (
-          <div className="flex items-center gap-2 px-4 py-[6px] rounded-full bg-[rgba(148,160,221,0.1)] border border-[rgba(148,160,221,0.2)] w-fit">
+          <div className="flex items-center gap-2 px-4 py-[6px] rounded-full bg-badge-blue-bg border border-badge-blue-border w-fit">
             <span
               className="size-2 rounded-full bg-badge-blue shrink-0"
               style={{ boxShadow: "0 0 8px 0 #b8c3ff" }}
             />
-            <span className="font-body font-semibold text-badge-blue tracking-[1.8px] text-[12px] leading-4 uppercase whitespace-nowrap">
+            <span className="font-body font-semibold text-badge-blue tracking-[var(--text-badge--letter-spacing)] text-[length:var(--text-badge)] leading-4 uppercase whitespace-nowrap">
               {eyebrow}
             </span>
           </div>

@@ -36,7 +36,7 @@ export const WithRole: Story = {
 
 export const Group: Story = {
   render: () => (
-    <div className="flex gap-20 items-center bg-[#090F42] p-10">
+    <div className="flex gap-20 items-center bg-nav-bg p-10">
       {[
         { name: "Sylvain Gourio" },
         { name: "Alexandre Bodet" },

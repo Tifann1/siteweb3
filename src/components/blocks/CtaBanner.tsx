@@ -52,7 +52,7 @@ export function CtaBanner({
           {/* CTA primaire — gradient orange */}
           <Link
             href={primaryHref}
-            className="relative flex items-center justify-center w-full px-10 py-4 rounded-[var(--radius-input)] bg-gradient-to-r from-brand-orange-light to-brand-orange font-sans text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] text-center text-[#552000] transition-opacity hover:opacity-90"
+            className="relative flex items-center justify-center w-full px-10 py-4 rounded-[var(--radius-input)] bg-gradient-to-r from-brand-orange-light to-brand-orange font-sans text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] text-center text-cta-text-dark transition-opacity hover:opacity-90"
           >
             {/* Halo orange */}
             <span

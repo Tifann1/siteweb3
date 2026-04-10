@@ -42,7 +42,7 @@ export function PodcastPlayerCard({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             {/* Bouton lecture rapide */}
-            <div className="bg-[rgba(255,182,146,0.2)] flex items-center justify-center rounded-[8px] size-16 shrink-0">
+            <div className="bg-brand-orange-light/20 flex items-center justify-center rounded-[8px] size-16 shrink-0">
               <PlayIcon />
             </div>
             {/* Info épisode */}

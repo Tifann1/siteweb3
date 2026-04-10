@@ -55,8 +55,8 @@ export function ReferenceFilterBar({
                 className={[
                   "flex items-center gap-2 px-4 py-[6px] rounded-full transition-all duration-200",
                   isActive
-                    ? "bg-[#94a3b8]"
-                    : "bg-[rgba(148,160,221,0.1)]",
+                    ? "bg-meta-secondary"
+                    : "bg-badge-blue-bg",
                 ].join(" ")}
               >
                 <span
@@ -69,7 +69,7 @@ export function ReferenceFilterBar({
                 />
                 <span
                   className={[
-                    "font-body font-semibold text-[12px] tracking-[1.8px] uppercase whitespace-nowrap",
+                    "font-body font-semibold text-[length:var(--text-badge)] tracking-[var(--text-badge--letter-spacing)] uppercase whitespace-nowrap",
                     isActive ? "text-deep-navy" : "text-badge-blue",
                   ].join(" ")}
                 >

@@ -79,7 +79,7 @@ export function ReferenceBento({
           {expertRole}
         </p>
         <p
-          className="font-body font-normal text-[#94a3b8] text-center px-4"
+          className="font-body font-normal text-meta-secondary text-center px-4"
           style={{ fontSize: "16px", lineHeight: "20px" }}
         >
           {expertBio}
@@ -117,7 +117,7 @@ export function ReferenceBento({
       {/* ── Col 3 : Ethos card ── */}
       <div className="col-start-3 row-start-1 flex flex-col gap-4 items-start p-8 bg-deep-navy border border-white/5 rounded-[var(--radius-input)]">
         {/* Icône placeholder */}
-        <div className="flex items-center justify-center size-12 rounded-[8px] bg-[rgba(255,182,146,0.1)]">
+        <div className="flex items-center justify-center size-12 rounded-[8px] bg-brand-orange-light/10">
           <svg width="20" height="18" viewBox="0 0 20 18" fill="none" aria-hidden="true">
             <rect x="1" y="1" width="18" height="16" rx="2" stroke="#FFB692" strokeWidth="1.5" />
             <path d="M5 6h10M5 10h6" stroke="#FFB692" strokeWidth="1.5" strokeLinecap="round" />
@@ -127,7 +127,7 @@ export function ReferenceBento({
           {ethosTitle}
         </h3>
         <p
-          className="font-body font-normal text-[#94a3b8]"
+          className="font-body font-normal text-meta-secondary"
           style={{ fontSize: "14px", lineHeight: "22.75px" }}
         >
           {ethosDescription}
@@ -151,7 +151,7 @@ export function ReferenceBento({
               {stat.value}
             </span>
             <span
-              className="font-body font-normal text-[#64748b] uppercase tracking-[1px] text-center"
+              className="font-body font-normal text-text-muted uppercase tracking-[var(--text-sector-badge--letter-spacing)] text-center"
               style={{ fontSize: "10px" }}
             >
               {stat.label}
@@ -176,7 +176,7 @@ export function ReferenceBento({
               {brandName}
             </span>
             <span
-              className="font-body font-normal text-[#64748b]"
+              className="font-body font-normal text-text-muted"
               style={{ fontSize: "12px" }}
             >
               {brandSubtitle}
@@ -186,7 +186,7 @@ export function ReferenceBento({
         {brandCtaLabel && (
           <a
             href={brandCtaHref ?? "#"}
-            className="font-body font-semibold text-brand-orange-light uppercase tracking-[1.2px] text-[12px] hover:opacity-80 transition-opacity"
+            className="font-body font-semibold text-brand-orange-light uppercase tracking-[1.2px] text-[length:var(--text-badge)] hover:opacity-80 transition-opacity"
           >
             {brandCtaLabel} ↗
           </a>

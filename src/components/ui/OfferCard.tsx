@@ -42,7 +42,7 @@ export function OfferCard({
         {/* Badge optionnel */}
         <div className="flex items-center justify-end w-full h-7">
           {badge && (
-            <div className="flex items-center gap-2 px-4 py-[6px] rounded-full bg-[rgba(4,9,54,0.8)]">
+            <div className="flex items-center gap-2 px-4 py-[6px] rounded-full bg-deep-navy/80">
               <span
                 className="size-2 rounded-full bg-beige-badge shrink-0"
                 style={{ boxShadow: "var(--shadow-badge-dot)" }}

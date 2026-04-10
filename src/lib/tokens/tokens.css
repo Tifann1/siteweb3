@@ -32,6 +32,7 @@
   /* Badge hero (node 437:2088) */
   --color-badge-blue: #B8C3FF;             /* dot + texte badge */
   --color-badge-blue-bg: rgba(148, 160, 221, 0.1);  /* fond badge pill */
+  --color-badge-blue-border: rgba(148, 160, 221, 0.2); /* bordure badge pill (node 437:2088, 533:5378) */
 
   /* Fonds -- UI (node 537:6375) */
   --color-deep-navy: #040936;              /* fond dropdown, Figma: --site-bleu0 */

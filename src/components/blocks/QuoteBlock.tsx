@@ -25,7 +25,7 @@ export function QuoteBlock({
         <div className="h-px w-12 bg-brand-orange-light shrink-0" />
         {attribution && (
           <span
-            className="font-body font-normal text-[#94a3b8] uppercase tracking-[1px]"
+            className="font-body font-normal text-meta-secondary uppercase tracking-[var(--text-sector-badge--letter-spacing)]"
             style={{ fontSize: "13px" }}
           >
             {attribution}
