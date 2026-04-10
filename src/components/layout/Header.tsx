@@ -38,7 +38,7 @@ export function Header({
   const otherLocale = locale === "fr" ? "en" : "fr";
 
   return (
-    <header className="flex items-center gap-10 w-full px-6 py-4">
+    <header className="sticky top-0 z-50 flex items-center gap-10 w-full px-6 py-3 bg-deep-navy/95 backdrop-blur-md">
       {/* Logo */}
       <div className="relative h-[50px] w-[106px] shrink-0">
         <Image

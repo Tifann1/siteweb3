@@ -34,7 +34,7 @@ export function SectionNosSucces({
   cards,
 }: SectionNosSuccesProps) {
   return (
-    <section className="bg-deep-navy w-full px-8 pt-[130px] pb-16">
+    <section className="bg-deep-navy w-full px-8 py-16 md:py-24">
       {/* Header row */}
       <div className="flex items-end justify-between mb-10">
         <div className="flex flex-col gap-4 max-w-[332px]">

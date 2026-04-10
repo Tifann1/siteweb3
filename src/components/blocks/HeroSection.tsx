@@ -45,7 +45,7 @@ export function HeroSection({
   const isCompact = titleSize === "compact";
 
   return (
-    <section className="relative flex flex-col items-center justify-center px-8 overflow-hidden">
+    <section className="relative flex flex-col items-center justify-center overflow-hidden min-h-[85vh]">
       {/* Blobs décoratifs */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="absolute size-96 rounded-full bg-brand-orange-light/10 blur-[60px] left-1/2 -translate-x-1/2 top-1/3" />
@@ -55,7 +55,7 @@ export function HeroSection({
       {/* Contenu */}
       <div
         className={[
-          "relative flex flex-col gap-[70px] pb-[48.5px] px-[120px] w-full",
+          "relative flex flex-col gap-[70px] py-16 md:py-24 px-6 md:px-12 lg:px-[80px] xl:px-[120px] w-full",
           isRight ? "items-end" : "items-start",
         ].join(" ")}
       >

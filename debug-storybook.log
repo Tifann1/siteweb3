@@ -1,0 +1,20 @@
+[10:36:47.476] [INFO] storybook v10.3.4
+[10:36:48.531] [DEBUG] Getting package.json info for C:/DevFun/siteweb3/package.json...
+[10:36:48.592] [WARN] Could not resolve addon "@storybook/addon-essentials", skipping. Is it installed?
+[10:36:49.540] [WARN] Could not resolve addon "@storybook/addon-essentials", skipping. Is it installed?
+[10:36:49.982] [DEBUG] Serving static files from [36mpublic[39m at [36m/[39m
+[10:36:49.982] [INFO] Starting...
+[10:36:50.494] [ERROR] [38;2;241;97;97mError: spawn UNKNOWN[39m
+    at ChildProcess.spawn (node:internal/child_process:421:11)
+    at Object.spawn (node:child_process:796:9)
+    at ensureServiceIsRunning (.\node_modules\esbuild\lib\main.js:2268:29)
+    at build (.\node_modules\esbuild\lib\main.js:2166:26)
+    at starter (file:///C:/DevFun/siteweb3/node_modules/storybook/dist/_node-chunks/builder-manager-YNFOPE5U.js:1509:81)
+    at starter.next (<anonymous>)
+    at Module.start (file:///C:/DevFun/siteweb3/node_modules/storybook/dist/_node-chunks/builder-manager-YNFOPE5U.js:1618:34)
+    at async storybookDevServer (file:///C:/DevFun/siteweb3/node_modules/storybook/dist/core-server/index.js:7496:54)
+    at async buildOrThrow (file:///C:/DevFun/siteweb3/node_modules/storybook/dist/core-server/index.js:4508:12)
+    at async buildDevStandalone (file:///C:/DevFun/siteweb3/node_modules/storybook/dist/core-server/index.js:8033:41)
+[10:36:50.499] [WARN] Broken build, fix the error above.
+You may need to refresh the browser.
+[10:36:50.503] [WARN] Could not resolve addon "@storybook/addon-essentials", skipping. Is it installed?

@@ -19,7 +19,7 @@ export function CtaBanner({
 }: CtaBannerProps) {
   return (
     <div className="flex flex-col items-center justify-center overflow-hidden p-20 rounded-[40px] bg-deep-navy shadow-[var(--shadow-cta)] w-full">
-      <div className="flex items-center justify-center gap-[60px] w-[876px]">
+      <div className="flex flex-wrap items-center justify-center gap-[60px] max-w-[876px] w-full">
         {/* Texte gauche */}
         <div className="flex flex-col gap-6 items-start max-w-[672px] shrink-0">
           <h2

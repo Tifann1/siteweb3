@@ -54,7 +54,7 @@ export function SectionBentoGrid({
   ctaVariant = "default",
 }: SectionBentoGridProps) {
   return (
-    <section className="bg-deep-navy w-full px-8 pt-[120px] pb-16 flex flex-col gap-[48px] items-center">
+    <section className="bg-deep-navy w-full px-8 py-16 md:py-24 flex flex-col gap-[48px] items-center">
       <h2
         className="font-sans font-bold text-white text-center"
         style={{

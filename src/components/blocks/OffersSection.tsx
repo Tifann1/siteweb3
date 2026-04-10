@@ -119,7 +119,7 @@ export function OffersSection({
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <section className="flex flex-col gap-14 items-center py-[120px] w-full bg-deep-navy">
+    <section className="flex flex-col gap-14 items-center py-16 md:py-24 w-full bg-deep-navy">
       {/* Titre */}
       <h2
         className="font-sans font-bold text-white text-center whitespace-nowrap"

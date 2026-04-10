@@ -24,7 +24,7 @@ export function Footer({
   socials = {},
 }: FooterProps) {
   return (
-    <footer className="flex flex-col items-start pb-[50px] px-[100px] rounded-[var(--radius-card)] w-full">
+    <footer className="flex flex-col items-start pt-20 pb-12 px-6 md:px-8 w-full">
       <div className="flex items-center justify-between w-full">
         {/* Gauche : contact + copyright */}
         <div className="flex flex-col gap-5 items-start justify-center">

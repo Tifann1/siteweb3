@@ -6,13 +6,15 @@ import { ProjectForm } from "@/components/blocks/ProjectForm";
 import { OffersSection } from "@/components/blocks/OffersSection";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
 
-// ⚠ URLs Figma — expirent dans 7 jours. Remplacer par /public/logos/*.svg
 const LOGOS = [
-  { src: "https://www.figma.com/api/mcp/asset/b3695da5-91b5-4548-bc5a-e738a9f78b2c", alt: "BPCE", width: 80, height: 30 },
-  { src: "https://www.figma.com/api/mcp/asset/3370ee1f-648c-4bfb-a1dd-dde169b4f2ec", alt: "FDJ", width: 56, height: 30 },
-  { src: "https://www.figma.com/api/mcp/asset/99fa4be5-c53a-4aca-8be6-ad746fdc9a64", alt: "La Poste", width: 45, height: 30 },
-  { src: "https://www.figma.com/api/mcp/asset/7afb6c4b-1a64-43c2-ad29-0b901a84ee33", alt: "Bienveo", width: 67, height: 30 },
-  { src: "https://www.figma.com/api/mcp/asset/ef869ad3-92f4-43eb-8444-6da8815946b9", alt: "Marketpay", width: 26, height: 30 },
+  { src: "/images/logos/bpce.svg", alt: "BPCE", width: 80, height: 30 },
+  { src: "/images/logos/fdj.svg", alt: "FDJ", width: 56, height: 30 },
+  { src: "/images/logos/laposte.svg", alt: "La Poste", width: 45, height: 30 },
+  { src: "/images/logos/bienveo.png", alt: "Bienveo", width: 67, height: 30 },
+  { src: "/images/logos/marketpay.svg", alt: "Marketpay", width: 26, height: 30 },
+  { src: "/images/logos/sncf.svg", alt: "SNCF", width: 60, height: 30 },
+  { src: "/images/logos/carrefour.svg", alt: "Carrefour", width: 100, height: 30 },
+  { src: "/images/logos/inpi.svg", alt: "INPI", width: 55, height: 30 },
 ];
 
 const PROMISES = [
@@ -29,74 +31,76 @@ export default function HomeFigmaPage() {
     <div className="min-h-screen bg-deep-navy flex flex-col">
       <Header ctaLabel="Accélérer mon projet" ctaHref="/#contact" />
 
-      <main className="flex flex-col">
+      <main className="flex flex-col flex-1">
         {/* Hero */}
-        <section className="mt-6">
-          <HeroSection
-            eyebrow="VOS AGENTS IA, CONÇUS POUR LE TERRAIN"
-            title="L'ingénieur\naugmenté au service\nde vos ambitions."
-            highlightWord="augmenté"
-            description="Nous imaginons et déployons des agents IA sur mesure, connectés à vos usages, pour accélérer vos opérations et renforcer votre impact."
-          />
-        </section>
+        <HeroSection
+          eyebrow="VOS AGENTS IA, CONÇUS POUR LE TERRAIN"
+          title="L'ingénieur\naugmenté au service\nde vos ambitions."
+          highlightWord="augmenté"
+          description="Nous imaginons et déployons des agents IA sur mesure, connectés à vos usages, pour accélérer vos opérations et renforcer votre impact."
+        />
 
-        {/* Bandeau logos clients */}
-        <section className="mt-10">
+        {/* Bandeau logos clients — full width */}
+        <div className="py-10">
           <LogoBanner logos={LOGOS} duration={20} />
-        </section>
+        </div>
 
         {/* Formulaire projet */}
-        <section className="mt-16 flex justify-center px-6">
-          <ProjectForm ctaLabel="Partager mon projet !" />
+        <section className="py-20 md:py-28">
+          <div className="max-w-[1280px] mx-auto px-6 md:px-8 flex justify-center">
+            <ProjectForm ctaLabel="Partager mon projet !" />
+          </div>
         </section>
 
-        {/* Offres */}
-        <section className="mt-24">
-          <OffersSection title="Nos offres adaptables." />
-        </section>
+        {/* Offres — full width, gère son propre py */}
+        <OffersSection title="Nos offres adaptables." />
 
         {/* Nos promesses */}
-        <section className="mt-24 py-20 px-20 flex flex-col gap-14 items-center">
-          <h2
-            className="font-sans font-bold text-white text-center"
-            style={{
-              fontSize: "var(--text-card-title)",
-              lineHeight: "var(--text-card-title--line-height)",
-            }}
-          >
-            Nos promesses.
-          </h2>
-          <div className="grid grid-cols-2 w-full max-w-[960px] divide-y divide-white/10">
-            {PROMISES.map((promise, i) => (
-              <div
-                key={i}
-                className={[
-                  "py-7 font-sans text-text-heading",
-                  i % 2 === 0
-                    ? "pr-10 border-r border-white/10"
-                    : "pl-10",
-                ].join(" ")}
-                style={{
-                  fontSize: "var(--text-nav)",
-                  lineHeight: "var(--text-nav--line-height)",
-                }}
-              >
-                {promise}
-              </div>
-            ))}
+        <section className="py-20 md:py-28">
+          <div className="max-w-[1280px] mx-auto px-6 md:px-8 flex flex-col gap-14 items-center">
+            <h2
+              className="font-sans font-bold text-white text-center"
+              style={{
+                fontSize: "var(--text-card-title)",
+                lineHeight: "var(--text-card-title--line-height)",
+              }}
+            >
+              Nos promesses.
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 w-full max-w-[960px] divide-y divide-white/10">
+              {PROMISES.map((promise, i) => (
+                <div
+                  key={i}
+                  className={[
+                    "py-7 font-sans text-text-heading",
+                    i % 2 === 0
+                      ? "md:pr-10 md:border-r border-white/10"
+                      : "md:pl-10",
+                  ].join(" ")}
+                  style={{
+                    fontSize: "var(--text-nav)",
+                    lineHeight: "var(--text-nav--line-height)",
+                  }}
+                >
+                  {promise}
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
         {/* CTA Banner */}
-        <section className="mt-16 px-20 pb-24">
-          <CtaBanner
-            title="Prêt à augmenter\nvos projets ?"
-            description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
-            primaryLabel="Parlons de votre projet"
-            primaryHref="/#contact"
-            secondaryLabel="Voir nos offres"
-            secondaryHref="/#offres"
-          />
+        <section className="py-16 md:py-24">
+          <div className="max-w-[1280px] mx-auto px-6 md:px-8">
+            <CtaBanner
+              title="Prêt à augmenter\nvos projets ?"
+              description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
+              primaryLabel="Parlons de votre projet"
+              primaryHref="/#contact"
+              secondaryLabel="Voir nos offres"
+              secondaryHref="/#offres"
+            />
+          </div>
         </section>
       </main>
 

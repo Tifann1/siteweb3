@@ -28,31 +28,33 @@ export default async function ActualitePage() {
     <div className="bg-nav-bg min-h-screen flex flex-col">
       <Header />
 
-      <main className="flex flex-col flex-1 gap-[120px] pt-[70px]">
+      <main className="flex flex-col flex-1">
         {/* Grille article featured + sidebar récents */}
         {featured && (
-          <section className="px-10">
-            <ArticlesFeaturedSection
-              featured={{
-                imageSrc: featured.imageSrc ?? "/images/actualite/placeholder.jpg",
-                category: featured.category,
-                date: formatDate(featured.date, locale),
-                readingTime: featured.readingTime,
-                title: featured.title[locale],
-                excerpt: featured.excerpt[locale],
-                ctaHref: `/actualite/${featured.slug}`,
-              }}
-              recentArticles={rest.map((a) => ({
-                imageSrc: a.imageSrc ?? "/images/actualite/placeholder.jpg",
-                category: a.category,
-                title: a.title[locale],
-                href: `/actualite/${a.slug}`,
-              }))}
-            />
+          <section className="py-16 md:py-24">
+            <div className="max-w-[1280px] mx-auto px-6 md:px-8">
+              <ArticlesFeaturedSection
+                featured={{
+                  imageSrc: featured.imageSrc ?? "/images/actualite/placeholder.jpg",
+                  category: featured.category,
+                  date: formatDate(featured.date, locale),
+                  readingTime: featured.readingTime,
+                  title: featured.title[locale],
+                  excerpt: featured.excerpt[locale],
+                  ctaHref: `/actualite/${featured.slug}`,
+                }}
+                recentArticles={rest.map((a) => ({
+                  imageSrc: a.imageSrc ?? "/images/actualite/placeholder.jpg",
+                  category: a.category,
+                  title: a.title[locale],
+                  href: `/actualite/${a.slug}`,
+                }))}
+              />
+            </div>
           </section>
         )}
 
-        {/* Section podcast */}
+        {/* Section podcast — full width, gère son propre py */}
         <PodcastSection
           episode={{
             episodeTitle: "EP.3 : L'Usine Cognitive",
@@ -63,9 +65,11 @@ export default async function ActualitePage() {
         />
 
         {/* CTA bas de page */}
-        <div className="px-8 pb-16">
-          <CtaBanner />
-        </div>
+        <section className="py-16 md:py-24">
+          <div className="max-w-[1280px] mx-auto px-6 md:px-8">
+            <CtaBanner />
+          </div>
+        </section>
       </main>
 
       <Footer
