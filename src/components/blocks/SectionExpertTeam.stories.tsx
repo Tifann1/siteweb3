@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { SectionExpertTeam } from "./SectionExpertTeam";
 
 const meta: Meta<typeof SectionExpertTeam> = {
-  title: "Blocks/SectionExpertTeam",
+  title: "Blocks/Poles/SectionExpertTeam",
   component: SectionExpertTeam,
   parameters: {
     layout: "fullscreen",
@@ -11,7 +11,7 @@ const meta: Meta<typeof SectionExpertTeam> = {
       values: [{ name: "dark", value: "#090F42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-poles"],
 };
 
 export default meta;

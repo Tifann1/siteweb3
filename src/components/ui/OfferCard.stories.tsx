@@ -3,7 +3,7 @@ import { OfferCard } from "./OfferCard";
 import { OFFER_GRADIENTS } from "@/components/blocks/OffersSection";
 
 const meta: Meta<typeof OfferCard> = {
-  title: "UI/OfferCard",
+  title: "UI/Accueil/OfferCard",
   component: OfferCard,
   parameters: {
     layout: "centered",
@@ -12,7 +12,7 @@ const meta: Meta<typeof OfferCard> = {
       values: [{ name: "dark", value: "#040936" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-accueil"],
 };
 
 export default meta;

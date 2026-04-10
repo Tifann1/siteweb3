@@ -10,7 +10,7 @@ const ICON_ROADMAP = "https://www.figma.com/api/mcp/asset/ef9070e1-3967-4c80-876
 const ICON_ROI = "https://www.figma.com/api/mcp/asset/3d795a81-80b2-4aa3-8466-237e0fbdbbba";
 
 const meta: Meta<typeof IntegrationSchema> = {
-  title: "Blocks/IntegrationSchema",
+  title: "Blocks/Accueil/IntegrationSchema",
   component: IntegrationSchema,
   parameters: {
     layout: "fullscreen",
@@ -19,7 +19,7 @@ const meta: Meta<typeof IntegrationSchema> = {
       values: [{ name: "dark", value: "#1a1f4e" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-accueil"],
 };
 
 export default meta;

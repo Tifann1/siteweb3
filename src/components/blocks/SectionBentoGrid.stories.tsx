@@ -13,7 +13,7 @@ const defaultFeatureCard = {
 } as const;
 
 const meta: Meta<typeof SectionBentoGrid> = {
-  title: "Blocks/SectionBentoGrid",
+  title: "Blocks/Poles/SectionBentoGrid",
   component: SectionBentoGrid,
   parameters: {
     layout: "fullscreen",
@@ -22,7 +22,7 @@ const meta: Meta<typeof SectionBentoGrid> = {
       values: [{ name: "dark", value: "var(--color-deep-navy)" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-poles"],
 };
 
 export default meta;

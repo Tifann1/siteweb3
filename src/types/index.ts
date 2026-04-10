@@ -47,6 +47,8 @@ export interface Produit {
   backgroundImage: string;
   /** Chemin vers l'image showcase (dans /public) */
   showcaseImage?: string;
+  /** Chemin vers l'icône produit 64×64 (dans /public) */
+  iconSrc?: string;
   /** Badge optionnel (ex: "Le plus vendu") */
   badge?: LocalizedString;
 }

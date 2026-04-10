@@ -36,7 +36,7 @@ export function Header({
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between bg-transparent pt-6 pb-3"
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between bg-transparent pt-4 md:pt-8 lg:pt-10 pb-3"
       style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
     >
       {/* Logo */}
@@ -84,7 +84,10 @@ export function Header({
           </Link>
 
           {/* Logo WTTJ — remplace le switcher EN/FR */}
-          <div className="relative h-[30px] w-[80px] shrink-0 opacity-80 hover:opacity-100 transition-opacity">
+          <div
+            className="relative h-[30px] w-[80px] shrink-0"
+            style={{ filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))" }}
+          >
             <Image
               src="/images/logos/logoWTTJ.png"
               alt="Welcome to the Jungle"

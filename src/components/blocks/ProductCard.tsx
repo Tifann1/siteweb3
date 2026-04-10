@@ -4,6 +4,7 @@
 // Content max-width 448px (gauche), image couvre toute la carte (droite)
 
 import Image from "next/image";
+import { Link } from "@/navigation";
 import { StatTile } from "@/components/ui/StatTile";
 
 export interface ProductStat {
@@ -54,12 +55,12 @@ export function ProductCard({
             className="object-cover object-center"
           />
         </div>
-        {/* Dégradé : nav-bg opaque gauche → transparent droite */}
+        {/* Dégradé : card-bg opaque gauche → transparent droite (contraste avec nav-bg page) */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(89.88deg, var(--color-nav-bg) 19.256%, rgba(4,9,54,0.2) 99.941%)",
+              "linear-gradient(89.88deg, var(--color-card-bg) 0%, rgba(67,70,116,0.7) 35%, rgba(4,9,54,0.05) 85%)",
           }}
         />
       </div>
@@ -127,7 +128,7 @@ export function ProductCard({
         </div>
 
         {/* CTA */}
-        <a
+        <Link
           href={ctaHref}
           className="flex items-center gap-3 mt-8 group transition-opacity hover:opacity-80"
         >
@@ -141,7 +142,7 @@ export function ProductCard({
             {ctaLabel}
           </span>
           <ArrowIcon />
-        </a>
+        </Link>
       </div>
     </div>
   );

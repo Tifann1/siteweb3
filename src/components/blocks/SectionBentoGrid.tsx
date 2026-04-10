@@ -1,4 +1,5 @@
 // SectionBentoGrid — node 448:4201
+import { Link } from "@/navigation";
 // Figma: bg deep-navy, px 32px, pt 120px
 // Grid: 4 cols × 2 rows, gap 24px, h 600px
 // Feature card (col 1-2, row 1-2) + wide card (col 3-4, row 1) + 2 bottom cards
@@ -27,6 +28,7 @@ interface SectionBentoGridProps {
   wideCard: BentoCardData;
   bottomCards: [BentoCardData, BentoCardData];
   ctaLabel?: string;
+  ctaHref?: string;
   onCtaClick?: () => void;
   /**
    * Couleur "from" du gradient overlay de la feature card.
@@ -50,6 +52,7 @@ export function SectionBentoGrid({
   wideCard,
   bottomCards,
   ctaLabel = "Je réserve un rendez-vous avec un expert.",
+  ctaHref = "/contact",
   onCtaClick,
   featureCardGradientFrom = "var(--color-conseil-orange)",
   ctaVariant = "default",
@@ -132,9 +135,8 @@ export function SectionBentoGrid({
       </div>
 
       {ctaLabel && (
-        <button
-          type="button"
-          onClick={onCtaClick}
+        <Link
+          href={ctaHref}
           className="flex items-center gap-3 h-10 w-[559px] rounded-[var(--radius-input)] border-[0.5px] px-[14px] mt-[50px] text-white"
           style={
             ctaVariant === "yellow"
@@ -179,7 +181,7 @@ export function SectionBentoGrid({
           >
             {ctaLabel}
           </span>
-        </button>
+        </Link>
       )}
     </section>
   );

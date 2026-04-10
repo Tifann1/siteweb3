@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { SectionAugmentedDev } from "./SectionAugmentedDev";
 
 const meta: Meta<typeof SectionAugmentedDev> = {
-  title: "Blocks/SectionAugmentedDev",
+  title: "Blocks/Poles/SectionAugmentedDev",
   component: SectionAugmentedDev,
   parameters: {
     layout: "fullscreen",
@@ -11,7 +11,7 @@ const meta: Meta<typeof SectionAugmentedDev> = {
       values: [{ name: "dark", value: "#090F42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-poles"],
 };
 
 export default meta;

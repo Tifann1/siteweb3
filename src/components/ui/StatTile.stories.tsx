@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { StatTile } from "./StatTile";
 
 const meta: Meta<typeof StatTile> = {
-  title: "UI/StatTile",
+  title: "UI/Produits/StatTile",
   component: StatTile,
   parameters: {
     layout: "centered",
@@ -11,7 +11,7 @@ const meta: Meta<typeof StatTile> = {
       values: [{ name: "dark", value: "#090F42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-produits"],
 };
 
 export default meta;

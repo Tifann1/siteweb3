@@ -21,9 +21,8 @@ export default function PoleConseilPage() {
         <HeroSection
           eyebrow="Pôle Conseil & Transformation"
           title={"Accélérer votre\ntransformation\npar l'IA."}
-          highlightWord="transformation\npar l'IA"
-          highlightStyle="solid"
-          highlightColor="#FBA275"
+          highlightWord={"transformation\npar l'IA"}
+          highlightStyle="gradient"
           description="Nous accompagnons vos équipes pour identifier, prioriser et lancer vos premières initiatives IA à fort impact."
           align="right"
         />
@@ -42,7 +41,7 @@ export default function PoleConseilPage() {
               title="Prêt à augmenter\nvos projets ?"
               description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
               primaryLabel="Parlons de votre projet"
-              primaryHref="/#contact"
+              primaryHref="/contact"
               secondaryLabel="Voir nos offres"
               secondaryHref="/#offres"
             />

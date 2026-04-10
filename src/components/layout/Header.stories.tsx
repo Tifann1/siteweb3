@@ -16,7 +16,7 @@ const meta: Meta<typeof Header> = {
       values: [{ name: "dark", value: "#0F172A" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "global"],
 };
 
 export default meta;

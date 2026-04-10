@@ -8,7 +8,7 @@ const AUTOSCRIBE_BG =
   "https://www.figma.com/api/mcp/asset/655c1f98-58b8-4c7e-b957-7bc1c4bb12ea";
 
 const meta: Meta<typeof ProductCard> = {
-  title: "Blocks/ProductCard",
+  title: "Blocks/Produits/ProductCard",
   component: ProductCard,
   parameters: {
     layout: "padded",
@@ -17,7 +17,7 @@ const meta: Meta<typeof ProductCard> = {
       values: [{ name: "dark", value: "#090F42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-produits"],
 };
 
 export default meta;

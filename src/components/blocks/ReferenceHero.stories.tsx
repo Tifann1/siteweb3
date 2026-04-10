@@ -6,7 +6,7 @@ const BG_IMAGE =
   "https://www.figma.com/api/mcp/asset/bfb491ec-d36f-42fe-aceb-87b786d49500";
 
 const meta: Meta<typeof ReferenceHero> = {
-  title: "Blocks/ReferenceHero",
+  title: "Blocks/References/ReferenceHero",
   component: ReferenceHero,
   parameters: {
     layout: "fullscreen",
@@ -15,7 +15,7 @@ const meta: Meta<typeof ReferenceHero> = {
       values: [{ name: "dark", value: "#090f42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-references"],
 };
 
 export default meta;

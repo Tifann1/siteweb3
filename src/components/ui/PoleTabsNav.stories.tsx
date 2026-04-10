@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { PoleTabsNav } from "./PoleTabsNav";
 
 const meta: Meta<typeof PoleTabsNav> = {
-  title: "UI/PoleTabsNav",
+  title: "UI/Poles/PoleTabsNav",
   component: PoleTabsNav,
   parameters: {
     layout: "centered",
@@ -12,7 +12,7 @@ const meta: Meta<typeof PoleTabsNav> = {
       values: [{ name: "dark", value: "#040936" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-poles"],
 };
 
 export default meta;

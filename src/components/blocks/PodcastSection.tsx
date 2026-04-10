@@ -22,8 +22,11 @@ export function PodcastSection({
   episode,
 }: PodcastSectionProps) {
   return (
-    <section className="bg-deep-navy px-8 py-24 w-full">
-      <div className="grid grid-cols-2 gap-16 items-center">
+    <section className="bg-deep-navy w-full py-32">
+      <div
+        className="grid grid-cols-2 gap-16 items-center"
+        style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+      >
         {/* Colonne gauche — texte */}
         <div className="flex flex-col gap-6 items-start pb-8">
           {/* Label podcast */}

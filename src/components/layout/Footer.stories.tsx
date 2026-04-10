@@ -11,7 +11,7 @@ const meta: Meta<typeof Footer> = {
       values: [{ name: "dark", value: "#040936" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "global"],
 };
 
 export default meta;

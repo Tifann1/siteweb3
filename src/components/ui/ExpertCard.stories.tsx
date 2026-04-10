@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { ExpertCard } from "./ExpertCard";
 
 const meta: Meta<typeof ExpertCard> = {
-  title: "UI/ExpertCard",
+  title: "UI/Poles/ExpertCard",
   component: ExpertCard,
   parameters: {
     layout: "centered",
@@ -11,7 +11,7 @@ const meta: Meta<typeof ExpertCard> = {
       values: [{ name: "dark", value: "#090F42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-poles"],
 };
 
 export default meta;

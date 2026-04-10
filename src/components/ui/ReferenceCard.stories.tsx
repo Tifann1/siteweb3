@@ -12,7 +12,7 @@ const LOGO_ARMATIS =
   "https://www.figma.com/api/mcp/asset/4a95adec-0269-469c-aca1-6d505a75c0ce";
 
 const meta: Meta<typeof ReferenceCard> = {
-  title: "UI/ReferenceCard",
+  title: "UI/References/ReferenceCard",
   component: ReferenceCard,
   parameters: {
     layout: "centered",
@@ -21,7 +21,7 @@ const meta: Meta<typeof ReferenceCard> = {
       values: [{ name: "dark", value: "#090f42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-references"],
 };
 
 export default meta;

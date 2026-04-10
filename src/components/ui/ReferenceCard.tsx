@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/navigation";
 
 export interface ReferenceCardProps {
   /** Image de couverture du projet */
@@ -35,7 +35,7 @@ export function ReferenceCard({
   ctaHref = "#",
 }: ReferenceCardProps) {
   return (
-    <div className="relative flex flex-col isolate items-start overflow-hidden rounded-[var(--radius-input)] bg-deep-navy w-[384px]">
+    <div className="relative flex flex-col isolate items-start overflow-hidden rounded-[var(--radius-input)] bg-deep-navy border border-white/10 w-[384px]">
       {/* Logo client — overlay sur l'image */}
       {logoSrc && (
         <div className="absolute top-[216px] left-[25px] z-10 h-[40px] w-[132px]">

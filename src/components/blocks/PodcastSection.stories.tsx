@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { PodcastSection } from "./PodcastSection";
 
 const meta: Meta<typeof PodcastSection> = {
-  title: "Blocks/PodcastSection",
+  title: "Blocks/Actualite/PodcastSection",
   component: PodcastSection,
   parameters: {
     layout: "fullscreen",
@@ -11,7 +11,7 @@ const meta: Meta<typeof PodcastSection> = {
       values: [{ name: "dark", value: "#090F42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-actualite"],
 };
 
 export default meta;

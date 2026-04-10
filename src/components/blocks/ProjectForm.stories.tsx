@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { ProjectForm } from "./ProjectForm";
 
 const meta: Meta<typeof ProjectForm> = {
-  title: "Blocks/ProjectForm",
+  title: "Blocks/Shared/ProjectForm",
   component: ProjectForm,
   parameters: {
     layout: "centered",
@@ -11,7 +11,7 @@ const meta: Meta<typeof ProjectForm> = {
       values: [{ name: "dark", value: "#1a1f4e" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "global"],
 };
 
 export default meta;

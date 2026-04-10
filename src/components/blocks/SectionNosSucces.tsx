@@ -108,7 +108,7 @@ export function SectionNosSucces({
                 className="absolute inset-0"
                 style={{
                   background:
-                    "linear-gradient(to bottom, rgba(9,15,66,0.1) 0%, rgba(9,15,66,0.5) 50%, rgba(9,15,66,0.92) 100%)",
+                    "linear-gradient(to bottom, rgba(9,15,66,0.35) 0%, rgba(9,15,66,0.72) 50%, rgba(9,15,66,0.98) 100%)",
                 }}
               />
 
@@ -149,7 +149,7 @@ export function SectionNosSucces({
               {card.stats.map((stat, j) => (
                 <div
                   key={j}
-                  className="flex-1 flex flex-col rounded-lg border border-white/5 px-[17px] pt-[31px] pb-[17px]"
+                  className="flex-1 flex flex-col rounded-lg border-b border-x border-white/5 px-[17px] pt-[31px] pb-[17px]"
                   style={{
                     background:
                       "linear-gradient(to top, var(--color-stat-card-purple) 0%, rgba(9,15,66,0.4) 60%, rgba(9,15,66,0) 100%)",

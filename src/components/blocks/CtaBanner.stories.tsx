@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { CtaBanner } from "./CtaBanner";
 
 const meta: Meta<typeof CtaBanner> = {
-  title: "Blocks/CtaBanner",
+  title: "Blocks/Shared/CtaBanner",
   component: CtaBanner,
   parameters: {
     layout: "fullscreen",
@@ -11,7 +11,7 @@ const meta: Meta<typeof CtaBanner> = {
       values: [{ name: "dark", value: "#1a1f4e" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "global"],
 };
 
 export default meta;

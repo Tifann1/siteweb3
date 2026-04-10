@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { HeroSection } from "./HeroSection";
 
 const meta: Meta<typeof HeroSection> = {
-  title: "Blocks/HeroSection",
+  title: "Blocks/Shared/HeroSection",
   component: HeroSection,
   parameters: {
     layout: "fullscreen",
@@ -11,7 +11,7 @@ const meta: Meta<typeof HeroSection> = {
       values: [{ name: "dark", value: "#1a1f4e" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-accueil", "page-poles", "page-produits", "page-references"],
 };
 
 export default meta;

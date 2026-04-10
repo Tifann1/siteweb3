@@ -11,7 +11,7 @@ const LOGOS = [
 ];
 
 const meta: Meta<typeof LogoBanner> = {
-  title: "Blocks/LogoBanner",
+  title: "Blocks/Shared/LogoBanner",
   component: LogoBanner,
   parameters: {
     layout: "fullscreen",
@@ -20,7 +20,7 @@ const meta: Meta<typeof LogoBanner> = {
       values: [{ name: "dark", value: "#1a1f4e" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-references", "page-accueil"],
 };
 
 export default meta;

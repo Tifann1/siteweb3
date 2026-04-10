@@ -10,7 +10,7 @@ const ICON_SPEED =
   "https://www.figma.com/api/mcp/asset/384f6f7b-ecd7-40b8-b87e-dd6faba449c4";
 
 const meta: Meta<typeof AugmentedSection> = {
-  title: "Blocks/AugmentedSection",
+  title: "Blocks/References/AugmentedSection",
   component: AugmentedSection,
   parameters: {
     layout: "padded",
@@ -19,7 +19,7 @@ const meta: Meta<typeof AugmentedSection> = {
       values: [{ name: "dark", value: "#090f42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-references"],
 };
 
 export default meta;

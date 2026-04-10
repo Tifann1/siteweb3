@@ -67,6 +67,8 @@
 
   /* Tab active -- Pole Développement (node I533:5506;294:1421) */
   --color-tab-active-dev: #2827B2;         /* tab actif, bleu dev */
+  /* Texte accent Développement — plus clair que border pour lisibilité sur fond sombre */
+  --color-bento-dev-accent: #7474FF;       /* accent texte/icône pôle dev */
 
   /* Bento Grid -- Pole DevOps & Infrastructure (node 533:5649) */
   --color-bento-devops-border: #E6AD00;              /* border highlight carte devops (yellow) */

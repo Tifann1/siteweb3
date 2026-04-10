@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { QuoteBlock } from "./QuoteBlock";
 
 const meta: Meta<typeof QuoteBlock> = {
-  title: "Blocks/QuoteBlock",
+  title: "Blocks/References/QuoteBlock",
   component: QuoteBlock,
   parameters: {
     layout: "padded",
@@ -11,7 +11,7 @@ const meta: Meta<typeof QuoteBlock> = {
       values: [{ name: "dark", value: "#090f42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-references"],
 };
 
 export default meta;

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { Divider } from "./Divider";
 
 const meta: Meta<typeof Divider> = {
-  title: "UI/Divider",
+  title: "UI/Shared/Divider",
   component: Divider,
   parameters: {
     layout: "padded",

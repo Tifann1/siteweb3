@@ -6,7 +6,7 @@ const COLLABS_IMG =
   "https://www.figma.com/api/mcp/asset/9124500b-8dfd-47e9-87e0-220dba8d3e39";
 
 const meta: Meta<typeof ProductShowcase> = {
-  title: "Blocks/ProductShowcase",
+  title: "Blocks/Produits/ProductShowcase",
   component: ProductShowcase,
   parameters: {
     layout: "padded",
@@ -15,7 +15,7 @@ const meta: Meta<typeof ProductShowcase> = {
       values: [{ name: "dark", value: "#090F42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-produits"],
 };
 
 export default meta;

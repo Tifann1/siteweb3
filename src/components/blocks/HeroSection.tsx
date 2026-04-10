@@ -1,3 +1,5 @@
+import React from "react";
+
 interface HeroSectionProps {
   /** Texte du badge en haut */
   eyebrow?: string;
@@ -137,24 +139,29 @@ function renderTitleWithHighlight(
 
   return parts.map((part, i) => {
     if (part.toLowerCase() === highlightWord.toLowerCase()) {
+      // Découper sur \n pour insérer des <br /> explicites dans le span coloré
+      const lines = part.split("\n");
       if (highlightStyle === "solid") {
-        return (
-          <span key={i} style={{ color: highlightColor }}>
-            {part}
-          </span>
-        );
+        return lines.map((line, j) => (
+          <React.Fragment key={`${i}-${j}`}>
+            <span style={{ color: highlightColor }}>{line}</span>
+            {j < lines.length - 1 && <br />}
+          </React.Fragment>
+        ));
       }
-      return (
-        <span
-          key={i}
-          className="bg-clip-text text-transparent"
-          style={{
-            backgroundImage: "linear-gradient(162.47deg, #FFB692 0%, #FF7E33 100%)",
-          }}
-        >
-          {part}
-        </span>
-      );
+      return lines.map((line, j) => (
+        <React.Fragment key={`${i}-${j}`}>
+          <span
+            className="bg-clip-text text-transparent"
+            style={{
+              backgroundImage: "linear-gradient(162.47deg, #FFB692 0%, #FF7E33 100%)",
+            }}
+          >
+            {line}
+          </span>
+          {j < lines.length - 1 && <br />}
+        </React.Fragment>
+      ));
     }
     return part.split("\n").map((line, j, arr) => (
       <span key={`${i}-${j}`}>

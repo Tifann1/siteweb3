@@ -26,9 +26,8 @@ export default function PoleDeveloppementPage() {
         <HeroSection
           eyebrow="Pôle Développement Full-stack"
           title={"Des architectures\npour des agents IA\nfiables et performants."}
-          highlightWord="agents IA\nfiables et performants"
-          highlightStyle="solid"
-          highlightColor="#FBA275"
+          highlightWord={"agents IA\nfiables et performants"}
+          highlightStyle="gradient"
           description="Nous concevons les socles techniques, les intégrations et les interfaces qui permettent à vos agents IA de fonctionner à l'échelle."
           align="right"
         />
@@ -75,7 +74,7 @@ export default function PoleDeveloppementPage() {
 
         {/* Section Développement augmenté par l'IA (node 533:5404) */}
         <section className="py-16 md:py-24">
-          <SectionAugmentedDev accentColor="var(--color-bento-dev-border)" />
+          <SectionAugmentedDev accentColor="var(--color-bento-dev-accent)" />
         </section>
 
         {/* Section Nos Succès (node 533:5467) */}
@@ -147,7 +146,7 @@ export default function PoleDeveloppementPage() {
               title="Prêt à augmenter\nvos projets ?"
               description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
               primaryLabel="Parlons de votre projet"
-              primaryHref="/#contact"
+              primaryHref="/contact"
               secondaryLabel="Voir nos offres"
               secondaryHref="/#offres"
             />

@@ -25,7 +25,7 @@ const FEATURES_COLLABS = [
 ];
 
 const meta: Meta<typeof FeatureAccordion> = {
-  title: "Blocks/FeatureAccordion",
+  title: "Blocks/Produits/FeatureAccordion",
   component: FeatureAccordion,
   parameters: {
     layout: "padded",
@@ -34,7 +34,7 @@ const meta: Meta<typeof FeatureAccordion> = {
       values: [{ name: "dark", value: "#090F42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-produits"],
 };
 
 export default meta;

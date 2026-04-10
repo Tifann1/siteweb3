@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { PodcastPlayerCard } from "./PodcastPlayerCard";
 
 const meta: Meta<typeof PodcastPlayerCard> = {
-  title: "UI/PodcastPlayerCard",
+  title: "UI/Actualite/PodcastPlayerCard",
   component: PodcastPlayerCard,
   parameters: {
     layout: "padded",
@@ -11,7 +11,7 @@ const meta: Meta<typeof PodcastPlayerCard> = {
       values: [{ name: "dark", value: "#090F42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-actualite"],
 };
 
 export default meta;

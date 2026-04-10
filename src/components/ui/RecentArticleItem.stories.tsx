@@ -9,7 +9,7 @@ const IMG_DATA =
   "https://www.figma.com/api/mcp/asset/564613a7-5804-454a-be7b-0fe41ed01644";
 
 const meta: Meta<typeof RecentArticleItem> = {
-  title: "UI/RecentArticleItem",
+  title: "UI/Actualite/RecentArticleItem",
   component: RecentArticleItem,
   parameters: {
     layout: "padded",
@@ -18,7 +18,7 @@ const meta: Meta<typeof RecentArticleItem> = {
       values: [{ name: "dark", value: "#090F42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-actualite"],
 };
 
 export default meta;

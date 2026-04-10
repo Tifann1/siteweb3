@@ -35,7 +35,7 @@ const SECOND_CARD: ReferenceSuccesCard = {
 };
 
 const meta: Meta<typeof SectionNosSucces> = {
-  title: "Blocks/SectionNosSucces",
+  title: "Blocks/Poles/SectionNosSucces",
   component: SectionNosSucces,
   parameters: {
     layout: "fullscreen",
@@ -44,7 +44,7 @@ const meta: Meta<typeof SectionNosSucces> = {
       values: [{ name: "dark", value: "#040936" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-poles"],
 };
 
 export default meta;

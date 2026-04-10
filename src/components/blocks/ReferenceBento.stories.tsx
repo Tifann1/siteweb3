@@ -8,7 +8,7 @@ const BRAND_LOGO =
   "https://www.figma.com/api/mcp/asset/100e224e-88ce-4d3c-a831-b974ea920cb7";
 
 const meta: Meta<typeof ReferenceBento> = {
-  title: "Blocks/ReferenceBento",
+  title: "Blocks/References/ReferenceBento",
   component: ReferenceBento,
   parameters: {
     layout: "padded",
@@ -17,7 +17,7 @@ const meta: Meta<typeof ReferenceBento> = {
       values: [{ name: "dark", value: "#090f42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-references"],
 };
 
 export default meta;

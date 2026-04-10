@@ -52,6 +52,7 @@ export const produits: Produit[] = [
     ],
     backgroundImage: "/images/produits/collabs-bg.jpg",
     showcaseImage: "/images/produits/collabs-showcase.jpg",
+    iconSrc: "/images/produits%20ia/Collabs.png",
     badge: { fr: "Le plus vendu", en: "Best seller" },
   },
   {
@@ -98,6 +99,7 @@ export const produits: Produit[] = [
     ],
     backgroundImage: "/images/produits/autoscribe-bg.jpg",
     showcaseImage: "/images/produits/autoscribe-showcase.jpg",
+    iconSrc: "/images/produits%20ia/Autoscribe.png",
     badge: { fr: "Le plus vendu", en: "Best seller" },
   },
 ];

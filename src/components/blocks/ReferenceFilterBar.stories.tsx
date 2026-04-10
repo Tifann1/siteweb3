@@ -15,7 +15,7 @@ const ROWS = [
 ];
 
 const meta: Meta<typeof ReferenceFilterBar> = {
-  title: "Blocks/ReferenceFilterBar",
+  title: "Blocks/References/ReferenceFilterBar",
   component: ReferenceFilterBar,
   parameters: {
     layout: "padded",
@@ -24,7 +24,7 @@ const meta: Meta<typeof ReferenceFilterBar> = {
       values: [{ name: "dark", value: "#090f42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-references"],
 };
 
 export default meta;

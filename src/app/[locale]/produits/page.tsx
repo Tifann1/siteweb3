@@ -24,8 +24,7 @@ export default async function ProduitsPage() {
           eyebrow="NOS PRODUITS IA, PENSÉS POUR LE TERRAIN"
           title={`Des produits IA conçus pour\nvos usages métier.`}
           highlightWord="usages"
-          highlightStyle="solid"
-          highlightColor="#FBA275"
+          highlightStyle="gradient"
           description="Nous créons des agents IA robustes, utiles et déployables, pensés pour automatiser, assister et accélérer vos opérations."
           titleSize="compact"
         />
@@ -43,6 +42,7 @@ export default async function ProduitsPage() {
                   label: s.label[locale],
                 }))}
                 backgroundImage={produit.backgroundImage}
+                iconSrc={produit.iconSrc}
                 badge={produit.badge?.[locale]}
                 ctaHref={`/produits/${produit.slug}`}
               />

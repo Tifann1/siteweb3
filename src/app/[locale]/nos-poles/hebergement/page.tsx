@@ -26,9 +26,8 @@ export default function PoleHebergementPage() {
         <HeroSection
           eyebrow="pôle DevOps & Infrastructure"
           title={"Garantir la souveraineté\net la sécurité de vos\nagents IA."}
-          highlightWord="souveraineté\net la sécurité"
-          highlightStyle="solid"
-          highlightColor="#FBA275"
+          highlightWord={"souveraineté\net la sécurité"}
+          highlightStyle="gradient"
           description="Nous concevons des environnements d'hébergement, de déploiement et d'exploitation pensés pour des agents IA sécurisés, conformes et maîtrisés."
           align="right"
         />
@@ -216,7 +215,7 @@ export default function PoleHebergementPage() {
               title="Prêt à augmenter\nvos projets ?"
               description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
               primaryLabel="Parlons de votre projet"
-              primaryHref="/#contact"
+              primaryHref="/contact"
               secondaryLabel="Voir nos offres"
               secondaryHref="/#offres"
             />

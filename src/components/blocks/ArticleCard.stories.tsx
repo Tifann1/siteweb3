@@ -5,7 +5,7 @@ const FEATURED_IMG =
   "https://www.figma.com/api/mcp/asset/29823858-edda-4752-a76c-973057a72672";
 
 const meta: Meta<typeof ArticleCard> = {
-  title: "Blocks/ArticleCard",
+  title: "Blocks/Actualite/ArticleCard",
   component: ArticleCard,
   parameters: {
     layout: "padded",
@@ -14,7 +14,7 @@ const meta: Meta<typeof ArticleCard> = {
       values: [{ name: "dark", value: "#090F42" }],
     },
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "page-actualite"],
 };
 
 export default meta;

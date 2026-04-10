@@ -114,7 +114,7 @@ export default function ReferencesPage() {
               title="Prêt à augmenter\nvos projets ?"
               description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
               primaryLabel="Parlons de votre projet"
-              primaryHref="/#contact"
+              primaryHref="/contact"
               secondaryLabel="Voir nos offres"
               secondaryHref="/#offres"
             />
