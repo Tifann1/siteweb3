@@ -45,19 +45,27 @@ export function HeroSection({
   const isCompact = titleSize === "compact";
 
   return (
-    <section className="relative flex flex-col items-center justify-center overflow-hidden min-h-[85vh]">
-      {/* Blobs décoratifs */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+    <section className="relative flex flex-col items-center justify-center min-h-screen">
+      {/* Blobs décoratifs — z-0 derrière le texte (z-10) */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
+        {/* Halo blanc — centré derrière le texte */}
         <div className="absolute size-96 rounded-full bg-brand-orange-light/10 blur-[60px] left-1/2 -translate-x-1/2 top-1/3" />
-        <div className="absolute size-[500px] rounded-full bg-badge-blue/5 blur-[75px] right-1/4 bottom-1/4" />
+        {/* Halo orange — en dehors de la zone de texte, non coupé */}
+        <div className="absolute size-[600px] rounded-full bg-badge-blue/5 blur-[100px] right-0 -bottom-20" />
       </div>
 
-      {/* Contenu */}
+      {/* Contenu — z-10 au-dessus des halos */}
       <div
         className={[
-          "relative flex flex-col gap-[70px] py-16 md:py-24 px-6 md:px-12 lg:px-[80px] xl:px-[120px] w-full",
+          "relative z-10 flex flex-col gap-[70px] w-full",
           isRight ? "items-end" : "items-start",
         ].join(" ")}
+        style={{
+          paddingTop: "var(--header-height)",
+          paddingLeft: "var(--page-margin-x)",
+          paddingRight: "var(--page-margin-x)",
+          paddingBottom: "6rem",
+        }}
       >
         {/* Badge eyebrow */}
         {eyebrow && (

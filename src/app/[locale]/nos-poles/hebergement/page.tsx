@@ -76,6 +76,7 @@ export default function PoleHebergementPage() {
         {/* Section Des infrastructures IA maîtrisées (node 627:5209) */}
         <section className="py-16 md:py-24">
           <SectionAugmentedDev
+            accentColor="var(--color-bento-devops-border)"
             heading="Des infrastructures IA maîtrisées"
             subheading="Nous concevons des environnements d'hébergement et d'exploitation pensés pour des agents IA souverains, sécurisés et opérables à l'échelle."
             steps={[

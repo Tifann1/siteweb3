@@ -34,7 +34,10 @@ export function SectionNosSucces({
   cards,
 }: SectionNosSuccesProps) {
   return (
-    <section className="bg-deep-navy w-full px-8 py-16 md:py-24">
+    <section
+      className="bg-deep-navy w-full py-16 md:py-24"
+      style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+    >
       {/* Header row */}
       <div className="flex items-end justify-between mb-10">
         <div className="flex flex-col gap-4 max-w-[332px]">
@@ -88,7 +91,7 @@ export function SectionNosSucces({
       {/* Cards grid */}
       <div className="flex gap-[30px]">
         {cards.map((card, i) => (
-          <div key={i} className="flex flex-col flex-1 min-w-0">
+          <div key={i} className="flex flex-col flex-1 min-w-0 gap-3">
             {/* Image card — h 256px, radius 24px */}
             <div
               className="relative h-64 overflow-hidden shrink-0"
@@ -100,12 +103,12 @@ export function SectionNosSucces({
                 className="h-full w-full object-cover"
               />
 
-              {/* Gradient overlay — opacity 80% */}
+              {/* Gradient overlay — linéaire, filtre léger en haut → bleu bg fort en bas */}
               <div
-                className="absolute inset-0 opacity-80"
+                className="absolute inset-0"
                 style={{
                   background:
-                    "linear-gradient(to bottom, rgba(9,15,66,0.4), var(--color-nav-bg))",
+                    "linear-gradient(to bottom, rgba(9,15,66,0.1) 0%, rgba(9,15,66,0.5) 50%, rgba(9,15,66,0.92) 100%)",
                 }}
               />
 
@@ -141,7 +144,7 @@ export function SectionNosSucces({
               </div>
             </div>
 
-            {/* Stats row */}
+            {/* Stats row — léger gap avec la carte principale (gap-3 sur le parent) */}
             <div className="flex gap-[10px]">
               {card.stats.map((stat, j) => (
                 <div
@@ -149,7 +152,7 @@ export function SectionNosSucces({
                   className="flex-1 flex flex-col rounded-lg border border-white/5 px-[17px] pt-[31px] pb-[17px]"
                   style={{
                     background:
-                      "linear-gradient(to top, var(--color-stat-card-purple), rgba(12,16,39,0.1) 73.558%, rgba(15,18,34,0))",
+                      "linear-gradient(to top, var(--color-stat-card-purple) 0%, rgba(9,15,66,0.4) 60%, rgba(9,15,66,0) 100%)",
                   }}
                 >
                   <p

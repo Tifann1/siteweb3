@@ -22,16 +22,22 @@ interface SectionAugmentedDevProps {
   subheading?: string;
   steps?: ProcessStep[];
   techCards?: TechCard[];
+  /**
+   * Couleur d'accentuation du pôle.
+   * Utilisée pour le gradient de la carte, les titres des étapes et la bordure des icônes.
+   * Défaut : --color-brand-orange (pôle Conseil)
+   */
+  accentColor?: string;
 }
 
 const DEFAULT_STEPS: ProcessStep[] = [
   {
     icon: (
       <svg width="27" height="27" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="3" y="3" width="7" height="7" rx="1" stroke="#DFE1F8" strokeWidth="1.5" />
-        <rect x="14" y="3" width="7" height="7" rx="1" stroke="#DFE1F8" strokeWidth="1.5" />
-        <rect x="3" y="14" width="7" height="7" rx="1" stroke="#DFE1F8" strokeWidth="1.5" />
-        <path d="M14 17.5h7M17.5 14v7" stroke="#DFE1F8" strokeWidth="1.5" strokeLinecap="round" />
+        <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="1.5" />
+        <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="1.5" />
+        <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M14 17.5h7M17.5 14v7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     ),
     title: "Architecture robuste",
@@ -43,13 +49,13 @@ const DEFAULT_STEPS: ProcessStep[] = [
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
           d="M12 2L2 7l10 5 10-5-10-5z"
-          stroke="#DFE1F8"
+          stroke="currentColor"
           strokeWidth="1.5"
           strokeLinejoin="round"
         />
         <path
           d="M2 17l10 5 10-5M2 12l10 5 10-5"
-          stroke="#DFE1F8"
+          stroke="currentColor"
           strokeWidth="1.5"
           strokeLinejoin="round"
         />
@@ -64,11 +70,11 @@ const DEFAULT_STEPS: ProcessStep[] = [
       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
           d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26C17.81 13.47 19 11.38 19 9c0-3.87-3.13-7-7-7z"
-          stroke="#DFE1F8"
+          stroke="currentColor"
           strokeWidth="1.5"
           strokeLinejoin="round"
         />
-        <path d="M9 21h6" stroke="#DFE1F8" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M9 21h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     ),
     title: "Sécurité intégrée",
@@ -83,7 +89,7 @@ const DEFAULT_TECH_CARDS: TechCard[] = [
       <svg width="24" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
           d="M8 9l-5 3 5 3M16 9l5 3-5 3M14 6l-4 12"
-          stroke="#DFE1F8"
+          stroke="currentColor"
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -98,12 +104,12 @@ const DEFAULT_TECH_CARDS: TechCard[] = [
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
           d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0z"
-          stroke="#DFE1F8"
+          stroke="currentColor"
           strokeWidth="1.5"
         />
         <path
           d="M12 8v4l3 3"
-          stroke="#DFE1F8"
+          stroke="currentColor"
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -118,14 +124,14 @@ const DEFAULT_TECH_CARDS: TechCard[] = [
       <svg width="24" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
           d="M9 11l3 3L22 4"
-          stroke="#DFE1F8"
+          stroke="currentColor"
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         <path
           d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
-          stroke="#DFE1F8"
+          stroke="currentColor"
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -142,10 +148,14 @@ export function SectionAugmentedDev({
   subheading = "Nous utilisons l'IA pour accélérer le développement, fiabiliser le code et permettre à nos ingénieurs de se concentrer sur l'architecture et la logique métier.",
   steps = DEFAULT_STEPS,
   techCards = DEFAULT_TECH_CARDS,
+  accentColor = "var(--color-brand-orange)",
 }: SectionAugmentedDevProps) {
   return (
-    <section className="flex flex-col gap-16 items-start overflow-hidden px-8 w-full">
-      <div className="flex flex-col gap-16 items-start max-w-[1280px] w-full">
+    <section
+      className="flex flex-col gap-16 items-center overflow-hidden w-full"
+      style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+    >
+      <div className="flex flex-col gap-16 items-center w-full">
         {/* Heading block */}
         <div className="flex flex-col gap-4 items-center w-full">
           <h2
@@ -170,15 +180,14 @@ export function SectionAugmentedDev({
 
         {/* Main card */}
         <div
-          className="relative bg-card-bg border border-white/5 rounded-[var(--radius-card)] p-[49px] flex flex-col gap-16 items-start overflow-hidden w-full"
+          className="relative bg-card-bg border border-white/5 rounded-[var(--radius-card)] p-[49px] flex flex-col gap-16 items-center overflow-hidden w-full"
         >
-          {/* Radial gradient overlay — opacity 10% */}
+          {/* Radial gradient overlay — couleur du pôle */}
           <div
             aria-hidden="true"
             className="absolute inset-0 opacity-10 pointer-events-none"
             style={{
-              background:
-                "radial-gradient(ellipse at center, #FF7E33 2%, transparent 55%)",
+              background: `radial-gradient(ellipse at center, ${accentColor} 2%, transparent 55%)`,
             }}
           />
 
@@ -186,20 +195,27 @@ export function SectionAugmentedDev({
           <div className="relative grid grid-cols-3 gap-12 w-full" style={{ gridTemplateRows: "196px" }}>
             {steps.map((step, i) => (
               <div key={i} className="relative flex flex-col items-center col-span-1 self-center">
-                {/* Icon box */}
+                {/* Icon box — couleur du pôle */}
                 <div className="flex flex-col items-start pb-6 w-20">
                   <div
-                    className="bg-deep-navy border border-white/10 flex items-center justify-center p-px rounded-[16px] size-20"
+                    className="bg-deep-navy flex items-center justify-center p-px rounded-[16px] size-20 border"
+                    style={{
+                      borderColor: accentColor,
+                      color: accentColor,
+                    }}
                   >
                     {step.icon}
                   </div>
                 </div>
 
-                {/* Title */}
+                {/* Title — couleur du pôle */}
                 <div className="flex flex-col items-start pb-2 w-full">
                   <h3
-                    className="font-sans text-text-heading text-center w-full whitespace-nowrap"
-                    style={{ fontSize: "var(--text-tab)" }}
+                    className="font-sans text-center w-full whitespace-nowrap"
+                    style={{
+                      fontSize: "var(--text-tab)",
+                      color: accentColor,
+                    }}
                   >
                     {step.title}
                   </h3>
@@ -216,7 +232,7 @@ export function SectionAugmentedDev({
                   {step.description}
                 </p>
 
-                {/* Connecting arrows — only between steps (left arrow on step 2, right arrow on step 2) */}
+                {/* Connecting arrows */}
                 {i === 1 && (
                   <>
                     <div aria-hidden="true" className="absolute -left-[80px] top-10 flex items-center">
@@ -235,14 +251,19 @@ export function SectionAugmentedDev({
             ))}
           </div>
 
-          {/* Tech cards row */}
+          {/* Tech cards row — icônes en couleur du pôle */}
           <div className="flex gap-5 items-center w-full">
             {techCards.map((card, i) => (
               <div
                 key={i}
                 className="bg-deep-navy border border-white/5 flex flex-1 gap-5 items-center justify-center px-[41px] py-[25px] rounded-[var(--radius-card)]"
               >
-                <div className="shrink-0">{card.icon}</div>
+                <div
+                  className="shrink-0"
+                  style={{ color: accentColor }}
+                >
+                  {card.icon}
+                </div>
                 <div className="flex flex-col items-start flex-1">
                   <p
                     className="font-sans text-text-heading"

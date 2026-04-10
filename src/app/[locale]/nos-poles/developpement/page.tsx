@@ -50,6 +50,8 @@ export default function PoleDeveloppementPage() {
             description:
               "Nos ingénieurs, spécialistes IA et experts produit conçoivent des agents IA utiles, robustes et pensés pour vos usages métier.",
           }}
+          featureCardGradientFrom="var(--color-tab-active-dev)"
+          ctaVariant="blue"
           wideCard={{
             title: "Développement sur mesure",
             description:
@@ -73,7 +75,7 @@ export default function PoleDeveloppementPage() {
 
         {/* Section Développement augmenté par l'IA (node 533:5404) */}
         <section className="py-16 md:py-24">
-          <SectionAugmentedDev />
+          <SectionAugmentedDev accentColor="var(--color-bento-dev-border)" />
         </section>
 
         {/* Section Nos Succès (node 533:5467) */}

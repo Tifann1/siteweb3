@@ -31,7 +31,8 @@ interface SectionBentoGridProps {
   /**
    * Couleur "from" du gradient overlay de la feature card.
    * Défaut : --color-conseil-orange (orange foncé, Conseil)
-   * Ex: "--color-feature-devops-from" pour DevOps
+   * Ex: "--color-tab-active-dev" pour Développement (bleu)
+   * Ex: "--color-feature-devops-from" pour DevOps (jaune-olive)
    */
   featureCardGradientFrom?: string;
   /**
@@ -54,7 +55,10 @@ export function SectionBentoGrid({
   ctaVariant = "default",
 }: SectionBentoGridProps) {
   return (
-    <section className="bg-deep-navy w-full px-8 py-16 md:py-24 flex flex-col gap-[48px] items-center">
+    <section
+      className="bg-deep-navy w-full py-16 md:py-24 flex flex-col gap-[48px] items-center"
+      style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+    >
       <h2
         className="font-sans font-bold text-white text-center"
         style={{
@@ -73,10 +77,11 @@ export function SectionBentoGrid({
             alt={featureCard.imageAlt}
             className="absolute inset-0 w-full h-full object-cover opacity-40"
           />
+          {/* Gradient photo couleur du pôle */}
           <div
             className="absolute inset-0"
             style={{
-              background: `linear-gradient(to top, ${featureCardGradientFrom}, rgba(15,18,34,0) 50%)`,
+              background: `linear-gradient(to top, ${featureCardGradientFrom} 0%, rgba(15,18,34,0.3) 60%, rgba(15,18,34,0) 100%)`,
             }}
           />
           <div className="relative mt-auto p-10 flex flex-col">
@@ -194,12 +199,22 @@ function BentoCard({ title, description, variant = "default" }: BentoCardData) {
     ? "border-[color:var(--color-bento-devops-border)]"
     : "border-card-border";
 
+  // Gradient radial — forme distincte et couleur pôle plus sombre
   const bgStyle = isHighlight
-    ? { background: "linear-gradient(132.86deg, rgba(255,126,62,0.1) 0%, var(--color-bento-highlight-end) 100%)" }
+    ? {
+        background:
+          "radial-gradient(ellipse at top left, rgba(255,109,30,0.18) 0%, rgba(28,31,47,0.98) 65%)",
+      }
     : isHighlightBlue
-    ? { background: "linear-gradient(132.86deg, var(--color-bento-dev-gradient-start) 0%, var(--color-bento-dev-end) 100%)" }
+    ? {
+        background:
+          "radial-gradient(ellipse at top left, rgba(61,60,232,0.22) 0%, rgba(28,31,47,0.98) 65%)",
+      }
     : isHighlightYellow
-    ? { background: "linear-gradient(132.86deg, var(--color-bento-devops-gradient-start) 0%, var(--color-bento-dev-end) 100%)" }
+    ? {
+        background:
+          "radial-gradient(ellipse at top left, rgba(230,173,0,0.2) 0%, rgba(28,31,47,0.98) 65%)",
+      }
     : undefined;
 
   return (

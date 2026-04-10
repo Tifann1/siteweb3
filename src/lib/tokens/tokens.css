@@ -168,6 +168,14 @@
   --radius-offer-btn: 14px;              /* bouton CTA carte offre (node 443:2391) */
   --radius-pill-sm: 15px;                /* bouton "Decouvrir le pole" (node 448:3508) */
 
+  /* ─── LAYOUT GLOBAL ───────────────────────────────────── */
+
+  /* Marges latérales proportionnelles à l'écran (demande client) */
+  --page-margin-x: 20%;
+
+  /* Hauteur du header fixé — utilisé pour pt-[header-height] dans heroes */
+  --header-height: 88px;
+
   /* ─── OMBRES ───────────────────────────────────────────── */
 
   /* Bouton CTA -- Header (node 448:3478) */

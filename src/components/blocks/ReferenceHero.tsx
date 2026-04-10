@@ -44,8 +44,15 @@ export function ReferenceHero({
   };
 
   return (
-    <section className="relative flex flex-col items-start justify-end min-h-[524px] px-[120px] pb-[80px] overflow-hidden">
-      {/* Image de fond */}
+    <section
+      className="relative flex flex-col items-start justify-end min-h-screen overflow-hidden"
+      style={{
+        paddingLeft: "var(--page-margin-x)",
+        paddingRight: "var(--page-margin-x)",
+        paddingBottom: "5rem",
+      }}
+    >
+      {/* Image de fond — part du top (inset-0 = derrière le header transparent) */}
       {backgroundImageSrc && (
         <div className="absolute inset-0">
           <Image
@@ -59,19 +66,19 @@ export function ReferenceHero({
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(to bottom, rgba(9,15,66,0.1) 0%, rgba(9,15,66,0.95) 100%)",
+                "linear-gradient(to bottom, rgba(9,15,66,0.05) 0%, rgba(9,15,66,0.97) 100%)",
             }}
           />
         </div>
       )}
 
-      {/* Blobs décoratifs */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      {/* Blobs décoratifs — z-0 derrière le texte */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
         <div className="absolute size-96 rounded-full bg-brand-orange-light/10 blur-[60px] left-1/3 top-1/3" />
         <div className="absolute size-[500px] rounded-full bg-badge-blue/5 blur-[75px] right-1/3 bottom-1/4" />
       </div>
 
-      <div className="relative flex flex-col gap-[30px] max-w-[720px]">
+      <div className="relative z-10 flex flex-col gap-[30px] max-w-[720px]">
         {/* Eyebrow */}
         {eyebrow && (
           <div className="flex items-center gap-2 px-4 py-[6px] rounded-full bg-badge-blue-bg border border-badge-blue-border w-fit">
@@ -89,9 +96,9 @@ export function ReferenceHero({
         <h1
           className="font-body font-extrabold text-text-heading"
           style={{
-            fontSize: "60px",
-            lineHeight: "75px",
-            letterSpacing: "-3px",
+            fontSize: "var(--text-product-hero)",
+            lineHeight: "var(--text-product-hero--line-height)",
+            letterSpacing: "var(--text-product-hero--letter-spacing)",
           }}
         >
           {renderTitle()}
@@ -102,8 +109,8 @@ export function ReferenceHero({
           <p
             className="font-body font-normal bg-clip-text text-transparent"
             style={{
-              fontSize: "18px",
-              lineHeight: "29.25px",
+              fontSize: "var(--text-body-lg)",
+              lineHeight: "var(--text-body-lg--line-height)",
               backgroundImage:
                 "linear-gradient(162.47deg, #FFB692 0%, #FF7E33 100%)",
             }}

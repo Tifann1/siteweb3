@@ -31,6 +31,7 @@ export function LogoBanner({ logos, duration = 25 }: LogoBannerProps) {
   return (
     <div
       className="w-full overflow-hidden"
+      style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
       aria-label="Nos clients"
       aria-hidden="false"
     >

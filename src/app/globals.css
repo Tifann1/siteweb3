@@ -3,3 +3,8 @@
 
 /* Aucune valeur de couleur, police ou spacing en dur ici.
    Tout passe par les tokens définis dans src/lib/tokens/tokens.css */
+
+html,
+body {
+  background-color: var(--color-nav-bg);
+}

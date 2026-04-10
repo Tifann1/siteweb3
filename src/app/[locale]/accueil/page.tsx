@@ -32,7 +32,7 @@ const PROMISES = [
 
 export default function AccueilPage() {
   return (
-    <div className="bg-deep-navy min-h-screen flex flex-col">
+    <div className="bg-nav-bg min-h-screen flex flex-col">
       <Header />
 
       <main className="flex flex-col flex-1">

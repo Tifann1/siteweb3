@@ -58,7 +58,7 @@ export function ProjectForm({
 
   return (
     <div
-      className="relative flex flex-col gap-[30px] items-center justify-end pb-[50px] pt-[2px] px-[51px] rounded-[var(--radius-card)] border border-white/5 backdrop-blur-[20px] w-[896px]"
+      className="relative flex flex-col gap-[30px] items-center justify-end py-[50px] px-[51px] rounded-[var(--radius-card)] border border-white/5 backdrop-blur-[20px] w-[896px]"
       style={{
         background:
           "linear-gradient(90deg, rgba(38,41,58,0.4) 0%, rgba(38,41,58,0.4) 100%)",
