@@ -1,4 +1,5 @@
 import React from "react";
+import { HeroHalos } from "./HeroHalos";
 
 interface HeroSectionProps {
   /** Texte du badge en haut */
@@ -56,14 +57,9 @@ export function HeroSection({
   const heightClass = sizeMode === "flex" ? "flex-1" : "min-h-screen";
 
   return (
-    <section className={`relative flex flex-col items-center justify-center ${heightClass}`}>
-      {/* Blobs décoratifs — z-0 derrière le texte (z-10) */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
-        {/* Halo blanc — centré derrière le texte */}
-        <div className="absolute size-96 rounded-full bg-brand-orange-light/10 blur-[60px] left-1/2 -translate-x-1/2 top-1/3" />
-        {/* Halo orange — en dehors de la zone de texte, non coupé */}
-        <div className="absolute size-[600px] rounded-full bg-badge-blue/5 blur-[100px] right-0 -bottom-20" />
-      </div>
+    <section className={`relative flex flex-col items-center justify-center overflow-hidden ${heightClass}`}>
+      {/* Halos lumineux flottants (Client Component — framer-motion) */}
+      <HeroHalos />
 
       {/* Contenu — z-10 au-dessus des halos */}
       <div
