@@ -15,7 +15,7 @@ export function CtaBanner({
   primaryLabel = "Parlons de votre projet",
   primaryHref = "/contact",
   secondaryLabel = "Voir nos offres",
-  secondaryHref = "/#offres",
+  secondaryHref = "/contact",
 }: CtaBannerProps) {
   return (
     <div className="flex items-center justify-between overflow-hidden px-16 py-14 rounded-[40px] bg-deep-navy shadow-[var(--shadow-cta)] w-full min-h-[220px]">

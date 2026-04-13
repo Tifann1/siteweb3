@@ -212,12 +212,12 @@ export default function PoleHebergementPage() {
         <section className="py-16 md:py-24">
           <div className="max-w-[1280px] mx-auto px-6 md:px-8">
             <CtaBanner
-              title="Prêt à augmenter\nvos projets ?"
+              title={"Prêt à augmenter\nvos projets ?"}
               description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
               primaryLabel="Parlons de votre projet"
               primaryHref="/contact"
               secondaryLabel="Voir nos offres"
-              secondaryHref="/#offres"
+              secondaryHref="/contact"
             />
           </div>
         </section>

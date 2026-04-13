@@ -26,8 +26,8 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
 ];
 
 export function Header({
-  logoSrc = "/images/logo.svg",
-  logoAlt = "DevFun",
+  logoSrc = "/images/logos/LogoSteamulo.png",
+  logoAlt = "Steamulo",
   navItems = DEFAULT_NAV_ITEMS,
   ctaLabel = "Je lance mon projet",
   ctaHref = "/#contact",
@@ -55,7 +55,7 @@ export function Header({
         {/* Navigation links */}
         <nav className="flex items-center gap-[35px] pt-[5px]">
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
             return (
               <Link
                 key={item.href}
@@ -85,7 +85,7 @@ export function Header({
 
           {/* Logo WTTJ — remplace le switcher EN/FR */}
           <div
-            className="relative h-[30px] w-[80px] shrink-0"
+            className="relative h-[30px] w-[80px] shrink-0 rounded-[var(--radius-cta)] overflow-hidden"
             style={{ filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.25))" }}
           >
             <Image

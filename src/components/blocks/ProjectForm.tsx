@@ -91,17 +91,19 @@ export function ProjectForm({
         </div>
 
         {/* Bouton CTA */}
-        <button
-          type="submit"
-          className="w-full h-[40px] rounded-[var(--radius-input)] bg-gradient-to-r from-brand-orange-light to-brand-orange font-sans text-[color:var(--color-cta-text-dark)] text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] transition-opacity hover:opacity-90"
-        >
-          {ctaLabel}
-        </button>
+        <div className="flex flex-col gap-6 items-center w-full">
+          <button
+            type="submit"
+            className="w-full h-[40px] rounded-[var(--radius-input)] bg-gradient-to-r from-brand-orange-light to-brand-orange font-sans text-[color:var(--color-cta-text-dark)] text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] transition-opacity hover:opacity-90"
+          >
+            {ctaLabel}
+          </button>
 
-        {/* Texte de réassurance */}
-        <p className="font-sans text-text-body-warm text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] text-center whitespace-nowrap">
-          {reassuranceText}
-        </p>
+          {/* Texte de réassurance */}
+          <p className="font-sans text-text-body-warm text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] text-center whitespace-nowrap">
+            {reassuranceText}
+          </p>
+        </div>
       </form>
     </div>
   );
@@ -141,7 +143,7 @@ function SelectField({
       <div className="relative">
         <select
           id={id}
-          className="w-full appearance-none bg-deep-navy border border-white/5 rounded-[var(--radius-input)] px-[25px] py-[17px] font-sans text-text-heading text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] cursor-pointer focus:outline-none focus:border-brand-orange/40 transition-colors"
+          className="w-full appearance-none bg-card-bg border border-white/15 rounded-[var(--radius-input)] px-[25px] py-[17px] font-sans text-text-heading text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] cursor-pointer focus:outline-none focus:border-brand-orange/50 hover:border-white/30 transition-colors"
           defaultValue=""
           {...props}
         >

@@ -2,7 +2,9 @@ import { references } from "@/lib/content/references";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Link } from "@/navigation";
+import { ReferenceHero } from "@/components/blocks/ReferenceHero";
+import { QuoteBlock } from "@/components/blocks/QuoteBlock";
+import { CtaBanner } from "@/components/blocks/CtaBanner";
 
 interface ReferencePageProps {
   params: Promise<{ slug: string }>;
@@ -20,41 +22,52 @@ export default async function ReferencePage({ params }: ReferencePageProps) {
 
   return (
     <div className="min-h-screen bg-deep-navy flex flex-col">
-      <Header />
+      <Header ctaLabel="Je lance mon projet" ctaHref="/contact" />
 
-      <main className="flex flex-col flex-1 items-center justify-center">
-        <div
-          className="flex flex-col gap-8 items-start"
-          style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
-        >
-          <Link
-            href="/all-references"
-            className="flex items-center gap-2 text-text-light font-sans transition-opacity hover:opacity-80"
-            style={{ fontSize: "var(--text-nav)" }}
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            Retour aux références
-          </Link>
+      <main className="flex flex-col flex-1">
+        {/* Hero avec image de la référence en fond */}
+        <ReferenceHero
+          eyebrow={`ÉTUDE DE CAS : ${reference.client.toUpperCase()}`}
+          title={reference.client}
+          highlightPhrase={reference.client}
+          description={reference.description.fr}
+          backgroundImageSrc={reference.imageSrc}
+          backgroundImageAlt={reference.client}
+        />
 
-          <h1
-            className="font-sans font-bold text-white"
-            style={{ fontSize: "var(--text-card-title)", lineHeight: "var(--text-card-title--line-height)" }}
-          >
-            {reference.client}
-          </h1>
+        {/* Citation extraite de la description */}
+        <section className="py-20 md:py-28">
+          <div className="max-w-[1280px] mx-auto px-6 md:px-8 flex flex-col gap-6">
+            <QuoteBlock
+              quote={reference.description.fr}
+            />
+          </div>
+        </section>
 
-          <p
-            className="font-sans text-text-body-warm max-w-[600px]"
-            style={{ fontSize: "var(--text-body-lg)", lineHeight: "var(--text-body-lg--line-height)" }}
-          >
-            {reference.description.fr}
-          </p>
-        </div>
+        {/* CTA Banner */}
+        <section className="py-16 md:py-24">
+          <div className="max-w-[1280px] mx-auto px-6 md:px-8">
+            <CtaBanner
+              title={"Prêt à augmenter\nvos projets ?"}
+              description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
+              primaryLabel="Parlons de votre projet"
+              primaryHref="/contact"
+              secondaryLabel="Voir nos références"
+              secondaryHref="/all-references"
+            />
+          </div>
+        </section>
       </main>
 
-      <Footer />
+      <Footer
+        copyright="©2025 Steamulo"
+        address="14 rue Auber - 75009 Paris"
+        socials={{
+          linkedin: "https://linkedin.com/company/steamulo",
+          instagram: "https://instagram.com/steamulo",
+          github: "https://github.com/steamulo",
+        }}
+      />
     </div>
   );
 }

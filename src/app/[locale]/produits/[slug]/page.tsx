@@ -31,18 +31,37 @@ export default async function ProduitDetailPage({ params }: Props) {
     produit.showcaseImage ?? produit.backgroundImage;
 
   return (
-    <div className="bg-nav-bg min-h-screen flex flex-col">
-      {/* Blobs décoratifs */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute size-96 rounded-full bg-brand-orange-light/10 blur-[60px] left-1/2 translate-x-1/4 top-[10%]" />
-        <div className="absolute size-[500px] rounded-full bg-badge-blue/5 blur-[75px] right-1/3 top-[5%]" />
+    <div className="relative bg-nav-bg min-h-screen flex flex-col overflow-hidden">
+      {/* Background image + gradient horizontal */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
+        <div className="absolute inset-0">
+          <img
+            src={produit.backgroundImage}
+            alt=""
+            className="h-full w-full object-cover object-center opacity-30"
+          />
+        </div>
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(90deg, var(--color-nav-bg) 0%, rgba(4,9,54,0.85) 40%, rgba(4,9,54,0.3) 100%)",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(4,9,54,0) 60%, var(--color-nav-bg) 100%)",
+          }}
+        />
       </div>
 
       <Header />
 
-      <main className="relative flex flex-col flex-1">
-        {/* Nom du produit */}
-        <section className="pt-16 md:pt-24 pb-8">
+      <main className="relative z-10 flex flex-col flex-1">
+        {/* Nom du produit — margin top pour le header fixe */}
+        <section className="pb-8" style={{ paddingTop: "calc(var(--header-height) + 3rem)" }}>
           <div className="max-w-[1280px] mx-auto px-6 md:px-8">
             <h1
               className="font-sans font-bold text-white"
@@ -69,13 +88,13 @@ export default async function ProduitDetailPage({ params }: Props) {
               ctaHref="/#contact"
             />
 
-            {/* Fonctionnalités dépliables */}
+            {/* Fonctionnalités dépliables — toutes repliées au départ */}
             <FeatureAccordion
               features={produit.features.map((f) => ({
                 title: f.title[locale],
                 description: f.description?.[locale],
               }))}
-              defaultOpen={1}
+              defaultOpen={-1}
             />
           </div>
         </section>

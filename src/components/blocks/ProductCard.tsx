@@ -44,7 +44,7 @@ export function ProductCard({
   iconSrc,
 }: ProductCardProps) {
   return (
-    <div className="relative border-[0.5px] border-white rounded-[var(--radius-offer-img)] overflow-hidden p-8 w-full">
+    <div className="relative border border-white/20 rounded-[var(--radius-offer-img)] overflow-hidden p-8 w-full">
       {/* Fond : image + dégradé gauche-droite */}
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 overflow-hidden">
@@ -65,36 +65,33 @@ export function ProductCard({
         />
       </div>
 
+      {/* Badge positionné en absolu top-right de la carte entière */}
+      {badge && (
+        <div className="absolute top-8 right-8 z-10 flex items-center gap-2 px-4 py-[6px] rounded-full bg-nav-bg shrink-0">
+          <span
+            className="size-2 rounded-full bg-badge-blue shrink-0"
+            style={{ boxShadow: "var(--shadow-badge-dot)" }}
+          />
+          <span
+            className="font-body font-semibold text-badge-blue tracking-[1.8px] whitespace-nowrap"
+            style={{
+              fontSize: "var(--text-badge)",
+              lineHeight: "var(--text-badge--letter-spacing)",
+            }}
+          >
+            {badge}
+          </span>
+        </div>
+      )}
+
       {/* Contenu (relatif, sur le dégradé) */}
       <div className="relative flex flex-col items-start w-full max-w-[448px]">
-        {/* Ligne haute : icône + badge */}
-        <div className="flex items-start justify-between w-full max-w-none">
-          {/* Icône produit */}
-          <div className="relative bg-card-bg flex items-center justify-center rounded-[var(--radius-offer-img)] size-16 shrink-0 overflow-hidden">
-            {iconSrc ? (
-              <Image src={iconSrc} alt="" fill className="object-contain p-3" />
-            ) : (
-              <DefaultProductIcon />
-            )}
-          </div>
-
-          {/* Badge (ex: "Le plus vendu") */}
-          {badge && (
-            <div className="flex items-center gap-2 px-4 py-[6px] rounded-full bg-nav-bg shrink-0">
-              <span
-                className="size-2 rounded-full bg-badge-blue shrink-0"
-                style={{ boxShadow: "var(--shadow-badge-dot)" }}
-              />
-              <span
-                className="font-body font-semibold text-badge-blue tracking-[1.8px] whitespace-nowrap"
-                style={{
-                  fontSize: "var(--text-badge)",
-                  lineHeight: "var(--text-badge--letter-spacing)",
-                }}
-              >
-                {badge}
-              </span>
-            </div>
+        {/* Icône produit */}
+        <div className="relative bg-card-bg flex items-center justify-center rounded-[var(--radius-offer-img)] size-16 shrink-0 overflow-hidden">
+          {iconSrc ? (
+            <Image src={iconSrc} alt="" fill className="object-contain p-3" />
+          ) : (
+            <DefaultProductIcon />
           )}
         </div>
 

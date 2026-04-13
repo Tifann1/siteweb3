@@ -31,7 +31,7 @@ export default async function ActualitePage() {
       <main className="flex flex-col flex-1">
         {/* Grille article featured + sidebar récents */}
         {featured && (
-          <section className="py-16 md:py-24">
+          <section className="pb-16 md:pb-24" style={{ paddingTop: "calc(var(--header-height) + 3rem)" }}>
             <div className="max-w-[1280px] mx-auto px-6 md:px-8">
               <ArticlesFeaturedSection
                 featured={{

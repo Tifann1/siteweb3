@@ -32,6 +32,7 @@ const DEFAULT_TABS: OfferTab[] = [
         accentColor: "var(--color-offer-orange)",
         headerGradient: OFFER_GRADIENTS.orange,
         ctaLabel: "Accéder à l'offre",
+        ctaHref: "/contact",
         features: [
           "Compréhension de votre besoin",
           "Atelier Design Thinking",
@@ -39,12 +40,14 @@ const DEFAULT_TABS: OfferTab[] = [
           "Maquettes UX - UI",
         ],
         discoverLabel: "Découvrir le pôle",
+        discoverHref: "/nos-poles/conseil",
       },
       {
         title: "Agent analyse\n& décision",
         accentColor: "var(--color-offer-blue)",
         headerGradient: OFFER_GRADIENTS.blue,
         ctaLabel: "Accéder à l'offre",
+        ctaHref: "/contact",
         features: [
           "Analyse de documents",
           "Extraction d'informations clés",
@@ -52,6 +55,7 @@ const DEFAULT_TABS: OfferTab[] = [
           "Restitution structurée",
         ],
         discoverLabel: "Découvrir le pôle",
+        discoverHref: "/nos-poles/conseil",
         badge: "meilleure vente",
       },
     ],
@@ -64,6 +68,7 @@ const DEFAULT_TABS: OfferTab[] = [
         accentColor: "var(--color-offer-blue)",
         headerGradient: OFFER_GRADIENTS.blue,
         ctaLabel: "Accéder à l'offre",
+        ctaHref: "/contact",
         features: [
           "Applications React / Next.js",
           "APIs REST & GraphQL",
@@ -71,6 +76,7 @@ const DEFAULT_TABS: OfferTab[] = [
           "Tests & qualité",
         ],
         discoverLabel: "Découvrir le pôle",
+        discoverHref: "/nos-poles/developpement",
       },
     ],
   },
@@ -82,6 +88,7 @@ const DEFAULT_TABS: OfferTab[] = [
         accentColor: "var(--color-offer-yellow)",
         headerGradient: OFFER_GRADIENTS.yellow,
         ctaLabel: "Accéder à l'offre",
+        ctaHref: "/contact",
         features: [
           "CI/CD automatisée",
           "Migration Cloud",
@@ -89,6 +96,7 @@ const DEFAULT_TABS: OfferTab[] = [
           "Infrastructure as Code",
         ],
         discoverLabel: "Découvrir le pôle",
+        discoverHref: "/nos-poles/hebergement",
       },
     ],
   },
@@ -100,6 +108,7 @@ const DEFAULT_TABS: OfferTab[] = [
         accentColor: "var(--color-offer-green)",
         headerGradient: OFFER_GRADIENTS.teal,
         ctaLabel: "Accéder à l'offre",
+        ctaHref: "/contact",
         features: [
           "Conception d'agents IA",
           "Fine-tuning de modèles",
@@ -107,6 +116,7 @@ const DEFAULT_TABS: OfferTab[] = [
           "Intégration métier",
         ],
         discoverLabel: "Découvrir le pôle",
+        discoverHref: "/nos-poles/developpement",
       },
     ],
   },

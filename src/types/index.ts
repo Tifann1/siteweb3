@@ -18,6 +18,10 @@ export interface Reference {
   category: string[];
   description: LocalizedString;
   year: number;
+  /** Chemin vers l'image de la référence (dans /public) */
+  imageSrc?: string;
+  /** Logo du client */
+  logoSrc?: string;
 }
 
 export interface ProduitStat {

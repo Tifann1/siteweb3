@@ -1,7 +1,8 @@
 // SectionNosSucces — node 517:3197
 // Figma: bg #040936, padding 32px horizontal / 130px top
 // Cards: 2 colonnes, gap 30px — image 256px h, radius 24px
-// Stat cards: gradient from #433d7a, border rgba(255,255,255,0.05)
+
+import { Link } from "@/navigation";
 
 interface Stat {
   value: string;
@@ -16,12 +17,15 @@ export interface ReferenceSuccesCard {
   sector: string;
   title: string;
   stats: [Stat, Stat];
+  /** Href vers la page de référence correspondante */
+  href?: string;
 }
 
 interface SectionNosSuccesProps {
   title?: string;
   subtitle?: string;
   ctaLabel?: string;
+  ctaHref?: string;
   onCtaClick?: () => void;
   cards: ReferenceSuccesCard[];
 }
@@ -30,6 +34,7 @@ export function SectionNosSucces({
   title = "Nos Succès",
   subtitle = "L'IA concrète au service de nos partenaires.",
   ctaLabel = "Voir tous les cas clients",
+  ctaHref = "/all-references",
   onCtaClick,
   cards,
 }: SectionNosSuccesProps) {
@@ -62,8 +67,8 @@ export function SectionNosSucces({
         </div>
 
         {ctaLabel && (
-          <button
-            type="button"
+          <Link
+            href={ctaHref}
             onClick={onCtaClick}
             className="flex items-center gap-2 text-brand-orange-light font-sans transition-opacity hover:opacity-80"
             style={{ fontSize: "var(--text-tab)" }}
@@ -84,14 +89,14 @@ export function SectionNosSucces({
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
+          </Link>
         )}
       </div>
 
       {/* Cards grid */}
       <div className="flex gap-[30px]">
         {cards.map((card, i) => (
-          <div key={i} className="flex flex-col flex-1 min-w-0 gap-3">
+          <div key={i} className="flex flex-col flex-1 min-w-0 gap-3 group">
             {/* Image card — h 256px, radius 24px */}
             <div
               className="relative h-64 overflow-hidden shrink-0"
@@ -100,10 +105,10 @@ export function SectionNosSucces({
               <img
                 src={card.image}
                 alt={card.imageAlt}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
               />
 
-              {/* Gradient overlay — linéaire, filtre léger en haut → bleu bg fort en bas */}
+              {/* Gradient overlay */}
               <div
                 className="absolute inset-0"
                 style={{
@@ -142,14 +147,19 @@ export function SectionNosSucces({
                   {card.title}
                 </p>
               </div>
+
+              {/* Overlay link */}
+              {card.href && (
+                <Link href={card.href} className="absolute inset-0" aria-label={card.title} />
+              )}
             </div>
 
-            {/* Stats row — léger gap avec la carte principale (gap-3 sur le parent) */}
+            {/* Stats row */}
             <div className="flex gap-[10px]">
               {card.stats.map((stat, j) => (
                 <div
                   key={j}
-                  className="flex-1 flex flex-col rounded-lg border-b border-x border-white/5 px-[17px] pt-[31px] pb-[17px]"
+                  className="flex-1 flex flex-col rounded-lg px-[17px] pt-[31px] pb-[17px]"
                   style={{
                     background:
                       "linear-gradient(to top, var(--color-stat-card-purple) 0%, rgba(9,15,66,0.4) 60%, rgba(9,15,66,0) 100%)",
