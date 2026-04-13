@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue, animate } from "framer-motion";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 
 export interface LogoItem {
@@ -19,18 +20,40 @@ interface LogoBannerProps {
 }
 
 /**
- * Bandeau de logos clients en défilement continu.
- * Utilise Framer Motion pour l'animation (règle projet : pas de CSS animation ad hoc).
+ * Bandeau de logos clients en défilement continu, sans saut.
  *
- * Technique : duplication du tableau de logos pour un loop sans saut.
- * x: "-50%" → "0%" = déplacement d'une largeur de lot, boucle invisible.
+ * Technique : duplication des logos + animate() sur MotionValue en pixels.
+ * Contrairement à l'animate prop avec keyframes, animate() gère le reset
+ * en interne sans frame intermédiaire → boucle vraiment transparente.
  *
  * Structure :
- *  - outer div : contrainte aux marges de la page (var(--page-margin-x))
+ *  - outer div : contenu dans les marges de la page (var(--page-margin-x))
  *  - inner div : overflow-hidden + mask-image → fondu aux bords du conteneur
  */
 export function LogoBanner({ logos, duration = 25 }: LogoBannerProps) {
   const duplicated = [...logos, ...logos];
+  const trackRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+
+    // Largeur pixel d'un seul lot de logos (la moitié du track dupliqué)
+    const oneSetWidth = el.scrollWidth / 2;
+
+    // Réinitialiser avant de lancer pour garantir le bon point de départ
+    x.set(0);
+
+    const controls = animate(x, -oneSetWidth, {
+      duration,
+      ease: "linear",
+      repeat: Infinity,
+      repeatType: "loop",
+    });
+
+    return () => controls.stop();
+  }, [duration, x, logos.length]);
 
   return (
     <div
@@ -48,14 +71,9 @@ export function LogoBanner({ logos, duration = 25 }: LogoBannerProps) {
         }}
       >
         <motion.div
+          ref={trackRef}
           className="flex items-center gap-[30px]"
-          style={{ width: "max-content" }}
-          animate={{ x: ["-50%", "0%"] }}
-          transition={{
-            duration,
-            repeat: Infinity,
-            ease: "linear",
-          }}
+          style={{ width: "max-content", x }}
         >
           {duplicated.map((logo, i) => (
             <div
