@@ -28,6 +28,11 @@ export interface SectionDirecteurPoleProps {
    * DevOps   → "var(--color-tab-active-devops)" (#C9AA3A)
    */
   accentColor: string;
+  /**
+   * Couleur du badge pôle — override accentColor si besoin de contraste.
+   * Ex : hébergement → "var(--color-offer-yellow)" plus vif que #C9AA3A
+   */
+  badgeColor?: string;
   /** Citation / vision — 1 à 3 phrases percutantes */
   vision: string;
   /** Métriques clés — 2 items affichés (les suivants sont ignorés) */
@@ -45,25 +50,27 @@ export function SectionDirecteurPole({
   imageAlt,
   poleLabel,
   accentColor,
+  badgeColor,
   vision,
   stats,
   ctaLabel,
   ctaHref = "#",
   className,
 }: SectionDirecteurPoleProps) {
+  const badge = badgeColor ?? accentColor;
+
   return (
     <section
-      className={[
-        "relative flex w-full overflow-hidden bg-deep-navy",
-        className ?? "",
-      ].join(" ")}
+      className={["relative py-16 md:py-24", className ?? ""].join(" ")}
+      style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
     >
+      <div className="relative flex overflow-hidden max-w-[1280px] mx-auto bg-deep-navy rounded-[var(--radius-card)]">
       {/* ── Colonne photo ─────────────────────────────────── */}
       <div className="relative hidden w-[42%] shrink-0 md:block">
         <img
           src={imageSrc}
           alt={imageAlt ?? name}
-          className="absolute inset-0 h-full w-full object-cover object-top"
+          className="absolute inset-0 h-full w-full object-cover object-[center_15%]"
         />
 
         {/* Dégradé bas — fondu vers la couleur du pôle */}
@@ -96,21 +103,21 @@ export function SectionDirecteurPole({
             className="flex items-center gap-2 rounded-full px-4 py-2"
             style={{
               backgroundColor: "rgba(255,255,255,0.06)",
-              border: `1px solid color-mix(in srgb, ${accentColor} 50%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${badge} 60%, transparent)`,
             }}
           >
             <span
               aria-hidden="true"
               className="size-2 shrink-0 rounded-full"
               style={{
-                backgroundColor: accentColor,
-                boxShadow: `0 0 8px 0 ${accentColor}`,
+                backgroundColor: badge,
+                boxShadow: `0 0 8px 0 ${badge}`,
               }}
             />
             <span
               className="font-ui font-bold uppercase"
               style={{
-                color: accentColor,
+                color: badge,
                 fontSize: "var(--text-badge)",
                 letterSpacing: "var(--text-badge--letter-spacing)",
               }}
@@ -137,12 +144,12 @@ export function SectionDirecteurPole({
             <span
               aria-hidden="true"
               className="size-2 shrink-0 rounded-full"
-              style={{ backgroundColor: accentColor }}
+              style={{ backgroundColor: badge }}
             />
             <span
               className="font-ui font-bold uppercase"
               style={{
-                color: accentColor,
+                color: badge,
                 fontSize: "var(--text-badge)",
                 letterSpacing: "var(--text-badge--letter-spacing)",
               }}
@@ -234,18 +241,28 @@ export function SectionDirecteurPole({
           <div>
             <Link
               href={ctaHref}
-              className="inline-flex items-center justify-center gap-3 rounded-[var(--radius-pill-sm)] border px-[17px] py-[9px] font-sans text-white shadow-[var(--shadow-cta)] transition-opacity hover:opacity-80"
+              className="group relative inline-flex items-center justify-center gap-3 rounded-[var(--radius-pill-sm)] border px-[17px] py-[9px] font-sans text-white shadow-[var(--shadow-cta)] transition-all"
               style={{
                 borderColor: accentColor,
                 fontSize: "var(--text-nav)",
                 lineHeight: "var(--text-nav--line-height)",
               }}
             >
-              {ctaLabel}
-              <ArrowRightIcon />
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                style={{
+                  background: `linear-gradient(135deg, ${accentColor}, color-mix(in srgb, ${accentColor} 55%, white))`,
+                }}
+              />
+              <span className="relative z-10 flex items-center gap-3">
+                {ctaLabel}
+                <ArrowRightIcon />
+              </span>
             </Link>
           </div>
         )}
+      </div>
       </div>
     </section>
   );

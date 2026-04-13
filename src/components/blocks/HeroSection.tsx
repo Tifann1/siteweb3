@@ -31,6 +31,13 @@ interface HeroSectionProps {
    * Figma node 519:3938 → Display Large 60px/75px/-3px
    */
   titleSize?: "default" | "compact";
+  /**
+   * Mode de hauteur de la section.
+   * - "fill" (défaut) : min-h-screen — la section remplit tout l'écran
+   * - "flex"          : flex-1 — la section s'étend dans un conteneur parent flexible
+   *   → à utiliser avec un wrapper min-h-screen flex flex-col pour combiner hero + tabs
+   */
+  sizeMode?: "fill" | "flex";
 }
 
 export function HeroSection({
@@ -42,12 +49,14 @@ export function HeroSection({
   description = "Nous imaginons et déployons des agents IA sur mesure, connectés à vos usages, pour accélérer vos opérations et renforcer votre impact.",
   align = "left",
   titleSize = "default",
+  sizeMode = "fill",
 }: HeroSectionProps) {
   const isRight = align === "right";
   const isCompact = titleSize === "compact";
+  const heightClass = sizeMode === "flex" ? "flex-1" : "min-h-screen";
 
   return (
-    <section className="relative flex flex-col items-center justify-center min-h-screen">
+    <section className={`relative flex flex-col items-center justify-center ${heightClass}`}>
       {/* Blobs décoratifs — z-0 derrière le texte (z-10) */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
         {/* Halo blanc — centré derrière le texte */}

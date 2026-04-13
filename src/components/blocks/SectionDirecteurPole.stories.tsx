@@ -70,7 +70,7 @@ export const Developpement: Story = {
   },
 };
 
-/** Pôle Hébergement — accent jaune */
+/** Pôle Hébergement — accent jaune, badge plus vif pour le contraste */
 export const Hebergement: Story = {
   args: {
     name: "Thibault Buze",
@@ -78,6 +78,7 @@ export const Hebergement: Story = {
     imageSrc: "/images/team/thibault-buze.png",
     poleLabel: "Hébergement",
     accentColor: "var(--color-tab-active-devops)",
+    badgeColor: "var(--color-offer-yellow)",
     vision:
       "Une infrastructure invisible est une infrastructure réussie. Mon équipe s'assure que vos produits tournent, s'adaptent et évoluent — sans que vous ayez jamais à y penser.",
     stats: STATS_DEVOPS,

@@ -34,8 +34,11 @@ export function IntegrationSchema({
   miniCards = [],
 }: IntegrationSchemaProps) {
   return (
-    <section className="flex flex-col items-start px-8 w-full">
-      <div className="flex flex-col gap-16 items-start max-w-[1280px] w-full">
+    <section
+      className="flex flex-col items-center py-20 md:py-28 w-full"
+      style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+    >
+      <div className="flex flex-col gap-16 items-start max-w-[1280px] mx-auto w-full">
         {/* En-tête */}
         <div className="flex flex-col gap-4 items-center w-full">
           <h2

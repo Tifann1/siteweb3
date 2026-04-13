@@ -129,7 +129,7 @@ export function OffersSection({
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <section className="flex flex-col gap-14 items-center py-16 md:py-24 w-full bg-deep-navy">
+    <section className="flex flex-col gap-14 items-center py-20 md:py-28 w-full bg-deep-navy">
       {/* Titre */}
       <h2
         className="font-sans font-bold text-white text-center whitespace-nowrap"
@@ -141,7 +141,10 @@ export function OffersSection({
         {title}
       </h2>
 
-      <div className="flex flex-col gap-5 items-center px-20 w-full">
+      <div
+        className="flex flex-col gap-5 items-center w-full"
+        style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+      >
         {/* Tabs */}
         <nav className="flex items-center gap-8 h-7 justify-center" aria-label="Catégories d'offres">
           {tabs.map((tab, i) => (

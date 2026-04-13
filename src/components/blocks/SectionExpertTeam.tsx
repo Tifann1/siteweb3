@@ -21,7 +21,10 @@ export function SectionExpertTeam({
   experts,
 }: SectionExpertTeamProps) {
   return (
-    <section className="flex flex-col gap-16 items-center justify-center px-[50px] w-full">
+    <section
+      className="flex flex-col gap-16 items-center justify-center py-16 md:py-24 w-full"
+      style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+    >
       <h2
         className="font-sans font-bold text-text-heading text-center"
         style={{

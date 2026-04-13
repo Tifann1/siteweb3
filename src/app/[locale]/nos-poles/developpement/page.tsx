@@ -8,7 +8,7 @@ import { HeroSection } from "@/components/blocks/HeroSection";
 import { SectionBentoGrid } from "@/components/blocks/SectionBentoGrid";
 import { SectionAugmentedDev } from "@/components/blocks/SectionAugmentedDev";
 import { SectionNosSucces } from "@/components/blocks/SectionNosSucces";
-import { SectionExpertTeam } from "@/components/blocks/SectionExpertTeam";
+import { SectionDirecteurPole } from "@/components/blocks/SectionDirecteurPole";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
 import { PoleTabsNavWrapper } from "./PoleTabsNavWrapper";
 
@@ -22,20 +22,23 @@ export default function PoleDeveloppementPage() {
       <Header />
 
       <main className="flex flex-col w-full">
-        {/* Hero — alignement droite, highlight orange pêche (node 533:5362) */}
-        <HeroSection
-          eyebrow="Pôle Développement Full-stack"
-          title={"Des architectures\npour des agents IA\nfiables et performants."}
-          highlightWord={"agents IA\nfiables et performants"}
-          highlightStyle="gradient"
-          description="Nous concevons les socles techniques, les intégrations et les interfaces qui permettent à vos agents IA de fonctionner à l'échelle."
-          align="right"
-        />
+        {/* Hero + tabs dans un écran — hero flex-1, tabs ancrés en bas */}
+        <div className="min-h-screen flex flex-col">
+          <HeroSection
+            eyebrow="Pôle Développement Full-stack"
+            title={"Des architectures\npour des agents IA\nfiables et performants."}
+            highlightWord={"agents IA\nfiables et performants"}
+            highlightStyle="gradient"
+            description="Nous concevons les socles techniques, les intégrations et les interfaces qui permettent à vos agents IA de fonctionner à l'échelle."
+            align="right"
+            sizeMode="flex"
+          />
 
-        {/* Tabs navigation pôles (node 533:5506) */}
-        <div className="py-8">
-          <div className="max-w-[1280px] mx-auto px-6 md:px-8">
-            <PoleTabsNavWrapper />
+          {/* Tabs navigation pôles (node 533:5506) */}
+          <div className="py-6">
+            <div className="max-w-[1280px] mx-auto px-6 md:px-8">
+              <PoleTabsNavWrapper />
+            </div>
           </div>
         </div>
 
@@ -110,47 +113,35 @@ export default function PoleDeveloppementPage() {
           ]}
         />
 
-        {/* Section Les Visages du Pôle (node 533:5500) */}
-        <section className="py-16 md:py-20">
-          <SectionExpertTeam
-            heading="Les Visages du Pôle"
-            experts={[
-              {
-                name: "Sylvain Gourio",
-                imageSrc: "/images/team/sylvain-gourio.png",
-                imageAlt: "Sylvain Gourio",
-              },
-              {
-                name: "Alexandre Bodet",
-                imageSrc: "/images/team/alexandre-bodet.png",
-                imageAlt: "Alexandre Bodet",
-              },
-              {
-                name: "Raphael Kalinowski",
-                imageSrc: "/images/team/raphael-kalinowski.png",
-                imageAlt: "Raphael Kalinowski",
-              },
-              {
-                name: "Adrien Trancoso",
-                imageSrc: "/images/team/adrien-trancoso.png",
-                imageAlt: "Adrien Trancoso",
-              },
-            ]}
-          />
-        </section>
+        {/* Section Directeur du Pôle (node 533:5500) */}
+        <SectionDirecteurPole
+          name="Sylvain Gourio"
+          role="Directeur du Pôle Développement"
+          imageSrc="/images/team/sylvain-gourio.png"
+          poleLabel="Développement"
+          accentColor="var(--color-tab-active-dev)"
+          vision="Coder vite c'est bien. Coder juste, c'est mieux. Nous livrons des architectures qui tiennent dans le temps parce que nous refusons la dette technique dès le premier sprint."
+          stats={[
+            { value: "8 ans", label: "Expérience" },
+            { value: "+150", label: "Applis livrées" },
+          ]}
+          ctaLabel="Voir nos réalisations"
+          ctaHref="/references"
+        />
 
         {/* CTA Banner (node 294:1434) */}
-        <section className="py-16 md:py-24">
-          <div className="max-w-[1280px] mx-auto px-6 md:px-8">
-            <CtaBanner
-              title={"Prêt à augmenter\nvos projets ?"}
-              description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
-              primaryLabel="Parlons de votre projet"
-              primaryHref="/contact"
-              secondaryLabel="Voir nos offres"
-              secondaryHref="/contact"
-            />
-          </div>
+        <section
+          className="py-16 md:py-24"
+          style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+        >
+          <CtaBanner
+            title={"Prêt à augmenter\nvos projets ?"}
+            description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
+            primaryLabel="Parlons de votre projet"
+            primaryHref="/contact"
+            secondaryLabel="Voir nos offres"
+            secondaryHref="/contact"
+          />
         </section>
       </main>
 

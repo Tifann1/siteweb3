@@ -8,7 +8,7 @@ import { HeroSection } from "@/components/blocks/HeroSection";
 import { SectionBentoGrid } from "@/components/blocks/SectionBentoGrid";
 import { SectionAugmentedDev } from "@/components/blocks/SectionAugmentedDev";
 import { SectionNosSucces } from "@/components/blocks/SectionNosSucces";
-import { SectionExpertTeam } from "@/components/blocks/SectionExpertTeam";
+import { SectionDirecteurPole } from "@/components/blocks/SectionDirecteurPole";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
 import { PoleTabsNavWrapper } from "./PoleTabsNavWrapper";
 
@@ -22,20 +22,23 @@ export default function PoleHebergementPage() {
       <Header />
 
       <main className="flex flex-col w-full">
-        {/* Hero — alignement droite, highlight orange pêche (node 533:5633) */}
-        <HeroSection
-          eyebrow="pôle DevOps & Infrastructure"
-          title={"Garantir la souveraineté\net la sécurité de vos\nagents IA."}
-          highlightWord={"souveraineté\net la sécurité"}
-          highlightStyle="gradient"
-          description="Nous concevons des environnements d'hébergement, de déploiement et d'exploitation pensés pour des agents IA sécurisés, conformes et maîtrisés."
-          align="right"
-        />
+        {/* Hero + tabs dans un écran — hero flex-1, tabs ancrés en bas */}
+        <div className="min-h-screen flex flex-col">
+          <HeroSection
+            eyebrow="pôle DevOps & Infrastructure"
+            title={"Garantir la souveraineté\net la sécurité de vos\nagents IA."}
+            highlightWord={"souveraineté\net la sécurité"}
+            highlightStyle="gradient"
+            description="Nous concevons des environnements d'hébergement, de déploiement et d'exploitation pensés pour des agents IA sécurisés, conformes et maîtrisés."
+            align="right"
+            sizeMode="flex"
+          />
 
-        {/* Tabs navigation pôles (node 533:5777) — DevOps actif */}
-        <div className="py-8">
-          <div className="max-w-[1280px] mx-auto px-6 md:px-8">
-            <PoleTabsNavWrapper />
+          {/* Tabs navigation pôles (node 533:5777) — DevOps actif */}
+          <div className="py-6">
+            <div className="max-w-[1280px] mx-auto px-6 md:px-8">
+              <PoleTabsNavWrapper />
+            </div>
           </div>
         </div>
 
@@ -179,47 +182,36 @@ export default function PoleHebergementPage() {
           ]}
         />
 
-        {/* Section Les Visages du Pôle (node 533:5771) */}
-        <section className="py-16 md:py-20">
-          <SectionExpertTeam
-            heading="Les Visages du Pôle"
-            experts={[
-              {
-                name: "Thibault Buze",
-                imageSrc: "/images/team/thibault-buze.png",
-                imageAlt: "Thibault Buze",
-              },
-              {
-                name: "Baptiste Renouf",
-                imageSrc: "/images/team/baptiste-renouf.png",
-                imageAlt: "Baptiste Renouf",
-              },
-              {
-                name: "Andréas Le Tanter",
-                imageSrc: "/images/team/andreas-le-tanter.png",
-                imageAlt: "Andréas Le Tanter",
-              },
-              {
-                name: "Kaan Bouldoires",
-                imageSrc: "/images/team/kaan-bouldoires.png",
-                imageAlt: "Kaan Bouldoires",
-              },
-            ]}
-          />
-        </section>
+        {/* Section Directeur du Pôle (node 533:5771) */}
+        <SectionDirecteurPole
+          name="Thibault Buze"
+          role="Directeur du Pôle Hébergement"
+          imageSrc="/images/team/thibault-buze.png"
+          poleLabel="Hébergement"
+          accentColor="var(--color-tab-active-devops)"
+          badgeColor="var(--color-offer-yellow)"
+          vision="Une infrastructure invisible est une infrastructure réussie. Mon équipe s'assure que vos produits tournent, s'adaptent et évoluent — sans que vous ayez jamais à y penser."
+          stats={[
+            { value: "10 ans", label: "Expérience" },
+            { value: "+80", label: "Infras pilotées" },
+          ]}
+          ctaLabel="Auditer mon infra"
+          ctaHref="/contact"
+        />
 
         {/* CTA Banner */}
-        <section className="py-16 md:py-24">
-          <div className="max-w-[1280px] mx-auto px-6 md:px-8">
-            <CtaBanner
-              title={"Prêt à augmenter\nvos projets ?"}
-              description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
-              primaryLabel="Parlons de votre projet"
-              primaryHref="/contact"
-              secondaryLabel="Voir nos offres"
-              secondaryHref="/contact"
-            />
-          </div>
+        <section
+          className="py-16 md:py-24"
+          style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+        >
+          <CtaBanner
+            title={"Prêt à augmenter\nvos projets ?"}
+            description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
+            primaryLabel="Parlons de votre projet"
+            primaryHref="/contact"
+            secondaryLabel="Voir nos offres"
+            secondaryHref="/contact"
+          />
         </section>
       </main>
 

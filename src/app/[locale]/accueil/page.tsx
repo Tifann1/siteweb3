@@ -40,13 +40,16 @@ export default function AccueilPage() {
         <HeroSection />
 
         {/* Bandeau logos partenaires — full width */}
-        <div className="py-10">
+        <div className="py-20 md:py-28">
           <LogoBanner logos={PARTNER_LOGOS} />
         </div>
 
         {/* Formulaire de projet */}
         <section className="py-20 md:py-28">
-          <div className="max-w-[1280px] mx-auto px-6 md:px-8 flex justify-center">
+          <div
+            className="flex justify-center"
+            style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+          >
             <ProjectForm />
           </div>
         </section>
@@ -54,24 +57,20 @@ export default function AccueilPage() {
         {/* Nos offres — full width */}
         <OffersSection />
 
-        {/* Nos promesses */}
-        <section className="py-20 md:py-28">
-          <div className="max-w-[1280px] mx-auto px-6 md:px-8">
-            <IntegrationSchema
-              title="Nos promesses."
-              description="Ce qui nous différencie, concrètement."
-              miniCards={PROMISES.map((p) => ({
-                iconSrc: p.iconSrc,
-                title: p.title,
-                subtitle: "",
-              }))}
-            />
-          </div>
-        </section>
+        {/* Nos promesses — IntegrationSchema gère ses propres marges */}
+        <IntegrationSchema
+          title="Nos promesses."
+          description="Ce qui nous différencie, concrètement."
+          miniCards={PROMISES.map((p) => ({
+            iconSrc: p.iconSrc,
+            title: p.title,
+            subtitle: "",
+          }))}
+        />
 
         {/* CTA bas de page */}
-        <section className="py-16 md:py-24">
-          <div className="max-w-[1280px] mx-auto px-6 md:px-8">
+        <section className="py-20 md:py-28">
+          <div style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}>
             <CtaBanner />
           </div>
         </section>
