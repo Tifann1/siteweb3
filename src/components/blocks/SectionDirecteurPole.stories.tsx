@@ -41,10 +41,9 @@ const STATS_DEVOPS = [
 /** Pôle Conseil — accent orange */
 export const Conseil: Story = {
   args: {
-    name: "Sophie Marchand",
+    name: "Virginie",
     role: "Directrice du Pôle Conseil",
-    imageSrc:
-      "https://placehold.co/600x800/0D1245/FFB692?text=Sophie+M.",
+    imageSrc: "/images/team/virginie.png",
     poleLabel: "Conseil",
     accentColor: "var(--color-tab-active)",
     vision:
@@ -58,10 +57,9 @@ export const Conseil: Story = {
 /** Pôle Développement — accent bleu */
 export const Developpement: Story = {
   args: {
-    name: "Nicolas Ferreira",
+    name: "Sylvain Gourio",
     role: "Directeur du Pôle Développement",
-    imageSrc:
-      "https://placehold.co/600x800/0D1245/7474FF?text=Nicolas+F.",
+    imageSrc: "/images/team/sylvain-gourio.png",
     poleLabel: "Développement",
     accentColor: "var(--color-tab-active-dev)",
     vision:
@@ -72,14 +70,13 @@ export const Developpement: Story = {
   },
 };
 
-/** Pôle DevOps — accent jaune */
-export const DevOps: Story = {
+/** Pôle Hébergement — accent jaune */
+export const Hebergement: Story = {
   args: {
-    name: "Clara Nguyen",
-    role: "Directrice du Pôle DevOps & Infrastructure",
-    imageSrc:
-      "https://placehold.co/600x800/0D1245/C9AA3A?text=Clara+N.",
-    poleLabel: "DevOps",
+    name: "Thibault Buze",
+    role: "Directeur du Pôle Hébergement",
+    imageSrc: "/images/team/thibault-buze.png",
+    poleLabel: "Hébergement",
     accentColor: "var(--color-tab-active-devops)",
     vision:
       "Une infrastructure invisible est une infrastructure réussie. Mon équipe s'assure que vos produits tournent, s'adaptent et évoluent — sans que vous ayez jamais à y penser.",
@@ -94,13 +91,5 @@ export const SansCTA: Story = {
   args: {
     ...Conseil.args,
     ctaLabel: undefined,
-  },
-};
-
-/** Stats minimales (2 chiffres) */
-export const DeuxStats: Story = {
-  args: {
-    ...Developpement.args,
-    stats: STATS_DEV.slice(0, 2),
   },
 };

@@ -30,7 +30,7 @@ export interface SectionDirecteurPoleProps {
   accentColor: string;
   /** Citation / vision — 1 à 3 phrases percutantes */
   vision: string;
-  /** Métriques clés — 2 à 4 items pour remplir la grille */
+  /** Métriques clés — 2 items affichés (les suivants sont ignorés) */
   stats: DirectorStat[];
   /** Label CTA optionnel (ex: "Discuter avec l'équipe") */
   ctaLabel?: string;
@@ -74,8 +74,8 @@ export function SectionDirecteurPole({
             background: `linear-gradient(
               to bottom,
               transparent 35%,
-              color-mix(in srgb, ${accentColor} 18%, transparent) 70%,
-              color-mix(in srgb, ${accentColor} 40%, var(--color-deep-navy)) 100%
+              color-mix(in srgb, ${accentColor} 10%, transparent) 70%,
+              color-mix(in srgb, ${accentColor} 22%, var(--color-deep-navy)) 100%
             )`,
           }}
         />
@@ -127,7 +127,7 @@ export function SectionDirecteurPole({
         <div
           aria-hidden="true"
           className="absolute bottom-16 left-0 top-16 w-px"
-          style={{ backgroundColor: accentColor, opacity: 0.35 }}
+          style={{ backgroundColor: accentColor, opacity: 0.18 }}
         />
 
         {/* Identité */}
@@ -176,7 +176,7 @@ export function SectionDirecteurPole({
           <span
             aria-hidden="true"
             className="select-none font-sans font-bold leading-none"
-            style={{ color: accentColor, fontSize: "4.5rem", lineHeight: "0.5", opacity: 0.7 }}
+            style={{ color: accentColor, fontSize: "4.5rem", lineHeight: "0.5", opacity: 0.4 }}
           >
             &ldquo;
           </span>
@@ -197,19 +197,19 @@ export function SectionDirecteurPole({
           className="grid gap-3"
           style={{ gridTemplateColumns: "repeat(auto-fill, minmax(148px, 1fr))" }}
         >
-          {stats.map((stat, i) => (
+          {stats.slice(0, 2).map((stat, i) => (
             <div
               key={i}
               className="flex flex-col gap-1 rounded-[var(--radius-input)] px-5 py-4"
               style={{
                 backgroundColor: "rgba(67, 70, 116, 0.25)",
-                border: `1px solid color-mix(in srgb, ${accentColor} 20%, transparent)`,
+                border: `1px solid color-mix(in srgb, ${accentColor} 10%, transparent)`,
               }}
             >
               <span
                 className="font-body font-bold"
                 style={{
-                  color: accentColor,
+                  color: "var(--color-text-heading)",
                   fontSize: "var(--text-stat-value)",
                   lineHeight: "var(--text-stat-value--line-height)",
                 }}
@@ -234,7 +234,7 @@ export function SectionDirecteurPole({
           <div>
             <Link
               href={ctaHref}
-              className="inline-flex items-center gap-3 rounded-[var(--radius-pill-sm)] border px-[17px] py-[9px] font-sans text-white shadow-[var(--shadow-cta)] transition-opacity hover:opacity-80"
+              className="inline-flex items-center justify-center gap-3 rounded-[var(--radius-pill-sm)] border px-[17px] py-[9px] font-sans text-white shadow-[var(--shadow-cta)] transition-opacity hover:opacity-80"
               style={{
                 borderColor: accentColor,
                 fontSize: "var(--text-nav)",
