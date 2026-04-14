@@ -8,7 +8,7 @@ import { HeroSection } from "@/components/blocks/HeroSection";
 import { LogoBanner, type LogoItem } from "@/components/blocks/LogoBanner";
 import { ProjectForm } from "@/components/blocks/ProjectForm";
 import { OffersSection } from "@/components/blocks/OffersSection";
-import { IntegrationSchema } from "@/components/blocks/IntegrationSchema";
+import { SectionNosPromesses, type PromiseItem } from "@/components/blocks/SectionNosPromesses";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
 
 const PARTNER_LOGOS: LogoItem[] = [
@@ -21,13 +21,62 @@ const PARTNER_LOGOS: LogoItem[] = [
   { src: "/images/logos/marketpay.svg", alt: "MarketPay", width: 100, height: 30 },
 ];
 
-const PROMISES = [
-  { iconSrc: "", title: "Acteur Français au coeur de Paris." },
-  { iconSrc: "", title: "Une solution sur-mesure, clés en main." },
-  { iconSrc: "", title: "Un référent dédié pour votre projet." },
-  { iconSrc: "", title: "Excellence technique." },
-  { iconSrc: "", title: "Travailler avec des Ingénieurs augmentés." },
-  { iconSrc: "", title: "Découper un besoin complexe." },
+const PROMISES: PromiseItem[] = [
+  {
+    eyebrow: "Notre différence",
+    title: "Des Ingénieurs Augmentés.",
+    description:
+      "Nos ingénieurs embarquent l'IA dans leurs processus quotidiens. Moins d'erreurs, plus de vélocité, des livrables plus solides — sans jamais sacrifier la qualité de l'architecture.",
+    highlights: [
+      "IA intégrée à chaque phase : cadrage, code, revue, doc",
+      "Modèles de langage sur les flux de revue de code",
+      "Documentation générée et maintenue en continu",
+    ],
+    accent: "orange",
+  },
+  {
+    eyebrow: "Paris · France",
+    title: "Ancrés en France, disponibles vite.",
+    description:
+      "Même fuseau horaire, même langue, mêmes contraintes réglementaires. Pas de frottement, pas de traduction perdue.",
+    stat: { value: "< 2h", label: "Délai de réponse moyen" },
+  },
+  {
+    eyebrow: "Suivi projet",
+    title: "Un référent unique, de bout en bout.",
+    description:
+      "Du premier cadrage à la livraison finale, un ingénieur identifié suit votre projet. Pas de relais. Pas de perte de contexte.",
+    stat: { value: "0", label: "Rotation d'équipe en cours de projet" },
+  },
+  {
+    eyebrow: "Excellence",
+    title: "Un niveau technique qui ne descend pas.",
+    description:
+      "Ingénieurs seniors certifiés, revues de code systématiques, formation continue. Nous ne faisons pas de compromis sur la qualité.",
+    highlights: [
+      "Profils seniors uniquement — 5 ans d'expérience minimum",
+      "Revue de code obligatoire à chaque pull request",
+      "Veille et certifications maintenues en continu",
+    ],
+    accent: "blue",
+  },
+  {
+    eyebrow: "Livraison",
+    title: "Sur-mesure, clé en main.",
+    description:
+      "Pas de template, pas de raccourci. Chaque solution est conçue pour votre contexte, vos contraintes, vos équipes. On livre quelque chose qui fonctionne — et qui dure.",
+    highlights: [
+      "Architecture alignée avec vos systèmes existants",
+      "Documentation de prise en main incluse dans chaque livraison",
+      "Formation de vos équipes à la solution livrée",
+    ],
+  },
+  {
+    eyebrow: "Méthode",
+    title: "Transformer le flou en feuille de route.",
+    description:
+      "Notre valeur commence avant la première ligne de code : cadrer, prioriser, découper un besoin complexe en étapes claires et livrables concrets.",
+  },
 ];
 
 export default function AccueilPage() {
@@ -57,16 +106,8 @@ export default function AccueilPage() {
         {/* Nos offres — full width */}
         <OffersSection />
 
-        {/* Nos promesses — IntegrationSchema gère ses propres marges */}
-        <IntegrationSchema
-          title="Nos promesses."
-          description="Ce qui nous différencie, concrètement."
-          miniCards={PROMISES.map((p) => ({
-            iconSrc: p.iconSrc,
-            title: p.title,
-            subtitle: "",
-          }))}
-        />
+        {/* Nos promesses — bento grid asymétrique */}
+        <SectionNosPromesses items={PROMISES} />
 
         {/* CTA bas de page */}
         <section className="py-20 md:py-28">
