@@ -10,6 +10,7 @@ import { SectionAugmentedDev } from "@/components/blocks/SectionAugmentedDev";
 import { SectionNosSucces } from "@/components/blocks/SectionNosSucces";
 import { SectionDirecteurPole } from "@/components/blocks/SectionDirecteurPole";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
+import { PoleIdentityBanner } from "@/components/blocks/PoleIdentityBanner";
 import { PoleTabsNavWrapper } from "./PoleTabsNavWrapper";
 
 export default function PoleHebergementPage() {
@@ -41,6 +42,20 @@ export default function PoleHebergementPage() {
             </div>
           </div>
         </div>
+
+        {/* Identité du pôle */}
+        <PoleIdentityBanner
+          poleLabel="DevOps & Infrastructure"
+          accentColor="var(--color-tab-active-devops)"
+          accentColorLight="var(--color-offer-yellow)"
+          tagline="Infrastructure invisible. Performance maximale."
+          stats={[
+            { value: "+80", label: "Infras pilotées" },
+            { value: "10 ans", label: "Expertise cloud" },
+            { value: "99.9%", label: "Disponibilité cible" },
+          ]}
+          keywords={["Cloud", "CI/CD", "Sécurité", "Monitoring", "Souveraineté"]}
+        />
 
         {/* Bento Grid — L'équipe derrière vos agents IA (node 533:5642) */}
         <SectionBentoGrid

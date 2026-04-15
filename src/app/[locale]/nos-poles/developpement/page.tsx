@@ -10,6 +10,7 @@ import { SectionAugmentedDev } from "@/components/blocks/SectionAugmentedDev";
 import { SectionNosSucces } from "@/components/blocks/SectionNosSucces";
 import { SectionDirecteurPole } from "@/components/blocks/SectionDirecteurPole";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
+import { PoleIdentityBanner } from "@/components/blocks/PoleIdentityBanner";
 import { PoleTabsNavWrapper } from "./PoleTabsNavWrapper";
 
 export default function PoleDeveloppementPage() {
@@ -41,6 +42,20 @@ export default function PoleDeveloppementPage() {
             </div>
           </div>
         </div>
+
+        {/* Identité du pôle */}
+        <PoleIdentityBanner
+          poleLabel="Développement"
+          accentColor="var(--color-tab-active-dev)"
+          accentColorLight="var(--color-bento-dev-accent)"
+          tagline="Code solide. Agents IA fiables."
+          stats={[
+            { value: "+150", label: "Applis livrées" },
+            { value: "8 ans", label: "Expertise full-stack" },
+            { value: "×3", label: "Accélération time-to-market" },
+          ]}
+          keywords={["Next.js", "APIs", "Agents IA", "Mobile", "Tests"]}
+        />
 
         {/* Bento Grid — L'équipe qui conçoit vos agents IA (node 533:5371) */}
         <SectionBentoGrid

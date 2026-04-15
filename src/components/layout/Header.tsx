@@ -33,7 +33,7 @@ export function Header({
   logoAlt = "Steamulo",
   navItems = DEFAULT_NAV_ITEMS,
   ctaLabel = "Je lance mon projet",
-  ctaHref = "/#contact",
+  ctaHref = "/contact",
 }: HeaderProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -90,8 +90,7 @@ export function Header({
 
             {/* Logo WTTJ */}
             <div
-              className="relative h-[30px] w-[80px] shrink-0 rounded-[var(--radius-cta)] overflow-hidden border border-white/30 bg-white/10"
-              style={{ boxShadow: "var(--shadow-cta)" }}
+              className="relative h-[30px] w-[80px] shrink-0 rounded-[var(--radius-cta)] overflow-hidden"
             >
               <Image
                 src="/images/logos/logoWTTJ.png"

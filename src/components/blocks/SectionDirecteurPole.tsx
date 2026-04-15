@@ -102,7 +102,7 @@ export function SectionDirecteurPole({
           <div
             className="flex items-center gap-2 rounded-full px-4 py-2"
             style={{
-              backgroundColor: "rgba(255,255,255,0.06)",
+              backgroundColor: "var(--color-nav-bg)",
               border: `1px solid color-mix(in srgb, ${badge} 60%, transparent)`,
             }}
           >

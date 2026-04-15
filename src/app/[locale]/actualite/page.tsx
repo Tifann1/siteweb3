@@ -1,15 +1,50 @@
 // Page Nos Actualités — /[locale]/actualite
 // Figma node 517:3422
-// Composition : Header + ArticlesFeaturedSection + PodcastSection + CtaBanner + Footer
+// Composition : Header + ArticlesFeaturedSection + SectionEvenements + PodcastSection + CtaBanner + Footer
 
 import { getLocale } from "next-intl/server";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ArticlesFeaturedSection } from "@/components/blocks/ArticlesFeaturedSection";
+import { SectionEvenements } from "@/components/blocks/SectionEvenements";
 import { PodcastSection } from "@/components/blocks/PodcastSection";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
 import { articles } from "@/lib/content/actualite";
 import type { Locale } from "@/types";
+
+const EVENEMENTS = [
+  {
+    id: "1",
+    title: "DevFun Summit 2026 — L'IA embarquée en production",
+    description:
+      "Nos experts partagent leurs retours d'expérience sur le déploiement d'agents IA dans des contextes industriels contraints : scalabilité, sécurité, souveraineté.",
+    date: { day: "14", month: "Mai", year: "2026" },
+    location: "Paris, Station F",
+    tags: ["IA Générative", "Production", "DevOps"],
+    ctaLabel: "S'inscrire",
+    ctaHref: "/contact",
+  },
+  {
+    id: "2",
+    title: "Atelier : Concevoir votre premier agent IA métier",
+    description: "Workshop pratique — de l'idée au prototype en une journée.",
+    date: { day: "22", month: "Mai", year: "2026" },
+    location: "Paris, Steamulo HQ",
+    tags: ["Workshop", "Conseil"],
+    ctaLabel: "Réserver",
+    ctaHref: "/contact",
+  },
+  {
+    id: "3",
+    title: "Table ronde : Gouvernance des données & conformité IA",
+    description: "Retours d'expérience secteur public & bancaire.",
+    date: { day: "05", month: "Jun", year: "2026" },
+    location: "En ligne",
+    tags: ["Données", "Secteur Public"],
+    ctaLabel: "Participer",
+    ctaHref: "/contact",
+  },
+];
 
 function formatDate(iso: string, locale: Locale): string {
   return new Date(iso).toLocaleDateString(locale === "fr" ? "fr-FR" : "en-GB", {
@@ -31,7 +66,7 @@ export default async function ActualitePage() {
       <main className="flex flex-col flex-1">
         {/* Grille article featured + sidebar récents */}
         {featured && (
-          <section className="pb-16 md:pb-24" style={{ paddingTop: "calc(var(--header-height) + 3rem)" }}>
+          <section className="pb-16 md:pb-24" style={{ paddingTop: "calc(var(--header-height) + 6rem)" }}>
             <div className="max-w-[1280px] mx-auto px-6 md:px-8">
               <ArticlesFeaturedSection
                 featured={{
@@ -53,6 +88,9 @@ export default async function ActualitePage() {
             </div>
           </section>
         )}
+
+        {/* Événements */}
+        <SectionEvenements items={EVENEMENTS} ctaAllLabel="" />
 
         {/* Section podcast — full width, gère son propre py */}
         <PodcastSection

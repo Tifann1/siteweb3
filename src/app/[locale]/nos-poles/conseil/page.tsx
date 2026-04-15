@@ -9,7 +9,7 @@ import { CtaBanner } from "@/components/blocks/CtaBanner";
 import { SectionBentoGrid } from "@/components/blocks/SectionBentoGrid";
 import { IntegrationSchema } from "@/components/blocks/IntegrationSchema";
 import { SectionNosSucces } from "@/components/blocks/SectionNosSucces";
-import { SectionExpertTeam } from "@/components/blocks/SectionExpertTeam";
+import { PoleIdentityBanner } from "@/components/blocks/PoleIdentityBanner";
 import { PoleTabsNavWrapper } from "./PoleTabsNavWrapper";
 
 // ⚠ Assets Figma — expirent dans 7 jours. Remplacer par /public/ avant mise en prod.
@@ -61,6 +61,20 @@ export default function PoleConseilPage() {
             </div>
           </div>
         </div>
+
+        {/* Identité du pôle */}
+        <PoleIdentityBanner
+          poleLabel="Conseil"
+          accentColor="var(--color-tab-active)"
+          accentColorLight="var(--color-highlight-pole)"
+          tagline="Imaginer. Modéliser. Transformer."
+          stats={[
+            { value: "+200", label: "Projets livrés" },
+            { value: "12 ans", label: "Expertise conseil" },
+            { value: "98%", label: "Satisfaction clients" },
+          ]}
+          keywords={["Agents IA", "Design Thinking", "Stratégie", "ROI mesurable"]}
+        />
 
         {/* Section Bento Grid — Agents IA & aide à la décision */}
         <SectionBentoGrid
@@ -189,12 +203,6 @@ export default function PoleConseilPage() {
           ctaHref="/contact"
         />
 
-        {/* Section Les Visages du Pôle */}
-        <SectionExpertTeam
-          heading="Les Visages du Pôle"
-          experts={CONSEIL_EXPERTS}
-        />
-
         {/* CTA Banner */}
         <section
           className="py-16 md:py-24"
@@ -217,25 +225,3 @@ export default function PoleConseilPage() {
   );
 }
 
-const CONSEIL_EXPERTS = [
-  {
-    name: "Virginie",
-    imageSrc: "/images/team/virginie.png",
-    role: "Directrice du Pôle",
-  },
-  {
-    name: "Thomas",
-    imageSrc: "https://placehold.co/175x219/434674/DFE1F8?text=Thomas",
-    role: "Lead Consultant IA",
-  },
-  {
-    name: "Camille",
-    imageSrc: "https://placehold.co/175x219/434674/DFE1F8?text=Camille",
-    role: "Expert Stratégie",
-  },
-  {
-    name: "Julien",
-    imageSrc: "https://placehold.co/175x219/434674/DFE1F8?text=Julien",
-    role: "Architecte IA",
-  },
-];

@@ -35,7 +35,10 @@ export function ReferenceCard({
   ctaHref = "#",
 }: ReferenceCardProps) {
   return (
-    <div className="group relative flex flex-col isolate items-start overflow-hidden rounded-[var(--radius-input)] bg-deep-navy border border-white/10 w-[384px] transition-all duration-300 hover:border-white/25 hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:-translate-y-1">
+    <Link
+      href={ctaHref}
+      className="group relative flex flex-col items-start overflow-hidden rounded-[var(--radius-input)] bg-deep-navy border border-white/10 w-[384px] transition-all duration-300 hover:border-white/25 hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:-translate-y-1"
+    >
       {/* Logo client — overlay sur l'image */}
       {logoSrc && (
         <div className="absolute top-[216px] left-[25px] z-10 h-[40px] w-[132px]">
@@ -49,19 +52,19 @@ export function ReferenceCard({
       )}
 
       {/* Image de couverture */}
-      <div className="relative h-[256px] w-full shrink-0 overflow-hidden">
+      <div className="relative h-[256px] w-full shrink-0 overflow-hidden bg-deep-navy">
         <Image
           src={imageSrc}
           alt={imageAlt}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+          className="object-cover transform-gpu transition-transform duration-500 group-hover:scale-[1.04]"
         />
         {/* Gradient de fondu vers le bas */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to top, #040936 0.2%, rgba(4,9,54,0.2) 50%, rgba(4,9,54,0.2) 100%)",
+              "linear-gradient(to top, #040936 5%, rgba(4,9,54,0.2) 50%, rgba(4,9,54,0.2) 100%)",
           }}
         />
       </div>
@@ -108,10 +111,7 @@ export function ReferenceCard({
         </div>
 
         {/* CTA */}
-        <Link
-          href={ctaHref}
-          className="flex items-center gap-2 group"
-        >
+        <div className="flex items-center gap-2">
           <span
             className="font-body font-semibold bg-clip-text text-transparent uppercase tracking-[1.4px]"
             style={{
@@ -122,9 +122,9 @@ export function ReferenceCard({
             {ctaLabel}
           </span>
           <ArrowIcon />
-        </Link>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

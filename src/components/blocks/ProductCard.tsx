@@ -52,15 +52,16 @@ export function ProductCard({
             src={backgroundImage}
             alt={backgroundImageAlt}
             fill
-            className="object-cover object-center"
+            className="object-cover object-right transform-gpu"
+            sizes="(max-width: 1280px) 100vw, 1280px"
           />
         </div>
-        {/* Dégradé : card-bg opaque gauche → transparent droite (contraste avec nav-bg page) */}
+        {/* Dégradé : nav-bg opaque gauche → transparent droite */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(89.88deg, var(--color-card-bg) 0%, rgba(67,70,116,0.7) 35%, rgba(4,9,54,0.05) 85%)",
+              "linear-gradient(89.88deg, var(--color-nav-bg) 0%, rgba(9,15,66,0.92) 30%, rgba(9,15,66,0.65) 55%, rgba(9,15,66,0.05) 100%)",
           }}
         />
       </div>

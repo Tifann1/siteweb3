@@ -55,7 +55,7 @@ const TAG_ACCENTS: { bg: string; border: string; text: string }[] = [
 
 // Couleurs d'accentuation des cartes compactes (featured = orange, rest = blue/yellow/green)
 const COMPACT_ACCENTS = [
-  "var(--color-bento-dev-accent)",
+  "var(--color-brand-orange-light)",
   "var(--color-bento-devops-border)",
   "var(--color-offer-green)",
 ];
@@ -202,7 +202,7 @@ function FeaturedEventCard({ item }: { item: EvenementItem }) {
               className="font-ui"
               style={{
                 fontSize: "var(--text-sector-badge)",
-                color: "var(--color-text-muted)",
+                color: "var(--color-text-light)",
               }}
             >
               {item.date.year}
@@ -320,7 +320,7 @@ function CompactEventCard({
             className="font-ui font-semibold uppercase tracking-widest"
             style={{
               fontSize: "var(--text-sector-badge)",
-              color: "var(--color-text-muted)",
+              color: "var(--color-text-light)",
             }}
           >
             {item.date.month} {item.date.year}
@@ -413,7 +413,7 @@ export function SectionEvenements({
               style={{
                 fontSize: "var(--text-nav)",
                 lineHeight: "var(--text-nav--line-height)",
-                color: "var(--color-text-muted)",
+                color: "var(--color-text-light)",
               }}
             >
               {subtitle}

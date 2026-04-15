@@ -32,8 +32,20 @@ const IMG_1 = "/images/references/inpi.webp";
 const IMG_2 = "/images/references/collabs.png";
 const IMG_3 = "/images/references/laposte.jpg";
 const IMG_4 = "/images/references/france-competences.jpg";
+const IMG_5 = "/images/references/inpi-2.webp";
 
 const REFERENCE_CARDS = [
+  {
+    imageSrc: IMG_5,
+    imageAlt: "Armatis — Déploiement IA à grande échelle",
+    logoSrc: "/images/Références/armatis-logo-png_seeklogo-589939.png",
+    logoAlt: "Armatis",
+    category: "IA & Conseil",
+    title: "Armatis, le déploiement de l'IA à grande échelle",
+    statValue: "×3",
+    statLabel: "Vitesse de livraison",
+    ctaHref: "/references/test",
+  },
   {
     imageSrc: IMG_1,
     imageAlt: "Dématérialisation des procédures INPI",
@@ -89,7 +101,7 @@ export default function ReferencesPage() {
         {/* Hero */}
         <HeroSection
           eyebrow="NOS ÉTUDES DE CAS & RÉFÉRENCES"
-          title="L'ingénieur\naugmenté au service\nde vos ambitions."
+          title={"L'ingénieur\naugmenté au service\nde vos ambitions."}
           highlightWord="augmenté"
           description="Nous fusionnons expertise technique industrielle et innovation numérique pour bâtir des solutions robustes, agiles et performantes."
         />
