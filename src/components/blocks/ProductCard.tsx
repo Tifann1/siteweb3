@@ -86,18 +86,9 @@ export function ProductCard({
 
       {/* Contenu (relatif, sur le dégradé) */}
       <div className="relative flex flex-col items-start w-full max-w-[448px]">
-        {/* Icône produit */}
-        <div className="relative bg-card-bg flex items-center justify-center rounded-[var(--radius-offer-img)] size-16 shrink-0 overflow-hidden">
-          {iconSrc ? (
-            <Image src={iconSrc} alt="" fill className="object-contain p-3" />
-          ) : (
-            <DefaultProductIcon />
-          )}
-        </div>
-
         {/* Nom du produit */}
         <h3
-          className="font-sans font-bold text-white mt-6"
+          className="font-sans font-bold text-white mt-2"
           style={{
             fontSize: "var(--text-card-title)",
             lineHeight: "var(--text-card-title--line-height)",

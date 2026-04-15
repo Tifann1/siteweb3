@@ -35,7 +35,7 @@ export function ReferenceCard({
   ctaHref = "#",
 }: ReferenceCardProps) {
   return (
-    <div className="relative flex flex-col isolate items-start overflow-hidden rounded-[var(--radius-input)] bg-deep-navy border border-white/10 w-[384px]">
+    <div className="group relative flex flex-col isolate items-start overflow-hidden rounded-[var(--radius-input)] bg-deep-navy border border-white/10 w-[384px] transition-all duration-300 hover:border-white/25 hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:-translate-y-1">
       {/* Logo client — overlay sur l'image */}
       {logoSrc && (
         <div className="absolute top-[216px] left-[25px] z-10 h-[40px] w-[132px]">
@@ -43,7 +43,7 @@ export function ReferenceCard({
             src={logoSrc}
             alt={logoAlt}
             fill
-            className="object-contain"
+            className="object-contain brightness-0 invert"
           />
         </div>
       )}
@@ -54,7 +54,7 @@ export function ReferenceCard({
           src={imageSrc}
           alt={imageAlt}
           fill
-          className="object-cover"
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
         />
         {/* Gradient de fondu vers le bas */}
         <div

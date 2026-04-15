@@ -130,12 +130,6 @@ export function SectionDirecteurPole({
 
       {/* ── Colonne contenu ───────────────────────────────── */}
       <div className="relative flex flex-1 flex-col justify-center gap-10 px-12 py-16 lg:px-16 lg:py-20">
-        {/* Ligne décorative verticale */}
-        <div
-          aria-hidden="true"
-          className="absolute bottom-16 left-0 top-16 w-px"
-          style={{ backgroundColor: accentColor, opacity: 0.18 }}
-        />
 
         {/* Identité */}
         <div className="flex flex-col gap-1">
@@ -209,8 +203,9 @@ export function SectionDirecteurPole({
               key={i}
               className="flex flex-col gap-1 rounded-[var(--radius-input)] px-5 py-4"
               style={{
-                backgroundColor: "rgba(67, 70, 116, 0.25)",
-                border: `1px solid color-mix(in srgb, ${accentColor} 10%, transparent)`,
+                background: `linear-gradient(135deg, rgba(67, 70, 116, 0.5) 0%, rgba(9, 15, 66, 0.65) 100%)`,
+                border: `1px solid color-mix(in srgb, ${accentColor} 30%, rgba(255,255,255,0.08))`,
+                boxShadow: `0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)`,
               }}
             >
               <span

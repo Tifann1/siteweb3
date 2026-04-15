@@ -7,7 +7,7 @@ export default function ContactPage() {
     <div className="min-h-screen bg-deep-navy flex flex-col">
       <Header />
 
-      <main className="flex flex-col flex-1 items-center justify-center py-20 md:py-28">
+      <main className="flex flex-col flex-1 items-center pt-[calc(var(--header-height)+5rem)] pb-20 md:pb-28">
         <div
           className="flex flex-col gap-12 items-center w-full"
           style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
@@ -24,7 +24,7 @@ export default function ContactPage() {
               className="font-sans text-text-body-warm opacity-80"
               style={{ fontSize: "var(--text-body-lg)", lineHeight: "var(--text-body-lg--line-height)" }}
             >
-              Décrivez-nous votre besoin et un expert DevFun vous répondra sous 24 heures.
+              Décrivez-nous votre besoin et un expert Steamulo vous répondra sous 24 heures.
             </p>
           </div>
 

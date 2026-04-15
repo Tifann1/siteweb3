@@ -53,7 +53,7 @@ export default async function ReferencePage({ params }: ReferencePageProps) {
               primaryLabel="Parlons de votre projet"
               primaryHref="/contact"
               secondaryLabel="Voir nos références"
-              secondaryHref="/all-references"
+              secondaryHref="/references"
             />
           </div>
         </section>

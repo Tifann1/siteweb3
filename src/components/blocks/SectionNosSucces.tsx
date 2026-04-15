@@ -34,7 +34,7 @@ export function SectionNosSucces({
   title = "Nos Succès",
   subtitle = "L'IA concrète au service de nos partenaires.",
   ctaLabel = "Voir tous les cas clients",
-  ctaHref = "/all-references",
+  ctaHref = "/references",
   onCtaClick,
   cards,
 }: SectionNosSuccesProps) {
@@ -159,10 +159,10 @@ export function SectionNosSucces({
               {card.stats.map((stat, j) => (
                 <div
                   key={j}
-                  className="flex-1 flex flex-col rounded-lg px-[17px] pt-[31px] pb-[17px]"
+                  className="flex-1 flex flex-col rounded-lg px-[17px] pt-[31px] pb-[17px] border-0"
                   style={{
                     background:
-                      "linear-gradient(to top, var(--color-stat-card-purple) 0%, rgba(9,15,66,0.4) 60%, rgba(9,15,66,0) 100%)",
+                      "linear-gradient(to top, rgba(67,70,116,0.55) 0%, rgba(9,15,66,0.35) 60%, rgba(9,15,66,0) 100%)",
                   }}
                 >
                   <p

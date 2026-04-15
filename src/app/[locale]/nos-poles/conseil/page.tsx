@@ -146,7 +146,7 @@ export default function PoleConseilPage() {
             title="Nos Succès"
             subtitle="L'IA concrète au service de nos partenaires."
             ctaLabel="Voir tous les cas clients"
-            ctaHref="/nos-references"
+            ctaHref="/references"
             cards={[
               {
                 image: REFERENCE_IMAGE,

@@ -137,49 +137,53 @@ export function SectionBentoGrid({
       {ctaLabel && (
         <Link
           href={ctaHref}
-          className="flex items-center gap-3 h-10 w-[559px] rounded-[var(--radius-input)] border-[0.5px] px-[14px] mt-[50px] text-white"
+          className="group relative flex items-center gap-3 h-10 w-[559px] rounded-[var(--radius-pill-sm)] border px-[14px] mt-[50px] text-white shadow-[var(--shadow-cta)] transition-all"
           style={
             ctaVariant === "yellow"
-              ? {
-                  background: "linear-gradient(to right, var(--color-cta-devops-from), var(--color-cta-devops-to))",
-                  borderColor: "var(--color-bento-devops-border)",
-                }
+              ? { borderColor: "var(--color-bento-devops-border)" }
               : ctaVariant === "blue"
-              ? {
-                  background: "linear-gradient(to right, var(--color-cta-gradient-start), var(--color-tab-active-dev))",
-                  borderColor: "var(--color-bento-dev-border)",
-                }
-              : {
-                  background: "linear-gradient(to right, var(--color-cta-gradient-start), var(--color-cta-orange-deep))",
-                  borderColor: "var(--color-secondary-400)",
-                }
+              ? { borderColor: "var(--color-bento-dev-border)" }
+              : { borderColor: "var(--color-secondary-400)" }
           }
         >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            aria-hidden="true"
-            className="shrink-0"
-          >
-            <path
-              d="M5 12h14M15 8l4 4-4 4"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          {/* Gradient overlay — visible au hover uniquement */}
           <span
-            className="font-body font-semibold"
-            style={{
-              fontSize: "var(--text-nav)",
-              lineHeight: "var(--text-nav--line-height)",
-              textShadow: "var(--shadow-cta)",
-            }}
-          >
-            {ctaLabel}
+            aria-hidden="true"
+            className="absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+            style={
+              ctaVariant === "yellow"
+                ? { background: "linear-gradient(135deg, var(--color-cta-devops-from), var(--color-cta-devops-to))" }
+                : ctaVariant === "blue"
+                ? { background: "linear-gradient(135deg, var(--color-cta-gradient-start), var(--color-tab-active-dev))" }
+                : { background: "linear-gradient(135deg, var(--color-cta-gradient-start), var(--color-cta-orange-deep))" }
+            }
+          />
+          <span className="relative z-10 flex items-center gap-3">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+              className="shrink-0"
+            >
+              <path
+                d="M5 12h14M15 8l4 4-4 4"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span
+              className="font-body font-semibold"
+              style={{
+                fontSize: "var(--text-nav)",
+                lineHeight: "var(--text-nav--line-height)",
+              }}
+            >
+              {ctaLabel}
+            </span>
           </span>
         </Link>
       )}

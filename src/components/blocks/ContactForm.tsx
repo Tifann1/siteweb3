@@ -1,6 +1,7 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useState, useRef, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
@@ -59,6 +60,7 @@ export function ContactForm({
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
@@ -96,7 +98,7 @@ export function ContactForm({
           />
         </div>
 
-        {/* Ligne 2 — Entreprise + Besoin */}
+        {/* Ligne 2 — Entreprise + Budget */}
         <div className="grid grid-cols-2 gap-x-8 w-full">
           <InputField
             id="entreprise"
@@ -106,28 +108,42 @@ export function ContactForm({
             error={errors.entreprise?.message}
             {...register("entreprise")}
           />
-          <SelectField
-            id="besoin"
-            label="Votre Besoin"
-            placeholder="Choisir un type de projet..."
-            options={besoinOptions}
-            error={errors.besoin?.message}
-            {...register("besoin")}
+          <Controller
+            name="budget"
+            control={control}
+            render={({ field }) => (
+              <CustomSelectField
+                id="budget"
+                label="Budget estimé"
+                placeholder="Sélectionner un budget"
+                options={budgetOptions}
+                error={errors.budget?.message}
+                value={field.value}
+                onValueChange={field.onChange}
+                onBlur={field.onBlur}
+              />
+            )}
           />
         </div>
 
-        {/* Ligne 3 — Budget seul (demi-largeur aligné à droite) */}
-        <div className="grid grid-cols-2 gap-x-8 w-full">
-          <SelectField
-            id="budget"
-            label="Budget estimé"
-            placeholder="Sélectionner un budget"
-            options={budgetOptions}
-            error={errors.budget?.message}
-            {...register("budget")}
+        {/* Ligne 3 — Besoin (pleine largeur) */}
+        <div className="w-full">
+          <Controller
+            name="besoin"
+            control={control}
+            render={({ field }) => (
+              <CustomSelectField
+                id="besoin"
+                label="Votre Besoin"
+                placeholder="Choisir un type de projet..."
+                options={besoinOptions}
+                error={errors.besoin?.message}
+                value={field.value}
+                onValueChange={field.onChange}
+                onBlur={field.onBlur}
+              />
+            )}
           />
-          {/* Colonne vide pour conserver l'alignement */}
-          <div />
         </div>
 
         {/* Message */}
@@ -192,19 +208,46 @@ function InputField({ id, label, placeholder, error, ...props }: InputFieldProps
   );
 }
 
-/* ─── SelectField ────────────────────────────────────────────────────────── */
+/* ─── CustomSelectField ──────────────────────────────────────────────────── */
 
-interface SelectFieldProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+interface CustomSelectFieldProps {
   id: string;
   label: string;
   placeholder: string;
   options: SelectOption[];
   error?: string;
+  value?: string;
+  onValueChange: (value: string) => void;
+  onBlur?: () => void;
 }
 
-function SelectField({ id, label, placeholder, options, error, ...props }: SelectFieldProps) {
+function CustomSelectField({
+  id,
+  label,
+  placeholder,
+  options,
+  error,
+  value,
+  onValueChange,
+  onBlur,
+}: CustomSelectFieldProps) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const selected = options.find((o) => o.value === value);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+        onBlur?.();
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onBlur]);
+
   return (
-    <div className="flex flex-col gap-3">
+    <div ref={containerRef} className="flex flex-col gap-3 relative">
       <label
         htmlFor={id}
         className="px-1 font-sans font-semibold text-badge-blue uppercase tracking-widest"
@@ -215,27 +258,43 @@ function SelectField({ id, label, placeholder, options, error, ...props }: Selec
       >
         {label}
       </label>
-      <div className="relative">
-        <select
-          id={id}
-          className="w-full appearance-none bg-card-bg border border-white/15 rounded-[var(--radius-input)] px-[25px] py-[17px] font-sans text-text-heading text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] cursor-pointer focus:outline-none focus:border-brand-orange/50 hover:border-white/30 transition-colors"
-          defaultValue=""
-          {...props}
-        >
-          <option value="" disabled>
-            {placeholder}
-          </option>
+
+      <button
+        id={id}
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between bg-card-bg border border-white/15 rounded-[var(--radius-input)] px-[25px] py-[17px] font-sans text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] cursor-pointer focus:outline-none focus:border-brand-orange/50 hover:border-white/30 transition-colors"
+      >
+        <span className={selected ? "text-text-heading" : "text-text-light/40"}>
+          {selected ? selected.label : placeholder}
+        </span>
+        <ChevronIcon open={open} />
+      </button>
+
+      {open && (
+        <div className="absolute top-full mt-1 w-full z-50 bg-card-bg border border-white/15 rounded-[var(--radius-input)] overflow-hidden shadow-[var(--shadow-card)]">
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => {
+                onValueChange(opt.value);
+                setOpen(false);
+              }}
+              className={[
+                "w-full px-[25px] py-3 text-left font-sans text-[length:var(--text-nav)] transition-colors",
+                opt.value === value
+                  ? "bg-white/10 text-brand-orange-light"
+                  : "text-text-heading hover:bg-white/5",
+              ].join(" ")}
+            >
               {opt.label}
-            </option>
+            </button>
           ))}
-        </select>
-        <ChevronIcon />
-      </div>
-      {error && (
-        <p className="px-1 text-brand-orange text-xs font-body">{error}</p>
+        </div>
       )}
+
+      {error && <p className="px-1 text-brand-orange text-xs font-body">{error}</p>}
     </div>
   );
 }
@@ -278,11 +337,14 @@ function TextareaField({ id, label, placeholder, error, ...props }: TextareaFiel
 
 /* ─── ChevronIcon ────────────────────────────────────────────────────────── */
 
-function ChevronIcon() {
+function ChevronIcon({ open }: { open?: boolean }) {
   return (
-    <div
+    <span
       aria-hidden="true"
-      className="pointer-events-none absolute right-[25px] top-1/2 -translate-y-1/2"
+      className={[
+        "pointer-events-none shrink-0 transition-transform duration-200",
+        open ? "rotate-180" : "",
+      ].join(" ")}
     >
       <svg
         width="12"
@@ -299,6 +361,6 @@ function ChevronIcon() {
           strokeLinejoin="round"
         />
       </svg>
-    </div>
+    </span>
   );
 }
