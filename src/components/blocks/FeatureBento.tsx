@@ -1,0 +1,211 @@
+"use client";
+
+import { useRef } from "react";
+import { motion, useInView, MotionConfig } from "framer-motion";
+
+interface Feature {
+  icon: string;
+  label: string;
+  title: string;
+  description: string;
+  accent: string;
+  /** Si true, la carte occupe 2 colonnes sur desktop */
+  wide?: boolean;
+}
+
+const FEATURES: Feature[] = [
+  {
+    icon: "◈",
+    label: "Agents IA",
+    title: "Agents sur mesure, ancrés dans vos usages",
+    description:
+      "Nous concevons des agents IA qui s'intègrent à vos outils existants — pas des démos, des systèmes en production qui réduisent la charge cognitive de vos équipes.",
+    accent: "var(--color-brand-orange)",
+    wide: true,
+  },
+  {
+    icon: "⬡",
+    label: "Architecture",
+    title: "Scalable par design",
+    description:
+      "Cloud-native, microservices, serverless — nous choisissons l'architecture qui grandit avec vous, pas celle qui impressionne en démo.",
+    accent: "var(--color-bento-dev-accent)",
+  },
+  {
+    icon: "⚙",
+    label: "DevOps",
+    title: "CI/CD & infrastructure as code",
+    description:
+      "Déploiements sans friction, monitoring proactif, rollback en secondes. L'infrastructure n'est plus un frein.",
+    accent: "var(--color-bento-devops-border)",
+  },
+  {
+    icon: "◎",
+    label: "Conseil",
+    title: "Stratégie avant l'exécution",
+    description:
+      "Audit de stack, roadmap technique, choix de modèles IA — nous nous posons les bonnes questions avant d'écrire la première ligne.",
+    accent: "var(--color-offer-green)",
+    wide: true,
+  },
+];
+
+function BentoCard({
+  feature,
+  delay,
+}: {
+  feature: Feature;
+  delay: number;
+}) {
+  return (
+    <motion.article
+      className={[
+        "group relative flex flex-col gap-6 p-8 rounded-[var(--radius-card)] border border-white/8 bg-white/3 overflow-hidden cursor-default",
+        feature.wide ? "md:col-span-2" : "md:col-span-1",
+      ].join(" ")}
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay }}
+      whileHover={{ scale: 1.015 }}
+    >
+      {/* Accent glow au hover */}
+      <motion.div
+        className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[var(--radius-card)]"
+        style={{
+          background: `radial-gradient(ellipse at 30% 40%, ${feature.accent}18 0%, transparent 70%)`,
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Border accent au hover */}
+      <motion.div
+        className="pointer-events-none absolute inset-0 rounded-[var(--radius-card)] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{ boxShadow: `inset 0 0 0 1px ${feature.accent}40` }}
+        aria-hidden="true"
+      />
+
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-3">
+          {/* Label badge */}
+          <span
+            className="font-body font-semibold uppercase tracking-widest"
+            style={{
+              fontSize: "var(--text-badge)",
+              letterSpacing: "0.1em",
+              color: feature.accent,
+            }}
+          >
+            {feature.label}
+          </span>
+
+          {/* Titre */}
+          <h3
+            className="font-sans font-bold text-text-heading"
+            style={{
+              fontSize: "clamp(1.25rem, 2vw, 1.75rem)",
+              lineHeight: 1.2,
+            }}
+          >
+            {feature.title}
+          </h3>
+        </div>
+
+        {/* Icône */}
+        <span
+          className="text-3xl shrink-0 mt-1 opacity-60 group-hover:opacity-100 transition-opacity"
+          style={{ color: feature.accent }}
+          aria-hidden="true"
+        >
+          {feature.icon}
+        </span>
+      </div>
+
+      {/* Description */}
+      <p
+        className="font-body text-text-light/60"
+        style={{
+          fontSize: "var(--text-nav)",
+          lineHeight: "var(--text-nav--line-height)",
+        }}
+      >
+        {feature.description}
+      </p>
+
+      {/* Ligne décorative en bas */}
+      <div className="mt-auto">
+        <motion.div
+          className="h-px w-0 group-hover:w-full transition-all duration-500 rounded-full"
+          style={{ backgroundColor: feature.accent, opacity: 0.4 }}
+          aria-hidden="true"
+        />
+      </div>
+    </motion.article>
+  );
+}
+
+export function FeatureBento() {
+  const ref = useRef<HTMLElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
+  return (
+    <MotionConfig reducedMotion="user">
+      <section
+        ref={ref}
+        className="bg-nav-bg"
+        style={{
+          paddingTop: "6rem",
+          paddingBottom: "6rem",
+          paddingLeft: "var(--page-margin-x)",
+          paddingRight: "var(--page-margin-x)",
+        }}
+        aria-label="Nos expertises"
+      >
+        {/* Header section */}
+        <div className="flex flex-col gap-4 mb-14">
+          <motion.span
+            className="font-body font-semibold text-brand-orange uppercase tracking-widest"
+            style={{ fontSize: "var(--text-badge)", letterSpacing: "0.12em" }}
+            initial={{ opacity: 0, x: -12 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.5 }}
+          >
+            Ce qu&apos;on fait
+          </motion.span>
+
+          <motion.h2
+            className="font-sans font-bold text-text-heading"
+            style={{
+              fontSize: "clamp(2rem, 4vw, 3.5rem)",
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          >
+            Quatre pôles.
+            <br />
+            <span
+              className="bg-clip-text text-transparent"
+              style={{
+                backgroundImage:
+                  "linear-gradient(162.47deg, #FFB692 0%, #FF7E33 100%)",
+              }}
+            >
+              Un seul objectif.
+            </span>
+          </motion.h2>
+        </div>
+
+        {/* Grille bento 3 colonnes */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {FEATURES.map((feature, i) => (
+            <BentoCard key={feature.label} feature={feature} delay={i * 0.1} />
+          ))}
+        </div>
+      </section>
+    </MotionConfig>
+  );
+}
