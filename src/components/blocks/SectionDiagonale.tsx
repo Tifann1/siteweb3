@@ -56,7 +56,8 @@ function ConvictionCard({
   index: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-60px" });
+  // margin: "0px" → la carte se déclenche dès qu'elle entre dans le viewport
+  const isInView = useInView(ref, { once: true, margin: "0px" });
   const isRight = conviction.side === "right";
 
   // Coin coupé : à droite pour side=left, à gauche pour side=right
@@ -121,19 +122,25 @@ function ConvictionCard({
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, x: isRight ? 48 : -48 }}
-      animate={isInView ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.75, ease: EASE, delay: 0.08 * index }}
+      // Atterrissage : part de -90px au-dessus, légèrement réduit → spring avec rebond
+      initial={{ opacity: 0, y: -90, scale: 0.97 }}
+      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+      transition={{
+        type: "spring",
+        damping: 15,
+        stiffness: 100,
+        mass: 1.1,
+        delay: index * 0.15,
+        opacity: { duration: 0.3, ease: "easeOut" },
+      }}
       style={{
         position: "relative",
         clipPath,
-        // Fond légèrement teinté selon l'accent de la conviction
-        background: `linear-gradient(${isRight ? "135deg" : "225deg"}, ${conviction.accent}0C 0%, rgba(255,255,255,0.025) 100%)`,
-        border: "1px solid rgba(255,255,255,0.07)",
+        background: `linear-gradient(${isRight ? "135deg" : "225deg"}, ${conviction.accent}0E 0%, rgba(255,255,255,0.03) 100%)`,
+        border: "1px solid rgba(255,255,255,0.09)",
         marginLeft: isRight ? "auto" : 0,
         marginRight: isRight ? 0 : "auto",
-        // ~72% de la zone de contenu pour laisser de l'espace visuel en dehors
-        maxWidth: "73%",
+        maxWidth: "76%",
         overflow: "hidden",
       }}
     >
@@ -168,15 +175,18 @@ function ConvictionCard({
         style={{
           position: "relative",
           zIndex: 1,
-          padding: `3rem 3.5rem`,
-          paddingTop: isRight ? `calc(3rem + ${CHAMFER * 0.55}px)` : "3rem",
-          paddingLeft: isRight ? `calc(3.5rem + ${CHAMFER * 0.5}px)` : "3.5rem",
-          paddingRight: isRight ? "3.5rem" : `calc(3.5rem + ${CHAMFER * 0.5}px)`,
+          // Padding augmenté — cartes plus épaisses
+          paddingTop: isRight ? `calc(4.5rem + ${CHAMFER * 0.55}px)` : "4.5rem",
+          paddingBottom: "4.5rem",
+          paddingLeft: isRight ? `calc(4rem + ${CHAMFER * 0.5}px)` : "4rem",
+          paddingRight: isRight ? "4rem" : `calc(4rem + ${CHAMFER * 0.5}px)`,
           display: "flex",
           flexDirection: "column",
-          gap: "1.5rem",
+          gap: "2rem",
           alignItems: isRight ? "flex-end" : "flex-start",
           textAlign: isRight ? "right" : "left",
+          minHeight: "260px",
+          justifyContent: "center",
         }}
       >
         {/* Label badge */}
@@ -201,9 +211,9 @@ function ConvictionCard({
           style={{
             fontFamily: "var(--font-sans)",
             fontWeight: 700,
-            fontSize: "clamp(2.25rem, 5vw, 5rem)",
-            letterSpacing: "-0.035em",
-            lineHeight: 1.05,
+            fontSize: "clamp(2.75rem, 5.5vw, 5.5rem)",
+            letterSpacing: "-0.04em",
+            lineHeight: 1.02,
             color: "var(--color-text-heading)",
             margin: 0,
           }}
@@ -337,7 +347,7 @@ export function SectionDiagonale() {
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "1.75rem",
+            gap: "2.5rem",
           }}
         >
           {CONVICTIONS.map((conviction, i) => (

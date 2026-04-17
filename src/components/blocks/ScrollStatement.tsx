@@ -25,8 +25,17 @@ function ScrollWord({
   end: number;
 }) {
   const opacity = useTransform(progress, [start, end], [0.1, 1]);
+  // Blur décroissant : les mots passent de flou à net au fur et à mesure de la lecture
+  const filter = useTransform(
+    progress,
+    [start, end],
+    ["blur(5px)", "blur(0px)"]
+  );
   return (
-    <motion.span style={{ opacity }} className="inline text-text-heading">
+    <motion.span
+      style={{ opacity, filter }}
+      className="inline text-text-heading"
+    >
       {word}{" "}
     </motion.span>
   );

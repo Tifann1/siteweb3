@@ -2,31 +2,44 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { GrainOverlay } from "@/components/ui/GrainOverlay";
 import { ReactiveCursor } from "@/components/ui/ReactiveCursor";
+import { LenisProvider } from "@/components/providers/LenisProvider";
 import { HeroPortfolio } from "@/components/blocks/HeroPortfolio";
 import { InfiniteMarquee } from "@/components/blocks/InfiniteMarquee";
 import { StatsFullSection } from "@/components/blocks/StatsFullSection";
 import { WorkShowcase } from "@/components/blocks/WorkShowcase";
 import { FeatureBento } from "@/components/blocks/FeatureBento";
 import { SectionDiagonale } from "@/components/blocks/SectionDiagonale";
+import { SectionAtelier } from "@/components/blocks/SectionAtelier";
 import { TestimonialBlock } from "@/components/blocks/TestimonialBlock";
 import { CtaAugmented } from "@/components/blocks/CtaAugmented";
 import { ScrollStatement } from "@/components/blocks/ScrollStatement";
 import { ProcessStepper } from "@/components/blocks/ProcessStepper";
+import { FloatingOrbs } from "@/components/ui/FloatingOrbs";
+import { FloatingShapes } from "@/components/ui/FloatingShapes";
 
 export default function AccueilV2Page() {
   return (
-    <div className="bg-nav-bg flex flex-col min-h-screen">
+    <>
+    {/* Orbs ambients — halos colorés */}
+    <FloatingOrbs />
+    {/* Shapes — badges/pills/blobs visibles dans les marges */}
+    <FloatingShapes />
+    <LenisProvider>
+    <div className="relative bg-nav-bg flex flex-col min-h-screen">
       {/* Effets globaux */}
       <GrainOverlay opacity={0.05} />
       <ReactiveCursor />
 
       <Header />
 
-      <main className="flex flex-col flex-1">
+      <main className="relative z-10 flex flex-col flex-1">
         {/* 1. Hero — SplitLine curtain + STEAMULO oversized + CTAs magnétiques */}
         <HeroPortfolio />
 
-        {/* 2. Marquee — stack technique */}
+        {/* 2. Atelier — 4 pôles interactifs, mouse parallax 3D */}
+        <SectionAtelier />
+
+        {/* 3. Marquee — stack technique */}
         <InfiniteMarquee />
 
         {/* 3. Manifeste — scroll-pinned, texte mot par mot, halos parallax */}
@@ -44,7 +57,7 @@ export default function AccueilV2Page() {
         {/* 6. Pôles — bento existant */}
         <FeatureBento />
 
-        {/* 7. Engagements — cartes chamfrées zigzag */}
+        {/* 8. Engagements — cartes chamfrées zigzag */}
         <SectionDiagonale />
 
         {/* 8. Témoignage client */}
@@ -62,5 +75,7 @@ export default function AccueilV2Page() {
         }}
       />
     </div>
+    </LenisProvider>
+    </>
   );
 }

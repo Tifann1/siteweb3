@@ -8,3 +8,19 @@ html,
 body {
   background-color: var(--color-nav-bg);
 }
+
+/* ─── Marquee — keyframes CSS pour pause hover fiable ─── */
+@keyframes marquee-ltr {
+  from { transform: translateX(0%) }
+  to   { transform: translateX(-50%) }
+}
+@keyframes marquee-rtl {
+  from { transform: translateX(-50%) }
+  to   { transform: translateX(0%) }
+}
+
+/* ─── CTA shimmer ─── */
+@keyframes shimmer-slide {
+  from { left: -80% }
+  to   { left: 150% }
+}

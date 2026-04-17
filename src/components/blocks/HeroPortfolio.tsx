@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { motion, MotionConfig } from "framer-motion";
+import { motion, MotionConfig, useScroll, useTransform } from "framer-motion";
 import { HeroHalos } from "@/components/blocks/HeroHalos";
 import { Link } from "@/navigation";
 
@@ -80,6 +80,11 @@ function MagneticWrapper({ children }: { children: React.ReactNode }) {
 }
 
 export function HeroPortfolio() {
+  // T03 — Parallax sur STEAMULO : défile plus lentement que le reste
+  const { scrollY } = useScroll();
+  const steamuloY = useTransform(scrollY, [0, 700], [0, -110]);
+  const steamuloOpacity = useTransform(scrollY, [0, 500], [1, 0]);
+
   return (
     <MotionConfig reducedMotion="user">
       <section
@@ -89,9 +94,10 @@ export function HeroPortfolio() {
         {/* Halos ambiants */}
         <HeroHalos />
 
-        {/* T08 — STEAMULO en texte fantôme oversized */}
-        <div
+        {/* T08 + T03 — STEAMULO fantôme avec parallax au scroll */}
+        <motion.div
           className="pointer-events-none select-none absolute inset-0 flex items-end justify-end overflow-hidden"
+          style={{ y: steamuloY, opacity: steamuloOpacity }}
           aria-hidden="true"
         >
           <span
@@ -108,7 +114,7 @@ export function HeroPortfolio() {
           >
             STEAMULO
           </span>
-        </div>
+        </motion.div>
 
         {/* Contenu principal */}
         <div
@@ -253,7 +259,7 @@ export function HeroPortfolio() {
           </motion.div>
         </div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator — ligne qui pulse + se déplace vers le bas */}
         <motion.div
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
           initial={{ opacity: 0 }}
@@ -264,11 +270,14 @@ export function HeroPortfolio() {
           <span className="font-body text-text-light/40 text-xs tracking-widest uppercase">
             Scroll
           </span>
-          <motion.div
-            className="w-px h-10 bg-gradient-to-b from-text-light/30 to-transparent"
-            animate={{ scaleY: [1, 0.3, 1] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          />
+          <div className="relative w-px h-10 overflow-hidden">
+            <motion.div
+              className="absolute top-0 left-0 w-full bg-gradient-to-b from-text-light/50 to-transparent"
+              animate={{ top: ["-100%", "150%"] }}
+              transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.3 }}
+              style={{ height: "60%" }}
+            />
+          </div>
         </motion.div>
       </section>
     </MotionConfig>
