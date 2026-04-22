@@ -16,6 +16,8 @@ import { ScrollStatement } from "@/components/blocks/ScrollStatement";
 import { ProcessStepper } from "@/components/blocks/ProcessStepper";
 import { FloatingOrbs } from "@/components/ui/FloatingOrbs";
 import { FloatingShapes } from "@/components/ui/FloatingShapes";
+import { BlobPoles } from "@/components/blocks/BlobPoles";
+import { CrystalsScene } from "@/components/blocks/CrystalsScene";
 
 export default function AccueilV2Page() {
   return (
@@ -38,6 +40,12 @@ export default function AccueilV2Page() {
 
         {/* 2. Atelier — 4 pôles interactifs, mouse parallax 3D */}
         <SectionAtelier />
+
+        {/* 2b. Blob Poles — formes organiques interactives */}
+        <BlobPoles />
+
+        {/* 2c. Cristaux 3D — pôles interactifs Three.js */}
+        <CrystalsScene />
 
         {/* 3. Marquee — stack technique */}
         <InfiniteMarquee />
