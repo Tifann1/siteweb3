@@ -9,6 +9,15 @@ body {
   background-color: var(--color-nav-bg);
 }
 
+/* ─── Page margin responsive ─────────────────────────────── */
+/* Mobile : 20px fixes, tablet : 6%, desktop : 20% (token)   */
+@media (max-width: 767px) {
+  :root { --page-margin-x: 1.25rem; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root { --page-margin-x: 6%; }
+}
+
 /* ─── Marquee — keyframes CSS pour pause hover fiable ─── */
 @keyframes marquee-ltr {
   from { transform: translateX(0%) }

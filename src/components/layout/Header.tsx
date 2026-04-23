@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { usePathname } from "@/navigation";
 import { Link } from "@/navigation";
+import { motion } from "framer-motion";
 
 interface NavItem {
   label: string;
@@ -21,7 +22,6 @@ interface HeaderProps {
 }
 
 const DEFAULT_NAV_ITEMS: NavItem[] = [
-  { label: "Ingénieur augmenté", href: "/accueil" },
   { label: "Nos pôles", href: "/nos-poles/conseil", matchPrefix: "/nos-poles" },
   { label: "Nos références", href: "/references", matchPrefix: "/references" },
   { label: "Nos produits IA", href: "/produits", matchPrefix: "/produits" },
@@ -29,7 +29,7 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
 ];
 
 export function Header({
-  logoSrc = "/images/logos/LogoSteamulo.png",
+  logoSrc = "/images/logos/logo Steamulo Pantones + Baseline-blanc (1).png",
   logoAlt = "Steamulo",
   navItems = DEFAULT_NAV_ITEMS,
   ctaLabel = "Je lance mon projet",
@@ -37,81 +37,118 @@ export function Header({
 }: HeaderProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [hiddenForOffers, setHiddenForOffers] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 30);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const offers = document.getElementById("offers-section");
+    if (!offers) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setHiddenForOffers(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    observer.observe(offers);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between bg-transparent pt-4 md:pt-8 lg:pt-10 pb-3 px-4 md:px-[var(--page-margin-x)]"
+        className="fixed top-0 left-0 right-0 z-50 bg-transparent transition-[opacity,transform] duration-500"
+        style={{
+          opacity: hiddenForOffers ? 0 : 1,
+          pointerEvents: hiddenForOffers ? "none" : undefined,
+          transform: hiddenForOffers ? "translateY(-8px)" : "translateY(0)",
+        }}
       >
-        {/* Logo */}
-        <div className="relative h-[50px] w-[106px] shrink-0">
-          <Image
-            src={logoSrc}
-            alt={logoAlt}
-            fill
-            className="object-contain"
-            priority
-          />
-        </div>
-
-        {/* Nav + CTA container — desktop uniquement */}
-        <div className="hidden md:flex items-center gap-[50px] h-[60px] px-[30px] backdrop-blur-[5px] bg-white/10 border border-white/30 rounded-[var(--radius-nav)] shrink-0">
-          {/* Navigation links */}
-          <nav className="flex items-center gap-[35px] pt-[5px]">
-            {navItems.map((item) => {
-              const activeBase = item.matchPrefix ?? item.href;
-              const isActive =
-                pathname === activeBase || pathname.startsWith(activeBase + "/");
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={[
-                    "flex flex-col h-[26px] items-start shrink-0 text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] font-sans whitespace-nowrap transition-colors",
-                    isActive
-                      ? "text-brand-orange-light border-b-2 border-brand-orange pb-[6px]"
-                      : "text-text-light pb-[4px] hover:text-brand-orange-light",
-                  ].join(" ")}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Right section : CTA + WTTJ */}
-          <div className="flex items-center gap-[13px] shrink-0">
-            <Link
-              href={ctaHref}
-              className="flex items-center justify-center px-[17px] py-[5px] bg-gradient-to-b from-[var(--color-brand-orange-cta-from)] to-[var(--color-brand-orange-cta-to)] rounded-[var(--radius-cta)] shadow-[var(--shadow-cta)] text-white text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] font-sans whitespace-nowrap"
-            >
-              {ctaLabel}
-            </Link>
-
-            {/* Logo WTTJ */}
-            <div
-              className="relative h-[30px] w-[80px] shrink-0 rounded-[var(--radius-cta)] overflow-hidden"
-            >
-              <Image
-                src="/images/logos/logoWTTJ.png"
-                alt="Welcome to the Jungle"
-                fill
-                className="object-contain"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Hamburger — mobile uniquement */}
-        <button
-          className="md:hidden flex flex-col gap-[5px] p-2"
-          onClick={() => setMobileOpen(true)}
-          aria-label="Ouvrir le menu"
+        {/* Conteneur centré avec largeur max */}
+        <div
+          className="flex items-center justify-between mx-auto w-full pt-4 md:pt-6 lg:pt-8 pb-3 px-6 md:px-10 lg:px-16"
+          style={{ maxWidth: "1200px" }}
         >
-          <span className="block w-6 h-0.5 bg-white rounded-full" />
-          <span className="block w-6 h-0.5 bg-white rounded-full" />
-          <span className="block w-4 h-0.5 bg-white rounded-full" />
-        </button>
+
+          {/* Logo */}
+          <div className="relative h-[44px] w-[120px] shrink-0">
+            <Image
+              src={logoSrc}
+              alt={logoAlt}
+              fill
+              className="object-contain object-left"
+              priority
+            />
+          </div>
+
+          {/* Nav + CTA container — desktop uniquement */}
+          <motion.div
+            animate={scrolled
+              ? { backdropFilter: "blur(5px)", backgroundColor: "rgba(255,255,255,0.10)", borderColor: "rgba(255,255,255,0.30)" }
+              : { backdropFilter: "blur(0px)", backgroundColor: "rgba(255,255,255,0)", borderColor: "rgba(255,255,255,0)" }
+            }
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="hidden md:flex items-center gap-[50px] h-[60px] px-[30px] border rounded-[var(--radius-nav)] shrink-0"
+          >
+            {/* Navigation links */}
+            <nav className="flex items-center gap-[35px] pt-[5px]">
+              {navItems.map((item) => {
+                const activeBase = item.matchPrefix ?? item.href;
+                const isActive =
+                  pathname === activeBase || pathname.startsWith(activeBase + "/");
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={[
+                      "flex flex-col h-[26px] items-start shrink-0 text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] font-sans whitespace-nowrap transition-colors",
+                      isActive
+                        ? "text-brand-orange-light border-b-2 border-brand-orange pb-[6px]"
+                        : "text-text-light pb-[4px] hover:text-brand-orange-light",
+                    ].join(" ")}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Right section : CTA + WTTJ */}
+            <div className="flex items-center gap-[13px] shrink-0">
+              <Link
+                href={ctaHref}
+                className="flex items-center justify-center px-[17px] py-[5px] bg-gradient-to-b from-[var(--color-brand-orange-cta-from)] to-[var(--color-brand-orange-cta-to)] rounded-[var(--radius-cta)] shadow-[var(--shadow-cta)] text-white text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] font-sans whitespace-nowrap"
+              >
+                {ctaLabel}
+              </Link>
+
+              {/* Logo WTTJ */}
+              <div className="relative h-[30px] w-[80px] shrink-0 rounded-[var(--radius-cta)] overflow-hidden">
+                <Image
+                  src="/images/logos/logoWTTJ.png"
+                  alt="Welcome to the Jungle"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Hamburger — mobile uniquement */}
+          <button
+            className="md:hidden flex flex-col gap-[5px] p-2"
+            onClick={() => setMobileOpen(true)}
+            aria-label="Ouvrir le menu"
+          >
+            <span className="block w-6 h-0.5 bg-white rounded-full" />
+            <span className="block w-6 h-0.5 bg-white rounded-full" />
+            <span className="block w-4 h-0.5 bg-white rounded-full" />
+          </button>
+        </div>
       </header>
 
       {/* Menu mobile overlay */}
