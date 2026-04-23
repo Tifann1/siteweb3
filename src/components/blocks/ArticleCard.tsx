@@ -6,7 +6,9 @@ import Image from "next/image";
 
 export interface ArticleCardProps {
   /** URL image de couverture */
-  imageSrc: string;
+  imageSrc?: string;
+  /** URL vidéo de couverture (prioritaire sur imageSrc) */
+  videoSrc?: string;
   imageAlt?: string;
   /** Catégorie (ex: "Engineering") */
   category: string;
@@ -25,6 +27,7 @@ export interface ArticleCardProps {
 
 export function ArticleCard({
   imageSrc,
+  videoSrc,
   imageAlt = "",
   category,
   date,
@@ -36,14 +39,25 @@ export function ArticleCard({
 }: ArticleCardProps) {
   return (
     <article className="flex flex-col gap-6 items-start">
-      {/* Image + badge catégorie */}
+      {/* Media + badge catégorie */}
       <div className="relative bg-article-img-bg rounded-[12px] overflow-hidden w-full h-[450px] shrink-0">
-        <Image
-          src={imageSrc}
-          alt={imageAlt}
-          fill
-          className="object-cover [filter:grayscale(1)]"
-        />
+        {videoSrc ? (
+          <video
+            src={videoSrc}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover [filter:grayscale(1)]"
+          />
+        ) : imageSrc ? (
+          <Image
+            src={imageSrc}
+            alt={imageAlt}
+            fill
+            className="object-cover [filter:grayscale(1)]"
+          />
+        ) : null}
         {/* Overlay mix-blend-saturation (renforce le N&B) */}
         <div className="absolute inset-0 bg-white mix-blend-saturation pointer-events-none" />
         {/* Badge catégorie */}

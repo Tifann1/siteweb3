@@ -5,8 +5,7 @@ import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { ReferenceHero } from "@/components/blocks/ReferenceHero";
 import { LogoBanner, type LogoItem } from "@/components/blocks/LogoBanner";
-import { QuoteBlock } from "@/components/blocks/QuoteBlock";
-import { ReferenceBento } from "@/components/blocks/ReferenceBento";
+import { QuoteBentoSection } from "@/components/blocks/QuoteBentoSection";
 import { AugmentedSection } from "@/components/blocks/AugmentedSection";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
 
@@ -53,17 +52,11 @@ export default function ReferencesTestPage() {
           <LogoBanner logos={PARTNER_LOGOS} duration={25} />
         </div>
 
-        {/* Quote — sticky scroll */}
+        {/* Quote + Bento — section sticky combinée */}
         <div className="w-full max-w-[1045px] mx-auto">
-          <QuoteBlock
+          <QuoteBentoSection
             quote="L'intégration d'une intelligence artificielle au cœur des process ouvre des perspectives fortes en matière de performance, de qualité de service et d'accompagnement des conseillers"
             attribution="Strategic Vision 2025"
-          />
-        </div>
-
-        {/* Bento */}
-        <section className="flex flex-col gap-6 w-full max-w-[1045px] mx-auto">
-          <ReferenceBento
             expertImageSrc={EXPERT_IMAGE}
             expertImageAlt="Emeric, Chef de projet"
             expertName="Emeric"
@@ -93,7 +86,7 @@ export default function ReferencesTestPage() {
             brandSubtitle="Uncompromising Reliability by Design"
             brandCtaLabel="Download Portfolio"
           />
-        </section>
+        </div>
 
         {/* Section Ingénieur Augmenté */}
         <section className="w-full max-w-[1165px] mx-auto">

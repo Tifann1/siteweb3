@@ -70,7 +70,8 @@ export default async function ActualitePage() {
             <div className="max-w-[1280px] mx-auto px-6 md:px-8">
               <ArticlesFeaturedSection
                 featured={{
-                  imageSrc: featured.imageSrc ?? "/images/actualite/placeholder.jpg",
+                  imageSrc: featured.imageSrc,
+                  videoSrc: featured.videoSrc,
                   category: featured.category,
                   date: formatDate(featured.date, locale),
                   readingTime: featured.readingTime,
@@ -79,7 +80,7 @@ export default async function ActualitePage() {
                   ctaHref: `/actualite/${featured.slug}`,
                 }}
                 recentArticles={rest.map((a) => ({
-                  imageSrc: a.imageSrc ?? "/images/actualite/placeholder.jpg",
+                  imageSrc: a.imageSrc,
                   category: a.category,
                   title: a.title[locale],
                   href: `/actualite/${a.slug}`,

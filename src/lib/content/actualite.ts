@@ -14,7 +14,7 @@ export const articles: Article[] = [
     category: "Engineering",
     date: "2024-05-12",
     readingTime: 8,
-    imageSrc: "/images/actualite/ia-industrie.jpg",
+    videoSrc: "/images/actualite/TEASING_EP1.mov",
   },
   {
     slug: "edge-computing-latence-usines-connectees",
@@ -29,7 +29,7 @@ export const articles: Article[] = [
     category: "IoT",
     date: "2024-04-08",
     readingTime: 5,
-    imageSrc: "/images/actualite/edge-computing.jpg",
+    imageSrc: "/images/actualite/actualite-1.png",
   },
   {
     slug: "lancement-steampulse-tableau-de-bord-ia",
@@ -44,7 +44,7 @@ export const articles: Article[] = [
     category: "Produit",
     date: "2024-03-21",
     readingTime: 4,
-    imageSrc: "/images/actualite/steampulse.jpg",
+    imageSrc: "/images/actualite/actualite-2.png",
   },
   {
     slug: "gouvernance-donnees-2024-secteur-public",
@@ -59,6 +59,6 @@ export const articles: Article[] = [
     category: "Data",
     date: "2024-02-14",
     readingTime: 6,
-    imageSrc: "/images/actualite/gouvernance-donnees.jpg",
+    imageSrc: "/images/actualite/actualite-3.png",
   },
 ];

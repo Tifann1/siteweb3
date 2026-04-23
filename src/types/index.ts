@@ -69,4 +69,6 @@ export interface Article {
   readingTime?: number;
   /** Chemin vers l'image de couverture */
   imageSrc?: string;
+  /** Chemin vers la vidéo de couverture (prioritaire sur imageSrc) */
+  videoSrc?: string;
 }

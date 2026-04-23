@@ -6,7 +6,7 @@ import { ArticleCard, type ArticleCardProps } from "./ArticleCard";
 import { RecentArticleItem } from "@/components/ui/RecentArticleItem";
 
 export interface RecentArticle {
-  imageSrc: string;
+  imageSrc?: string;
   imageAlt?: string;
   category: string;
   title: string;
