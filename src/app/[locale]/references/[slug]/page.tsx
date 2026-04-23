@@ -2,6 +2,7 @@ import { references } from "@/lib/content/references";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { PageTransition } from "@/components/layout/PageTransition";
 import { ReferenceHero } from "@/components/blocks/ReferenceHero";
 import { QuoteBlock } from "@/components/blocks/QuoteBlock";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
@@ -24,6 +25,7 @@ export default async function ReferencePage({ params }: ReferencePageProps) {
     <div className="min-h-screen bg-deep-navy flex flex-col">
       <Header ctaLabel="Je lance mon projet" ctaHref="/contact" />
 
+      <PageTransition className="flex flex-col flex-1">
       <main className="flex flex-col flex-1">
         {/* Hero avec image de la référence en fond */}
         <ReferenceHero
@@ -58,6 +60,7 @@ export default async function ReferencePage({ params }: ReferencePageProps) {
           </div>
         </section>
       </main>
+      </PageTransition>
 
       <Footer
         copyright="©2025 Steamulo"

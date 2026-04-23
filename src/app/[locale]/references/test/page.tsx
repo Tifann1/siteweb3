@@ -2,17 +2,26 @@
 
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { PageTransition } from "@/components/layout/PageTransition";
 import { ReferenceHero } from "@/components/blocks/ReferenceHero";
+import { LogoBanner, type LogoItem } from "@/components/blocks/LogoBanner";
 import { QuoteBlock } from "@/components/blocks/QuoteBlock";
 import { ReferenceBento } from "@/components/blocks/ReferenceBento";
 import { AugmentedSection } from "@/components/blocks/AugmentedSection";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
 
-// ⚠ URLs Figma — expirent dans 7 jours. Remplacer par /public/images/*.
-const HERO_BG =
-  "https://www.figma.com/api/mcp/asset/bfb491ec-d36f-42fe-aceb-87b786d49500";
-const EXPERT_IMAGE =
-  "https://www.figma.com/api/mcp/asset/fb12da95-1cb3-4dbc-961d-554222d3714e";
+const PARTNER_LOGOS: LogoItem[] = [
+  { src: "/images/logos/carrefour.svg", alt: "Carrefour", width: 100, height: 30 },
+  { src: "/images/logos/inpi.svg", alt: "INPI", width: 55, height: 30 },
+  { src: "/images/logos/bpce.svg", alt: "BPCE", width: 80, height: 30 },
+  { src: "/images/logos/fdj.svg", alt: "FDJ", width: 50, height: 30 },
+  { src: "/images/logos/laposte.svg", alt: "La Poste", width: 90, height: 30 },
+  { src: "/images/logos/bienveo.png", alt: "Bienveo", width: 80, height: 30 },
+  { src: "/images/logos/marketpay.svg", alt: "MarketPay", width: 100, height: 30 },
+];
+
+const HERO_BG = "/images/references/inpi-2.webp";
+const EXPERT_IMAGE = "/images/team/emeric.png";
 const BRAND_LOGO =
   "https://www.figma.com/api/mcp/asset/100e224e-88ce-4d3c-a831-b974ea920cb7";
 const ICON_COPILOT =
@@ -27,6 +36,7 @@ export default function ReferencesTestPage() {
     <div className="min-h-screen bg-deep-navy flex flex-col">
       <Header ctaLabel="Je lance mon projet" ctaHref="/contact" />
 
+      <PageTransition className="flex flex-col flex-1">
       <main className="flex flex-col gap-[120px] px-[32px] pb-[80px]">
         {/* Hero */}
         <ReferenceHero
@@ -38,6 +48,11 @@ export default function ReferencesTestPage() {
           backgroundImageAlt="Équipe Armatis en opération"
         />
 
+        {/* Bandeau logos partenaires */}
+        <div className="py-10">
+          <LogoBanner logos={PARTNER_LOGOS} duration={25} />
+        </div>
+
         {/* Quote + Bento */}
         <section className="flex flex-col gap-6 w-full max-w-[1045px] mx-auto">
           <QuoteBlock
@@ -47,8 +62,8 @@ export default function ReferencesTestPage() {
 
           <ReferenceBento
             expertImageSrc={EXPERT_IMAGE}
-            expertImageAlt="Sophie Vasseur, Head of Strategy"
-            expertName="Sophie Vasseur"
+            expertImageAlt="Emeric, Chef de projet"
+            expertName="Emeric"
             expertRole="Head of Strategy"
             expertBio="Spécialiste en prospective technologique et pilotage de roadmaps IA complexes."
             featureCardTitle="Une plateforme métier augmentée"
@@ -127,6 +142,7 @@ export default function ReferencesTestPage() {
           />
         </section>
       </main>
+      </PageTransition>
 
       <Footer
         copyright="©2025 Steamulo"

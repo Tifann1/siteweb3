@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 export interface FilterChip {
   label: string;
@@ -48,15 +49,18 @@ export function ReferenceFilterBar({
           {row.map((chip) => {
             const isActive = active.includes(chip.value);
             return (
-              <button
+              <motion.button
                 key={chip.value}
                 type="button"
                 onClick={() => toggle(chip.value)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
                 className={[
-                  "flex items-center gap-2 px-4 py-[6px] rounded-full transition-all duration-200",
+                  "flex items-center gap-2 px-4 py-[6px] rounded-full transition-colors duration-200 cursor-pointer",
                   isActive
                     ? "bg-meta-secondary"
-                    : "bg-badge-blue-bg",
+                    : "bg-badge-blue-bg hover:bg-badge-blue-bg/80",
                 ].join(" ")}
               >
                 <span
@@ -75,7 +79,7 @@ export function ReferenceFilterBar({
                 >
                   {chip.label}
                 </span>
-              </button>
+              </motion.button>
             );
           })}
         </div>

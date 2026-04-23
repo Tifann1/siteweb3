@@ -270,44 +270,46 @@ export function SectionAugmentedDev({
             })}
           </div>
 
-          {/* Tech cards row — répondent au carrousel (activeIndex) */}
+          {/* Tech cards — même displayOrder que les steps, tournent en sync */}
           <div className="flex gap-5 items-center w-full">
-            {techCards.map((card, i) => (
-              <motion.div
-                key={i}
-                animate={{ opacity: i === activeIndex ? 1 : 0.35 }}
-                transition={{ duration: 0.25 }}
-                onClick={() => setActiveIndex(i)}
-                className="bg-deep-navy border border-white/5 flex flex-1 gap-5 items-center justify-center px-[41px] py-[25px] rounded-[var(--radius-card)] cursor-pointer"
-              >
-                <div
-                  className="shrink-0"
-                  style={{ color: accentColor }}
+            {displayOrder.map((originalIndex) => {
+              const card = techCards[originalIndex]
+              const isActive = originalIndex === activeIndex
+              return (
+                <motion.div
+                  key={originalIndex}
+                  layout
+                  transition={SPRING}
+                  animate={{ opacity: isActive ? 1 : 0.35 }}
+                  onClick={() => setActiveIndex(originalIndex)}
+                  className="bg-deep-navy border border-white/5 flex flex-1 gap-5 items-center justify-center px-[41px] py-[25px] rounded-[var(--radius-card)] cursor-pointer"
                 >
-                  {card.icon}
-                </div>
-                <div className="flex flex-col items-start flex-1">
-                  <p
-                    className="font-sans text-text-heading"
-                    style={{
-                      fontSize: "var(--text-nav)",
-                      lineHeight: "var(--text-nav--line-height)",
-                    }}
-                  >
-                    {card.title}
-                  </p>
-                  <p
-                    className="font-sans text-text-muted"
-                    style={{
-                      fontSize: "var(--text-label)",
-                      lineHeight: "var(--text-label--line-height)",
-                    }}
-                  >
-                    {card.subtitle}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+                  <div className="shrink-0" style={{ color: accentColor }}>
+                    {card.icon}
+                  </div>
+                  <div className="flex flex-col items-start flex-1">
+                    <p
+                      className="font-sans text-text-heading"
+                      style={{
+                        fontSize: "var(--text-nav)",
+                        lineHeight: "var(--text-nav--line-height)",
+                      }}
+                    >
+                      {card.title}
+                    </p>
+                    <p
+                      className="font-sans text-text-muted"
+                      style={{
+                        fontSize: "var(--text-label)",
+                        lineHeight: "var(--text-label--line-height)",
+                      }}
+                    >
+                      {card.subtitle}
+                    </p>
+                  </div>
+                </motion.div>
+              )
+            })}
           </div>
         </div>
       </div>

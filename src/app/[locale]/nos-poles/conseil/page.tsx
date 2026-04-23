@@ -8,25 +8,12 @@ import { SectionDirecteurPole } from "@/components/blocks/SectionDirecteurPole";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
 import { SectionBentoGrid } from "@/components/blocks/SectionBentoGrid";
 import { FeatureBento } from "@/components/blocks/FeatureBento";
-import { IntegrationSchema } from "@/components/blocks/IntegrationSchema";
 import { SectionNosSucces } from "@/components/blocks/SectionNosSucces";
+import { SectionAugmentedDev } from "@/components/blocks/SectionAugmentedDev";
 import { ScrollRevealSection } from "@/components/blocks/ScrollRevealSection";
 import { PoleIdentityBanner } from "@/components/blocks/PoleIdentityBanner";
 import { PoleTabsNavWrapper } from "./PoleTabsNavWrapper";
 
-// ⚠ Assets Figma — expirent dans 7 jours. Remplacer par /public/ avant mise en prod.
-const ICON_ANALYSE =
-  "https://www.figma.com/api/mcp/asset/98e8c280-f348-44b7-a7dd-ccb62777c876";
-const ICON_CONCEPTION =
-  "https://www.figma.com/api/mcp/asset/32556cd1-5415-40c9-934f-1101f0a59745";
-const ICON_PILOTAGE =
-  "https://www.figma.com/api/mcp/asset/8db3aa91-8feb-40aa-afa7-e2ed1720e431";
-const ICON_INSIGHTS =
-  "https://www.figma.com/api/mcp/asset/b3a7fcb7-2beb-4293-af87-7788c0ce5145";
-const ICON_ROADMAP =
-  "https://www.figma.com/api/mcp/asset/a44155be-2645-40fa-a9c6-2cd116618a21";
-const ICON_ROI =
-  "https://www.figma.com/api/mcp/asset/6a070cee-f136-4e2e-97f5-3a38666ebbf7";
 const TEAM_PHOTO =
   "https://www.figma.com/api/mcp/asset/c59d9ca1-e33b-4ab1-b16e-d8b34e291938";
 const REFERENCE_IMAGE =
@@ -114,51 +101,82 @@ export default function PoleConseilPage() {
         {/* SpecialConseil — expertise bento avec flip au scroll */}
         <FeatureBento />
 
-        {/* Section Integration Schema — Des agents IA de l'idée à l'impact */}
-        <IntegrationSchema
-          title="Des agents IA de l'idée à l'impact"
-          description="Nous cadrons, concevons et déployons des agents IA utiles, pensés pour vos métiers, vos équipes et vos résultats."
-          steps={[
-            {
-              iconSrc: ICON_ANALYSE,
-              iconAlt: "Analyse",
-              title: "Analyse des usages",
-              description:
-                "Nous identifions vos cas d'usage prioritaires et les opportunités d'automatisation à plus forte valeur.",
-            },
-            {
-              iconSrc: ICON_CONCEPTION,
-              iconAlt: "Conception",
-              title: "Conception de l'agent IA",
-              description:
-                "Nous cadrons le besoin, définissons les flux, les données et les interactions pour concevoir un agent IA activable.",
-            },
-            {
-              iconSrc: ICON_PILOTAGE,
-              iconAlt: "Pilotage",
-              title: "Pilotage de la valeur",
-              description:
-                "Nous mesurons l'impact réel de vos agents IA sur vos opérations, vos délais et votre performance métier.",
-            },
-          ]}
-          miniCards={[
-            {
-              iconSrc: ICON_INSIGHTS,
-              title: "Insights rapides",
-              subtitle: "Analyse métier assistée",
-            },
-            {
-              iconSrc: ICON_ROADMAP,
-              title: "Roadmap IA",
-              subtitle: "Priorisation des usages",
-            },
-            {
-              iconSrc: ICON_ROI,
-              title: "ROI suivi",
-              subtitle: "Décision pilotée par la donnée",
-            },
-          ]}
-        />
+        {/* Section Augmented — Notre approche conseil */}
+        <section className="py-16 md:py-24">
+          <SectionAugmentedDev
+            accentColor="var(--color-tab-active)"
+            heading="La méthode derrière chaque transformation"
+            subheading="Nous ne livrons pas des recommandations. Nous co-construisons des transformations durables, outillées par l'IA, mesurées par des résultats concrets."
+            steps={[
+              {
+                icon: (
+                  <svg width="27" height="27" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.5" />
+                    <path d="M16.5 16.5L21 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    <path d="M11 8v3l2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ),
+                title: "Diagnostic augmenté",
+                description:
+                  "Nos outils IA analysent vos processus, vos données et vos enjeux métier pour identifier rapidement les leviers de transformation à fort impact.",
+              },
+              {
+                icon: (
+                  <svg width="27" height="27" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+                    <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+                  </svg>
+                ),
+                title: "Conception sur mesure",
+                description:
+                  "Nous concevons des agents IA et des solutions adaptés à vos contraintes opérationnelles, vos équipes et vos objectifs stratégiques.",
+              },
+              {
+                icon: (
+                  <svg width="27" height="27" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M3 3v18h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    <path d="M7 16l4-5 4 3 4-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ),
+                title: "Pilotage de l'impact",
+                description:
+                  "Nous mesurons en continu la valeur générée — gains de productivité, réduction des délais, amélioration de la qualité — et ajustons la trajectoire.",
+              },
+            ]}
+            techCards={[
+              {
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ),
+                title: "Insights stratégiques",
+                subtitle: "Analyse IA des enjeux",
+              },
+              {
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                    <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                ),
+                title: "Roadmap IA",
+                subtitle: "Priorisation & séquençage",
+              },
+              {
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26C17.81 13.47 19 11.38 19 9c0-3.87-3.13-7-7-7z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+                    <path d="M9 21h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                ),
+                title: "ROI mesuré",
+                subtitle: "KPIs & impact réel",
+              },
+            ]}
+          />
+        </section>
 
         {/* Bulle deep-navy → NosSucces + Directeur + CTA */}
         <ScrollRevealSection>
