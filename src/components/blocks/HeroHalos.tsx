@@ -1,129 +1,158 @@
 "use client";
 
-import { motion, MotionConfig } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { MotionConfig } from "framer-motion";
 
 /**
- * Halos lumineux flottants — HeroSection (Client Component).
+ * HeroHalos — 3 halos oranges animés (Client Component).
  *
- * Palette du blanc chaud (#DFE1F8) vers l'orange (#FF7E33) — tokens DS.
- * Animation : initial → animate + repeatType:"mirror" pour un pendule propre.
- * Amplitude : ≥ 60px pour que le flottement soit perceptible à travers le blur.
+ * Trajectoires Lissajous (sin/sin) pour un mouvement organique en 8.
+ * Mise à jour via style.transform direct sur un <div> ref — zéro overhead
+ * Framer Motion sur le hot path.
+ *
+ * Respecte prefers-reduced-motion : RAF non lancé si activé.
  */
 
 interface HaloConfig {
   color: string;
   size: number;
   blur: number;
-  /** Position de repos (CSS absolu) */
-  position: React.CSSProperties;
-  /** Demi-amplitude verticale en px */
-  ampY: number;
-  /** Demi-amplitude horizontale en px */
+  opacity: number;
+  /** Centre de l'orbite en fraction [0,1] du conteneur */
+  centerX: number;
+  centerY: number;
+  /** Amplitude en fraction [0,1] du conteneur */
   ampX: number;
-  /** Durée du cycle Y (s) */
-  durationY: number;
-  /** Durée du cycle X (s) — différente de Y pour un trajet non-linéaire */
-  durationX: number;
-  delay: number;
+  ampY: number;
+  /** Fréquences angulaires (rad/ms) — ratios irrationnels pour éviter la boucle */
+  freqX: number;
+  freqY: number;
+  /** Phases initiales (rad) pour désynchroniser les halos */
+  phaseX: number;
+  phaseY: number;
 }
 
 const HALOS: HaloConfig[] = [
   {
-    // HALO 1 — blanc chaud, derrière le titre.
-    color: "rgba(223, 225, 248, 0.20)",
-    size: 700,
+    color: "#FF7E33",
+    size: 480,
+    blur: 100,
+    opacity: 0.45,
+    centerX: 0.3,
+    centerY: 0.4,
+    ampX: 0.4,
+    ampY: 0.35,
+    freqX: 0.00018,
+    freqY: 0.00025,
+    phaseX: 0,
+    phaseY: 0,
+  },
+  {
+    color: "#FF6B35",
+    size: 380,
     blur: 80,
-    position: { left: "12%", top: "18%" },
-    ampY: 80,
-    ampX: 30,
-    durationY: 12,
-    durationX: 17,   // ratio irrationnel → trajet elliptique libre
-    delay: 0,
+    opacity: 0.35,
+    centerX: 0.7,
+    centerY: 0.55,
+    ampX: 0.35,
+    ampY: 0.4,
+    freqX: 0.00022,
+    freqY: 0.00015,
+    phaseX: 1.2,
+    phaseY: 2.4,
   },
   {
-    // HALO 2 — beige, coin haut-droite.
-    color: "rgba(223, 192, 179, 0.18)",
-    size: 500,
-    blur: 70,
-    position: { right: "5%", top: "-5%" },
-    ampY: 70,
-    ampX: 35,        // réduit pour rester dans le viewport
-    durationY: 10,
-    durationX: 15,
-    delay: 2.5,
-  },
-  {
-    // HALO 3 — pêche, bas-gauche.
-    color: "rgba(255, 182, 146, 0.18)",
-    size: 560,
-    blur: 80,
-    position: { left: "5%", bottom: "8%" },
-    ampY: 90,
-    ampX: 40,        // réduit pour rester dans le viewport
-    durationY: 14,
-    durationX: 9,
-    delay: 1.2,
-  },
-  {
-    // HALO 4 — orange, bas-droite.
-    color: "rgba(255, 126, 51, 0.14)",
-    size: 460,
-    blur: 70,
-    position: { right: "8%", bottom: "12%" },
-    ampY: 65,
-    ampX: 30,        // réduit pour rester dans le viewport
-    durationY: 11,
-    durationX: 16,
-    delay: 4,
+    color: "#FBA275",
+    size: 280,
+    blur: 60,
+    opacity: 0.28,
+    centerX: 0.5,
+    centerY: 0.3,
+    ampX: 0.45,
+    ampY: 0.3,
+    freqX: 0.00015,
+    freqY: 0.0002,
+    phaseX: 2.6,
+    phaseY: 1.0,
   },
 ];
+
+interface SingleHaloProps {
+  config: HaloConfig;
+}
+
+function SingleHalo({ config }: SingleHaloProps) {
+  const divRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (prefersReduced) return;
+
+    const el = divRef.current;
+    if (!el) return;
+
+    // Opacité fixe au mount
+    el.style.opacity = String(config.opacity);
+
+    let rafId: number | null = null;
+    let mounted = true;
+
+    const tick = (t: number) => {
+      if (!mounted) return;
+
+      const parent = el.parentElement;
+      const w = parent?.clientWidth ?? window.innerWidth;
+      const h = parent?.clientHeight ?? window.innerHeight;
+
+      const x = config.centerX * w + config.ampX * w * Math.sin(config.freqX * t + config.phaseX);
+      const y = config.centerY * h + config.ampY * h * Math.sin(config.freqY * t + config.phaseY);
+
+      // Centre le halo sur le point calculé (décalage de -50% de sa propre taille)
+      const half = config.size / 2;
+      el.style.transform = `translate(${x - half}px, ${y - half}px)`;
+
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
+
+    return () => {
+      mounted = false;
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div
+      ref={divRef}
+      aria-hidden="true"
+      className="absolute rounded-full pointer-events-none"
+      style={{
+        width: config.size,
+        height: config.size,
+        background: `radial-gradient(circle, ${config.color} 0%, transparent 70%)`,
+        filter: `blur(${config.blur}px)`,
+        opacity: 0,
+        top: 0,
+        left: 0,
+        willChange: "transform",
+      }}
+    />
+  );
+}
 
 export function HeroHalos() {
   return (
     <MotionConfig reducedMotion="user">
-      {/*
-       * overflow-hidden : empêche les halos de créer une scrollbar horizontale.
-       * Les amplitudes x sont calibrées pour rester dans le viewport même avec ce clip.
-       */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
       >
         {HALOS.map((halo, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              width: halo.size,
-              height: halo.size,
-              background: `radial-gradient(circle, ${halo.color} 0%, transparent 80%)`,
-              filter: `blur(${halo.blur}px)`,
-              ...halo.position,
-            }}
-            /*
-             * X et Y ont des durées différentes (ratio irrationnel).
-             * Résultat : le halo dessine un trajet elliptique/lissajous
-             * qui ne se répète jamais exactement — mouvement organique.
-             */
-            initial={{ y: -halo.ampY, x: -halo.ampX }}
-            animate={{ y: halo.ampY, x: halo.ampX }}
-            transition={{
-              y: {
-                duration: halo.durationY,
-                repeat: Infinity,
-                repeatType: "mirror",
-                ease: "easeInOut",
-                delay: halo.delay,
-              },
-              x: {
-                duration: halo.durationX,
-                repeat: Infinity,
-                repeatType: "mirror",
-                ease: "easeInOut",
-                delay: halo.delay * 0.7,
-              },
-            }}
-          />
+          <SingleHalo key={i} config={halo} />
         ))}
       </div>
     </MotionConfig>

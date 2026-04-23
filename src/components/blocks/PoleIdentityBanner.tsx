@@ -24,7 +24,7 @@ export interface PoleIdentityBannerProps {
 
 const CONTAINER_VARIANTS = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
+  visible: { transition: { staggerChildren: 0.18 } },
 };
 
 const ITEM_VARIANTS = {
@@ -127,7 +127,7 @@ export function PoleIdentityBanner({
                 {keywords.map((kw) => (
                   <motion.span
                     key={kw}
-                    className="font-ui font-semibold uppercase rounded-full px-4 py-1.5"
+                    className="font-ui font-semibold uppercase rounded-full px-4 py-1.5 cursor-default"
                     style={{
                       fontSize: "var(--text-badge)",
                       letterSpacing: "var(--text-badge--letter-spacing)",
@@ -136,6 +136,12 @@ export function PoleIdentityBanner({
                       border: `1px solid color-mix(in srgb, ${accentColor} 40%, transparent)`,
                     }}
                     variants={ITEM_VARIANTS}
+                    whileHover={{
+                      background: `color-mix(in srgb, ${accentColor} 30%, transparent)`,
+                      borderColor: `color-mix(in srgb, ${accentColor} 80%, transparent)`,
+                      boxShadow: `0 0 10px 0 color-mix(in srgb, ${accentColor} 35%, transparent)`,
+                    }}
+                    transition={{ duration: 0.2 }}
                   >
                     {kw}
                   </motion.span>

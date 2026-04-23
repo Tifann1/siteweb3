@@ -8,6 +8,7 @@ import { HeroSection } from "@/components/blocks/HeroSection";
 import { SectionBentoGrid } from "@/components/blocks/SectionBentoGrid";
 import { SectionAugmentedDev } from "@/components/blocks/SectionAugmentedDev";
 import { SectionNosSucces } from "@/components/blocks/SectionNosSucces";
+import { ScrollRevealSection } from "@/components/blocks/ScrollRevealSection";
 import { SectionDirecteurPole } from "@/components/blocks/SectionDirecteurPole";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
 import { PoleIdentityBanner } from "@/components/blocks/PoleIdentityBanner";
@@ -46,7 +47,7 @@ export default function PoleDeveloppementPage() {
         {/* Identité du pôle */}
         <PoleIdentityBanner
           poleLabel="Développement"
-          accentColor="var(--color-tab-active-dev)"
+          accentColor="var(--color-bento-dev-accent)"
           accentColorLight="var(--color-bento-dev-accent)"
           tagline="Code solide. Agents IA fiables."
           stats={[
@@ -95,69 +96,69 @@ export default function PoleDeveloppementPage() {
           <SectionAugmentedDev accentColor="var(--color-bento-dev-accent)" />
         </section>
 
-        {/* Section Nos Succès (node 533:5467) */}
-        <SectionNosSucces
-          title="Nos Succès"
-          subtitle="L'IA concrète au service de nos partenaires."
-          ctaLabel="Voir tous les cas clients"
-          cards={[
-            {
-              image: "/images/references/inpi.webp",
-              imageAlt: "Application INPI",
-              logo: "/images/logos/inpi.svg",
-              logoAlt: "INPI",
-              sector: "Secteur Public",
-              title: "Application métier de gestion et de paiement",
-              stats: [
-                { value: "+24%", label: "Productivité logistique globale" },
-                { value: "+18%", label: "Réduction du temps de traitement" },
-              ],
-            },
-            {
-              image: "/images/references/bpce.jpg",
-              imageAlt: "Application BPCE",
-              logo: "/images/logos/bpce.svg",
-              logoAlt: "BPCE",
-              sector: "Secteur Privé",
-              title: "Application métier de suivi des clients",
-              stats: [
-                { value: "+24%", label: "Productivité logistique globale" },
-                { value: "+30%", label: "Satisfaction utilisateur" },
-              ],
-            },
-          ]}
-        />
-
-        {/* Section Directeur du Pôle (node 533:5500) */}
-        <SectionDirecteurPole
-          name="Sylvain Gourio"
-          role="Directeur du Pôle Développement"
-          imageSrc="/images/team/sylvain-gourio.png"
-          poleLabel="Développement"
-          accentColor="var(--color-tab-active-dev)"
-          vision="Coder vite c'est bien. Coder juste, c'est mieux. Nous livrons des architectures qui tiennent dans le temps parce que nous refusons la dette technique dès le premier sprint."
-          stats={[
-            { value: "8 ans", label: "Expérience" },
-            { value: "+150", label: "Applis livrées" },
-          ]}
-          ctaLabel="Voir nos réalisations"
-          ctaHref="/references"
-        />
-
-        {/* CTA Banner (node 294:1434) */}
-        <section
-          className="py-16 md:py-24"
-          style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
-        >
-          <CtaBanner
-            title={"Prêt à augmenter\nvos projets ?"}
-            description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
-            primaryLabel="Parlons de votre projet"
-            primaryHref="/contact"
-            secondaryLabel="Voir nos offres"
-            secondaryHref="/contact"
+        {/* Bulle deep-navy → NosSucces + Directeur + CTA */}
+        <ScrollRevealSection>
+          <SectionNosSucces
+            title="Nos Succès"
+            subtitle="L'IA concrète au service de nos partenaires."
+            ctaLabel="Voir tous les cas clients"
+            cards={[
+              {
+                image: "/images/references/inpi.webp",
+                imageAlt: "Application INPI",
+                logo: "/images/logos/inpi.svg",
+                logoAlt: "INPI",
+                sector: "Secteur Public",
+                title: "Application métier de gestion et de paiement",
+                stats: [
+                  { value: "+24%", label: "Productivité logistique globale" },
+                  { value: "+18%", label: "Réduction du temps de traitement" },
+                ],
+              },
+              {
+                image: "/images/references/bpce.jpg",
+                imageAlt: "Application BPCE",
+                logo: "/images/logos/bpce.svg",
+                logoAlt: "BPCE",
+                sector: "Secteur Privé",
+                title: "Application métier de suivi des clients",
+                stats: [
+                  { value: "+24%", label: "Productivité logistique globale" },
+                  { value: "+30%", label: "Satisfaction utilisateur" },
+                ],
+              },
+            ]}
           />
-        </section>
+
+          <SectionDirecteurPole
+            name="Sylvain Gourio"
+            role="Directeur du Pôle Développement"
+            imageSrc="/images/team/sylvain-gourio.png"
+            poleLabel="Développement"
+            accentColor="var(--color-tab-active-dev)"
+            vision="Coder vite c'est bien. Coder juste, c'est mieux. Nous livrons des architectures qui tiennent dans le temps parce que nous refusons la dette technique dès le premier sprint."
+            stats={[
+              { value: "8 ans", label: "Expérience" },
+              { value: "+150", label: "Applis livrées" },
+            ]}
+            ctaLabel="Voir nos réalisations"
+            ctaHref="/references"
+          />
+
+          <section
+            className="py-16 md:py-24"
+            style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+          >
+            <CtaBanner
+              title={"Prêt à augmenter\nvos projets ?"}
+              description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
+              primaryLabel="Parlons de votre projet"
+              primaryHref="/contact"
+              secondaryLabel="Voir nos offres"
+              secondaryHref="/contact"
+            />
+          </section>
+        </ScrollRevealSection>
       </main>
 
       <Footer />

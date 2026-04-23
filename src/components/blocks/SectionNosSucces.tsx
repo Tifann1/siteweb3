@@ -159,14 +159,20 @@ export function SectionNosSucces({
               {card.stats.map((stat, j) => (
                 <div
                   key={j}
-                  className="flex-1 flex flex-col rounded-lg px-[17px] pt-[31px] pb-[17px] border-0"
+                  className="group relative flex-1 flex flex-col rounded-lg px-[17px] pt-[31px] pb-[17px] border-0 overflow-hidden cursor-default"
                   style={{
                     background:
                       "linear-gradient(to top, rgba(67,70,116,0.55) 0%, rgba(9,15,66,0.35) 60%, rgba(9,15,66,0) 100%)",
                   }}
                 >
+                  {/* Hover overlay — lumière contamine vers le haut */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                    style={{ background: "rgba(67,70,116,0.55)" }}
+                  />
                   <p
-                    className="font-sans font-bold text-white"
+                    className="relative font-sans font-bold text-white"
                     style={{
                       fontSize: "var(--text-stat-value)",
                       lineHeight: "var(--text-stat-value--line-height)",
@@ -175,7 +181,7 @@ export function SectionNosSucces({
                     {stat.value}
                   </p>
                   <p
-                    className="font-sans text-text-light mt-1"
+                    className="relative font-sans text-text-light mt-1"
                     style={{
                       fontSize: "var(--text-label)",
                       lineHeight: "var(--text-label--line-height)",

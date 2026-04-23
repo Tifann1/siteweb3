@@ -1,10 +1,18 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, MotionConfig } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  MotionConfig,
+  useMotionValue,
+  type MotionValue,
+} from "framer-motion";
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
-const AUTO_ADVANCE_MS = 4500;
+
+/** Pixels de scroll consommés par étape */
+const SCROLL_PER_STEP = 700;
 
 interface Step {
   id: string;
@@ -70,18 +78,25 @@ const STEPS: Step[] = [
   },
 ];
 
+const N = STEPS.length;
+
+// Hauteur de la zone de scroll : 100vh pour l'affichage sticky + N étapes × SCROLL_PER_STEP
+const OUTER_HEIGHT = `calc(100vh + ${N * SCROLL_PER_STEP}px)`;
+
 /**
  * Bouton de navigation d'étape.
- * Utilise layoutId="step-border" pour que l'indicateur gauche
- * glisse fluidement entre les steps (Framer Motion shared layout).
+ * La barre de progression est pilotée par un MotionValue — binding direct,
+ * sans animation Framer Motion (c'est le scroll qui fixe la valeur).
  */
 function StepButton({
   step,
   isActive,
+  progressValue,
   onClick,
 }: {
   step: Step;
   isActive: boolean;
+  progressValue: MotionValue<number>;
   onClick: () => void;
 }) {
   return (
@@ -93,7 +108,7 @@ function StepButton({
       }}
       aria-pressed={isActive}
     >
-      {/* layoutId — l'indicateur glisse entre les steps sans remontage */}
+      {/* Indicateur gauche — glisse entre les steps via layoutId */}
       {isActive && (
         <motion.div
           layoutId="step-border"
@@ -134,24 +149,19 @@ function StepButton({
           {step.title}
         </span>
 
-        {/* Barre de progression — se remplit sur AUTO_ADVANCE_MS, reset via key */}
+        {/* Barre de progression — scaleX piloté directement par le scroll */}
         <div
           className="h-px w-full rounded-full overflow-hidden"
           style={{ background: "rgba(255,255,255,0.08)" }}
         >
-          {isActive && (
-            <motion.div
-              key={step.id}
-              className="h-full rounded-full"
-              style={{
-                backgroundColor: step.accent,
-                transformOrigin: "left",
-              }}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: AUTO_ADVANCE_MS / 1000, ease: "linear" }}
-            />
-          )}
+          <motion.div
+            className="h-full rounded-full"
+            style={{
+              backgroundColor: step.accent,
+              transformOrigin: "left",
+              scaleX: progressValue,
+            }}
+          />
         </div>
       </div>
     </button>
@@ -285,111 +295,155 @@ function ContentPanel({ step }: { step: Step }) {
 /**
  * ProcessStepper — Notre méthode de collaboration en 4 étapes.
  *
- * Technique principale : AnimatePresence + layoutId
- *   → L'indicateur d'étape "glisse" visuellement (shared layout)
- *   → Le contenu entre/sort avec blur+fade (AnimatePresence mode=wait)
- *
- * Temporalité : avance automatiquement (setInterval 4.5s), resetté au clic.
- * Différence avec la page : seul composant dont l'état change SANS interaction.
+ * Architecture sticky-scroll :
+ *   - L'outer div crée l'espace de scroll (100vh + N × SCROLL_PER_STEP)
+ *   - L'inner div est sticky (top-0, h-screen)
+ *   - Le scroll listener calcule rawProgress [0,1] → stepIndex + stepProgress
+ *   - Les MotionValues des barres sont mises à jour directement (pas d'animation)
+ *   - Le clic sur une étape scroll vers la position correspondante
  */
 export function ProcessStepper() {
-  const [activeId, setActiveId] = useState(STEPS[0].id);
-  const [clickKey, setClickKey] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  // Auto-advance — redémarre proprement quand l'utilisateur clique
+  // Un MotionValue par étape — initialisé en dehors de tout callback (règle des hooks)
+  const p0 = useMotionValue(0);
+  const p1 = useMotionValue(0);
+  const p2 = useMotionValue(0);
+  const p3 = useMotionValue(0);
+  const progressValues: MotionValue<number>[] = [p0, p1, p2, p3];
+
   useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveId((current) => {
-        const idx = STEPS.findIndex((s) => s.id === current);
-        return STEPS[(idx + 1) % STEPS.length].id;
-      });
-    }, AUTO_ADVANCE_MS);
-    return () => clearInterval(timer);
-  }, [clickKey]);
+    const el = containerRef.current;
+    if (!el) return;
 
-  function handleClick(id: string) {
-    setActiveId(id);
-    setClickKey((k) => k + 1);
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const onScroll = () => {
+      const containerTop = el.getBoundingClientRect().top + window.scrollY;
+      const totalScroll = el.offsetHeight - window.innerHeight;
+      const scrolled = Math.max(0, window.scrollY - containerTop);
+      const rawProgress =
+        totalScroll > 0 ? Math.min(1, scrolled / totalScroll) : 0;
+
+      const stepSize = 1 / N;
+      const stepIndex = Math.min(N - 1, Math.floor(rawProgress / stepSize));
+      const stepProgress = prefersReduced
+        ? rawProgress >= (stepIndex + 1) * stepSize
+          ? 1
+          : 0
+        : (rawProgress - stepIndex * stepSize) / stepSize;
+
+      setActiveIndex(stepIndex);
+
+      progressValues.forEach((pv, i) => {
+        if (i < stepIndex) pv.set(1);
+        else if (i === stepIndex) pv.set(stepProgress);
+        else pv.set(0);
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+    // progressValues refs are stable — intentionally omitted from deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function scrollToStep(index: number) {
+    const el = containerRef.current;
+    if (!el) return;
+    const containerTop = el.getBoundingClientRect().top + window.scrollY;
+    const stepSize = 1 / N;
+    const progress = index * stepSize;
+    const totalScroll = el.offsetHeight - window.innerHeight;
+    window.scrollTo({
+      top: containerTop + progress * totalScroll,
+      behavior: "smooth",
+    });
   }
 
-  const activeStep = STEPS.find((s) => s.id === activeId)!;
+  const activeStep = STEPS[activeIndex];
 
   return (
     <MotionConfig reducedMotion="user">
-      <section
-        className="bg-deep-navy"
-        style={{
-          paddingTop: "6rem",
-          paddingBottom: "6rem",
-          paddingLeft: "var(--page-margin-x)",
-          paddingRight: "var(--page-margin-x)",
-        }}
-        aria-label="Notre processus de collaboration"
-      >
-        {/* Header section */}
-        <div className="flex flex-col gap-4 mb-14">
-          <motion.span
-            className="font-body font-semibold text-brand-orange uppercase tracking-widest"
-            style={{ fontSize: "var(--text-badge)", letterSpacing: "0.12em" }}
-            initial={{ opacity: 0, x: -12 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.5 }}
-          >
-            Notre méthode
-          </motion.span>
-
-          <motion.h2
-            className="font-sans font-bold text-text-heading"
-            style={{
-              fontSize: "clamp(2rem, 4vw, 3.5rem)",
-              letterSpacing: "-0.02em",
-              lineHeight: 1.1,
-            }}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.55, ease: EASE, delay: 0.1 }}
-          >
-            Comment on{" "}
-            <span
-              className="bg-clip-text text-transparent"
-              style={{
-                backgroundImage:
-                  "linear-gradient(162.47deg, #FFB692 0%, #FF7E33 100%)",
-              }}
-            >
-              travaille.
-            </span>
-          </motion.h2>
-        </div>
-
-        {/* Grille : navigation gauche (2/5) + contenu droite (3/5) */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-12"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease: EASE, delay: 0.2 }}
+      <div ref={containerRef} className="relative" style={{ height: OUTER_HEIGHT }}>
+        <div className="sticky top-0 h-screen bg-deep-navy flex flex-col justify-center"
+          style={{
+            paddingTop: "6rem",
+            paddingBottom: "6rem",
+            paddingLeft: "var(--page-margin-x)",
+            paddingRight: "var(--page-margin-x)",
+          }}
         >
-          {/* Navigation des étapes */}
-          <div className="md:col-span-2 flex flex-col">
-            {STEPS.map((step) => (
-              <StepButton
-                key={step.id}
-                step={step}
-                isActive={activeId === step.id}
-                onClick={() => handleClick(step.id)}
-              />
-            ))}
+          {/* Header section */}
+          <div className="flex flex-col gap-4 mb-14">
+            <motion.span
+              className="font-body font-semibold text-brand-orange uppercase tracking-widest"
+              style={{ fontSize: "var(--text-badge)", letterSpacing: "0.12em" }}
+              initial={{ opacity: 0, x: -12 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.5 }}
+            >
+              Notre méthode
+            </motion.span>
+
+            <motion.h2
+              className="font-sans font-bold text-text-heading"
+              style={{
+                fontSize: "clamp(2rem, 4vw, 3.5rem)",
+                letterSpacing: "-0.02em",
+                lineHeight: 1.1,
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.55, ease: EASE, delay: 0.1 }}
+            >
+              Comment on{" "}
+              <span
+                className="bg-clip-text text-transparent"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(162.47deg, #FFB692 0%, #FF7E33 100%)",
+                }}
+              >
+                travaille.
+              </span>
+            </motion.h2>
           </div>
 
-          {/* Panel de contenu */}
-          <div className="md:col-span-3">
-            <ContentPanel step={activeStep} />
-          </div>
-        </motion.div>
-      </section>
+          {/* Grille : navigation gauche (2/5) + contenu droite (3/5) */}
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-12"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, ease: EASE, delay: 0.2 }}
+          >
+            {/* Navigation des étapes */}
+            <div className="md:col-span-2 flex flex-col">
+              {STEPS.map((step, i) => (
+                <StepButton
+                  key={step.id}
+                  step={step}
+                  isActive={activeIndex === i}
+                  progressValue={progressValues[i]}
+                  onClick={() => scrollToStep(i)}
+                />
+              ))}
+            </div>
+
+            {/* Panel de contenu */}
+            <div className="md:col-span-3">
+              <ContentPanel step={activeStep} />
+            </div>
+          </motion.div>
+        </div>
+      </div>
     </MotionConfig>
   );
 }

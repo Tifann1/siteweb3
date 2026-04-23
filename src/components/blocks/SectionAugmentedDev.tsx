@@ -1,8 +1,13 @@
+'use client'
+
 // SectionAugmentedDev — node 533:5404
 // Figma: "Développement augmenté par l'IA"
 // Wrapper: px-8, gap-[64px], w-full
 // Inner card: bg-card-bg, border border-white/5, rounded-[24px], p-[49px], gap-[64px]
-// 3 process steps (3-col grid, row h 196px) + 3 tech cards below
+// 3 process steps (carousel) + 3 tech cards below
+
+import React, { useState } from 'react'
+import { motion } from 'framer-motion'
 
 export interface ProcessStep {
   /** SVG icon inline (ReactNode) */
@@ -143,6 +148,8 @@ const DEFAULT_TECH_CARDS: TechCard[] = [
   },
 ];
 
+const SPRING = { type: 'spring' as const, stiffness: 280, damping: 28 }
+
 export function SectionAugmentedDev({
   heading = "Développement augmenté par l'IA",
   subheading = "Nous utilisons l'IA pour accélérer le développement, fiabiliser le code et permettre à nos ingénieurs de se concentrer sur l'architecture et la logique métier.",
@@ -150,6 +157,16 @@ export function SectionAugmentedDev({
   techCards = DEFAULT_TECH_CARDS,
   accentColor = "var(--color-brand-orange)",
 }: SectionAugmentedDevProps) {
+  const [activeIndex, setActiveIndex] = useState(1)
+
+  const count = steps.length
+  // Always render [left, center, right] — center = activeIndex
+  const displayOrder = [
+    (activeIndex - 1 + count) % count,
+    activeIndex,
+    (activeIndex + 1) % count,
+  ]
+
   return (
     <section
       className="flex flex-col gap-16 items-center overflow-hidden w-full"
@@ -191,64 +208,66 @@ export function SectionAugmentedDev({
             }}
           />
 
-          {/* 3 process steps */}
-          <div className="relative grid grid-cols-3 gap-12 w-full" style={{ gridTemplateRows: "196px" }}>
-            {steps.map((step, i) => (
-              <div key={i} className="relative flex flex-col items-center col-span-1 self-center">
-                {/* Icon box — couleur du pôle */}
-                <div className="flex flex-col items-start pb-6 w-20">
-                  <div
-                    className="bg-deep-navy flex items-center justify-center p-px rounded-[16px] size-20 border"
-                    style={{
-                      borderColor: accentColor,
-                      color: accentColor,
-                    }}
-                  >
-                    {step.icon}
-                  </div>
-                </div>
+          {/* 3 process steps — carousel */}
+          <div className="relative grid grid-cols-3 gap-12 w-full min-h-[196px]">
+            {displayOrder.map((originalIndex) => {
+              const step = steps[originalIndex]
+              const isActive = originalIndex === activeIndex
 
-                {/* Title — couleur du pôle */}
-                <div className="flex flex-col items-start pb-2 w-full">
-                  <h3
-                    className="font-sans text-center w-full whitespace-nowrap"
-                    style={{
-                      fontSize: "var(--text-tab)",
-                      color: accentColor,
-                    }}
-                  >
-                    {step.title}
-                  </h3>
-                </div>
-
-                {/* Description */}
-                <p
-                  className="font-sans text-text-body-warm text-center w-full"
-                  style={{
-                    fontSize: "var(--text-nav)",
-                    lineHeight: "var(--text-nav--line-height)",
+              return (
+                <motion.div
+                  key={originalIndex}
+                  layout
+                  transition={SPRING}
+                  animate={{
+                    opacity: isActive ? 1 : 0.45,
+                    scale: isActive ? 1 : 0.88,
                   }}
+                  onClick={() => setActiveIndex(originalIndex)}
+                  className="relative flex flex-col items-center col-span-1 self-center cursor-pointer select-none"
+                  whileHover={!isActive ? { opacity: 0.7 } : undefined}
                 >
-                  {step.description}
-                </p>
+                  {/* Icon box */}
+                  <div className="flex flex-col items-start pb-6 w-20">
+                    <div
+                      className="bg-deep-navy flex items-center justify-center p-px rounded-[16px] size-20 border"
+                      style={{
+                        borderColor: accentColor,
+                        color: accentColor,
+                      }}
+                    >
+                      {step.icon}
+                    </div>
+                  </div>
 
-                {/* Connecting arrows */}
-                {i === 1 && (
-                  <>
-                    <div aria-hidden="true" className="absolute -left-[80px] top-10 flex items-center">
-                      <svg width="28" height="14" viewBox="0 0 28 14" fill="none">
-                        <path d="M0 7h24M20 3l4 4-4 4" stroke="#B8C3FF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </div>
-                    <div aria-hidden="true" className="absolute -right-[80px] top-10 flex items-center">
-                      <svg width="28" height="14" viewBox="0 0 28 14" fill="none">
-                        <path d="M0 7h24M20 3l4 4-4 4" stroke="#B8C3FF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
+                  {/* Title — always readable */}
+                  <div className="flex flex-col items-start pb-2 w-full">
+                    <h3
+                      className="font-sans text-center w-full whitespace-nowrap"
+                      style={{
+                        fontSize: "var(--text-tab)",
+                        color: accentColor,
+                      }}
+                    >
+                      {step.title}
+                    </h3>
+                  </div>
+
+                  {/* Description — fades in/out, always takes space to keep grid stable */}
+                  <motion.p
+                    animate={{ opacity: isActive ? 1 : 0 }}
+                    transition={{ duration: 0.22 }}
+                    className="font-sans text-text-body-warm text-center w-full"
+                    style={{
+                      fontSize: "var(--text-nav)",
+                      lineHeight: "var(--text-nav--line-height)",
+                    }}
+                  >
+                    {step.description}
+                  </motion.p>
+                </motion.div>
+              )
+            })}
           </div>
 
           {/* Tech cards row — icônes en couleur du pôle */}

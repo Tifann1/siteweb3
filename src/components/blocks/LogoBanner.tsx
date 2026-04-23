@@ -1,8 +1,10 @@
 "use client";
 
-import { motion, useMotionValue, animate } from "framer-motion";
+import { motion, useMotionValue, animate, AnimationPlaybackControls } from "framer-motion";
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
 export interface LogoItem {
   src: string;
@@ -11,6 +13,8 @@ export interface LogoItem {
   width: number;
   /** Hauteur en px (référence : 30px pour tous les logos) */
   height: number;
+  /** Slug optionnel — si présent, le logo devient un lien vers /references/[slug] */
+  slug?: string;
 }
 
 interface LogoBannerProps {
@@ -18,6 +22,12 @@ interface LogoBannerProps {
   /** Durée d'un cycle complet en secondes (défaut : 25) */
   duration?: number;
 }
+
+const logoVariants = {
+  initial: { scale: 1 },
+};
+
+const hoverTransition = { type: "spring", stiffness: 300, damping: 20 } as const;
 
 /**
  * Bandeau de logos clients en défilement continu, sans saut.
@@ -34,6 +44,10 @@ export function LogoBanner({ logos, duration = 25 }: LogoBannerProps) {
   const duplicated = [...logos, ...logos];
   const trackRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
+  const controlsRef = useRef<AnimationPlaybackControls | null>(null);
+
+  const params = useParams();
+  const locale = typeof params.locale === "string" ? params.locale : "fr";
 
   useEffect(() => {
     const el = trackRef.current;
@@ -52,8 +66,18 @@ export function LogoBanner({ logos, duration = 25 }: LogoBannerProps) {
       repeatType: "loop",
     });
 
+    controlsRef.current = controls;
+
     return () => controls.stop();
   }, [duration, x, logos.length]);
+
+  const handleMouseEnter = () => {
+    controlsRef.current?.pause();
+  };
+
+  const handleMouseLeave = () => {
+    controlsRef.current?.play();
+  };
 
   return (
     <div
@@ -62,7 +86,7 @@ export function LogoBanner({ logos, duration = 25 }: LogoBannerProps) {
     >
       {/* overflow-hidden + fondu aux bords du conteneur contraint */}
       <div
-        className="overflow-hidden"
+        className="overflow-hidden py-4"
         style={{
           maskImage:
             "linear-gradient(to right, transparent, black 80px, black calc(100% - 80px), transparent)",
@@ -75,21 +99,42 @@ export function LogoBanner({ logos, duration = 25 }: LogoBannerProps) {
           className="flex items-center gap-[30px]"
           style={{ width: "max-content", x }}
         >
-          {duplicated.map((logo, i) => (
-            <div
-              key={i}
-              className="relative shrink-0 opacity-70 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300"
-              style={{ width: logo.width, height: logo.height }}
-            >
-              <Image
-                src={logo.src}
-                alt={logo.alt}
-                fill
-                className="object-contain"
-                sizes={`${logo.width}px`}
-              />
-            </div>
-          ))}
+          {duplicated.map((logo, i) => {
+            const logoContent = (
+              <motion.div
+                className="relative shrink-0 opacity-70 grayscale hover:opacity-100 hover:grayscale-0 transition-[opacity,filter] duration-300"
+                style={{ width: logo.width, height: logo.height }}
+                variants={logoVariants}
+                whileHover={{ scale: 1.15 }}
+                transition={hoverTransition}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
+                <Image
+                  src={logo.src}
+                  alt={logo.alt}
+                  fill
+                  className="object-contain"
+                  sizes={`${logo.width}px`}
+                />
+              </motion.div>
+            );
+
+            return logo.slug ? (
+              <Link
+                key={i}
+                href={`/${locale}/references/${logo.slug}`}
+                className="shrink-0"
+                tabIndex={0}
+              >
+                {logoContent}
+              </Link>
+            ) : (
+              <div key={i} className="shrink-0">
+                {logoContent}
+              </div>
+            );
+          })}
         </motion.div>
       </div>
     </div>

@@ -7,7 +7,9 @@ import { Footer } from "@/components/layout/Footer";
 import { HeroSection } from "@/components/blocks/HeroSection";
 import { SectionBentoGrid } from "@/components/blocks/SectionBentoGrid";
 import { SectionAugmentedDev } from "@/components/blocks/SectionAugmentedDev";
+import { FeatureBento } from "@/components/blocks/FeatureBento";
 import { SectionNosSucces } from "@/components/blocks/SectionNosSucces";
+import { ScrollRevealSection } from "@/components/blocks/ScrollRevealSection";
 import { SectionDirecteurPole } from "@/components/blocks/SectionDirecteurPole";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
 import { PoleIdentityBanner } from "@/components/blocks/PoleIdentityBanner";
@@ -90,6 +92,59 @@ export default function PoleHebergementPage() {
           ctaVariant="yellow"
         />
 
+        {/* SpecialHebergement — flip cards au scroll (même comportement que FeatureBento/Conseil) */}
+        <FeatureBento
+          sectionLabel="Nos expertises DevOps"
+          heading={
+            <>
+              Infrastructure invisible.
+              <br />
+              <span
+                className="bg-clip-text text-transparent"
+                style={{ backgroundImage: "linear-gradient(162.47deg, #F0D88A 0%, #C9AA3A 100%)" }}
+              >
+                Performance maximale.
+              </span>
+            </>
+          }
+          features={[
+            {
+              icon: "⬡",
+              label: "Kubernetes",
+              title: "Orchestration à grande échelle",
+              description:
+                "Nous déployons et gérons vos clusters Kubernetes pour assurer la disponibilité, la scalabilité et la résilience de vos agents IA en production.",
+              accent: "var(--color-bento-devops-border)",
+              wide: true,
+            },
+            {
+              icon: "⚙",
+              label: "CI/CD",
+              title: "Pipelines sans friction",
+              description:
+                "De la PR au déploiement, nous automatisons chaque étape pour livrer vite, sans risque et avec rollback en secondes.",
+              accent: "var(--color-offer-yellow)",
+            },
+            {
+              icon: "◎",
+              label: "Sécurité",
+              title: "DevSecOps intégré",
+              description:
+                "Durcissement, scanning de vulnérabilités, conformité réglementaire — la sécurité est architecturée dès le premier jour.",
+              accent: "var(--color-offer-green)",
+            },
+            {
+              icon: "◈",
+              label: "Observabilité",
+              title: "Monitoring proactif 24/7",
+              description:
+                "Alertes intelligentes, dashboards temps réel, tracing distribué — nous voyons ce qui se passe avant que vous ne le ressentiez.",
+              accent: "var(--color-brand-orange)",
+              wide: true,
+            },
+          ]}
+        />
+
         {/* Section Des infrastructures IA maîtrisées (node 627:5209) */}
         <section className="py-16 md:py-24">
           <SectionAugmentedDev
@@ -164,70 +219,70 @@ export default function PoleHebergementPage() {
           />
         </section>
 
-        {/* Section Nos Succès (node 533:5738) */}
-        <SectionNosSucces
-          title="Nos Succès"
-          subtitle="L'IA concrète au service de nos partenaires."
-          ctaLabel="Voir toutes les études de cas"
-          cards={[
-            {
-              image: "/images/references/infra-cloud.webp",
-              imageAlt: "Migration Cloud",
-              logo: "/images/logos/inpi.svg",
-              logoAlt: "Client",
-              sector: "Secteur privé",
-              title: "Migration d'une infrastructure vers un Cloud unifié",
-              stats: [
-                { value: "+24%", label: "Productivité logistique globale" },
-                { value: "-30%", label: "Coûts d'infrastructure" },
-              ],
-            },
-            {
-              image: "/images/references/laposte.jpg",
-              imageAlt: "Refonte application La Poste",
-              logo: "/images/logos/laposte.svg",
-              logoAlt: "La Poste",
-              sector: "Secteur Privé",
-              title: "Refonte de l'application Veiller sur mes parents",
-              stats: [
-                { value: "+24%", label: "Productivité logistique globale" },
-                { value: "+40%", label: "Disponibilité applicative" },
-              ],
-            },
-          ]}
-        />
-
-        {/* Section Directeur du Pôle (node 533:5771) */}
-        <SectionDirecteurPole
-          name="Thibault Buze"
-          role="Directeur du Pôle Hébergement"
-          imageSrc="/images/team/thibault-buze.png"
-          poleLabel="Hébergement"
-          accentColor="var(--color-tab-active-devops)"
-          badgeColor="var(--color-offer-yellow)"
-          vision="Une infrastructure invisible est une infrastructure réussie. Mon équipe s'assure que vos produits tournent, s'adaptent et évoluent — sans que vous ayez jamais à y penser."
-          stats={[
-            { value: "10 ans", label: "Expérience" },
-            { value: "+80", label: "Infras pilotées" },
-          ]}
-          ctaLabel="Auditer mon infra"
-          ctaHref="/contact"
-        />
-
-        {/* CTA Banner */}
-        <section
-          className="py-16 md:py-24"
-          style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
-        >
-          <CtaBanner
-            title={"Prêt à augmenter\nvos projets ?"}
-            description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
-            primaryLabel="Parlons de votre projet"
-            primaryHref="/contact"
-            secondaryLabel="Voir nos offres"
-            secondaryHref="/contact"
+        {/* Bulle deep-navy → NosSucces + Directeur + CTA */}
+        <ScrollRevealSection>
+          <SectionNosSucces
+            title="Nos Succès"
+            subtitle="L'IA concrète au service de nos partenaires."
+            ctaLabel="Voir toutes les études de cas"
+            cards={[
+              {
+                image: "/images/references/infra-cloud.webp",
+                imageAlt: "Migration Cloud",
+                logo: "/images/logos/inpi.svg",
+                logoAlt: "Client",
+                sector: "Secteur privé",
+                title: "Migration d'une infrastructure vers un Cloud unifié",
+                stats: [
+                  { value: "+24%", label: "Productivité logistique globale" },
+                  { value: "-30%", label: "Coûts d'infrastructure" },
+                ],
+              },
+              {
+                image: "/images/references/laposte.jpg",
+                imageAlt: "Refonte application La Poste",
+                logo: "/images/logos/laposte.svg",
+                logoAlt: "La Poste",
+                sector: "Secteur Privé",
+                title: "Refonte de l'application Veiller sur mes parents",
+                stats: [
+                  { value: "+24%", label: "Productivité logistique globale" },
+                  { value: "+40%", label: "Disponibilité applicative" },
+                ],
+              },
+            ]}
           />
-        </section>
+
+          <SectionDirecteurPole
+            name="Thibault Buze"
+            role="Directeur du Pôle Hébergement"
+            imageSrc="/images/team/thibault-buze.png"
+            poleLabel="Hébergement"
+            accentColor="var(--color-tab-active-devops)"
+            badgeColor="var(--color-offer-yellow)"
+            vision="Une infrastructure invisible est une infrastructure réussie. Mon équipe s'assure que vos produits tournent, s'adaptent et évoluent — sans que vous ayez jamais à y penser."
+            stats={[
+              { value: "10 ans", label: "Expérience" },
+              { value: "+80", label: "Infras pilotées" },
+            ]}
+            ctaLabel="Auditer mon infra"
+            ctaHref="/contact"
+          />
+
+          <section
+            className="py-16 md:py-24"
+            style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+          >
+            <CtaBanner
+              title={"Prêt à augmenter\nvos projets ?"}
+              description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
+              primaryLabel="Parlons de votre projet"
+              primaryHref="/contact"
+              secondaryLabel="Voir nos offres"
+              secondaryHref="/contact"
+            />
+          </section>
+        </ScrollRevealSection>
       </main>
 
       {/* Footer */}

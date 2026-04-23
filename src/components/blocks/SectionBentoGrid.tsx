@@ -1,5 +1,8 @@
+"use client";
+
 // SectionBentoGrid — node 448:4201
 import { Link } from "@/navigation";
+import { motion, MotionConfig } from "framer-motion";
 // Figma: bg deep-navy, px 32px, pt 120px
 // Grid: 4 cols × 2 rows, gap 24px, h 600px
 // Feature card (col 1-2, row 1-2) + wide card (col 3-4, row 1) + 2 bottom cards
@@ -46,6 +49,9 @@ interface SectionBentoGridProps {
   ctaVariant?: "default" | "blue" | "yellow";
 }
 
+const cardTransition = { type: "spring" as const, stiffness: 300, damping: 25 };
+const cardHover = { scale: 1.03, zIndex: 10 };
+
 export function SectionBentoGrid({
   title = "Agents IA & aide à la décision",
   featureCard,
@@ -58,136 +64,148 @@ export function SectionBentoGrid({
   ctaVariant = "default",
 }: SectionBentoGridProps) {
   return (
-    <section
-      className="bg-deep-navy w-full py-16 md:py-24 flex flex-col gap-[48px] items-center"
-      style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
-    >
-      <h2
-        className="font-sans font-bold text-white text-center"
-        style={{
-          fontSize: "var(--text-card-title)",
-          lineHeight: "var(--text-card-title--line-height)",
-        }}
+    <MotionConfig reducedMotion="user">
+      <section
+        className="bg-deep-navy w-full py-16 md:py-24 flex flex-col gap-[48px] items-center"
+        style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
       >
-        {title}
-      </h2>
+        <h2
+          className="font-sans font-bold text-white text-center"
+          style={{
+            fontSize: "var(--text-card-title)",
+            lineHeight: "var(--text-card-title--line-height)",
+          }}
+        >
+          {title}
+        </h2>
 
-      <div className="grid grid-cols-4 grid-rows-2 gap-6 h-[600px] w-full">
-        {/* Feature card — col 1-2, row 1-2 */}
-        <div className="col-start-1 col-span-2 row-start-1 row-span-2 relative rounded-[var(--radius-card)] overflow-hidden bg-card-bg flex flex-col">
-          <img
-            src={featureCard.image}
-            alt={featureCard.imageAlt}
-            className="absolute inset-0 w-full h-full object-cover opacity-40"
-          />
-          {/* Gradient photo couleur du pôle */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background: `linear-gradient(to top, ${featureCardGradientFrom} 0%, rgba(15,18,34,0.3) 60%, rgba(15,18,34,0) 100%)`,
-            }}
-          />
-          <div className="relative mt-auto p-10 flex flex-col">
-            <h3
-              className="font-sans font-bold text-white pb-4"
+        <div className="grid grid-cols-4 grid-rows-2 gap-6 h-[600px] w-full">
+          {/* Feature card — col 1-2, row 1-2 */}
+          <motion.div
+            className="col-start-1 col-span-2 row-start-1 row-span-2 relative rounded-[var(--radius-card)] overflow-hidden bg-card-bg flex flex-col cursor-default"
+            style={{ zIndex: 1 }}
+            whileHover={cardHover}
+            transition={cardTransition}
+          >
+            <img
+              src={featureCard.image}
+              alt={featureCard.imageAlt}
+              className="absolute inset-0 w-full h-full object-cover opacity-40"
+            />
+            {/* Gradient photo couleur du pôle */}
+            <div
+              className="absolute inset-0"
               style={{
-                fontSize: "var(--text-stat-value)",
-                lineHeight: "var(--text-card-title--line-height)",
+                background: `linear-gradient(to top, ${featureCardGradientFrom} 0%, rgba(15,18,34,0.3) 60%, rgba(15,18,34,0) 100%)`,
               }}
+            />
+            <div className="relative mt-auto p-10 flex flex-col">
+              <h3
+                className="font-sans font-bold text-white pb-4"
+                style={{
+                  fontSize: "var(--text-stat-value)",
+                  lineHeight: "var(--text-card-title--line-height)",
+                }}
+              >
+                {featureCard.title}
+              </h3>
+              <p
+                className="font-sans text-text-heading max-w-[448px]"
+                style={{
+                  fontSize: "var(--text-nav)",
+                  lineHeight: "var(--text-nav--line-height)",
+                }}
+              >
+                {featureCard.description}
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Wide card — col 3-4, row 1 */}
+          <motion.div
+            className="col-start-3 col-span-2 row-start-1 relative rounded-[var(--radius-card)] bg-card-bg border border-card-border p-[41px] flex flex-col justify-center gap-[30px] cursor-default"
+            style={{ zIndex: 1 }}
+            whileHover={cardHover}
+            transition={cardTransition}
+          >
+            <h3
+              className="font-sans text-text-heading"
+              style={{ fontSize: "var(--text-tab)" }}
             >
-              {featureCard.title}
+              {wideCard.title}
             </h3>
             <p
-              className="font-sans text-text-heading max-w-[448px]"
+              className="font-sans text-text-heading"
               style={{
                 fontSize: "var(--text-nav)",
                 lineHeight: "var(--text-nav--line-height)",
               }}
             >
-              {featureCard.description}
+              {wideCard.description}
             </p>
-          </div>
+          </motion.div>
+
+          {/* Bottom cards — col 3 and col 4, row 2 */}
+          {bottomCards.map((card, i) => (
+            <BentoCard key={i} {...card} />
+          ))}
         </div>
 
-        {/* Wide card — col 3-4, row 1 */}
-        <div className="col-start-3 col-span-2 row-start-1 rounded-[var(--radius-card)] bg-card-bg border border-card-border p-[41px] flex flex-col justify-center gap-[30px]">
-          <h3
-            className="font-sans text-text-heading"
-            style={{ fontSize: "var(--text-tab)" }}
-          >
-            {wideCard.title}
-          </h3>
-          <p
-            className="font-sans text-text-heading"
-            style={{
-              fontSize: "var(--text-nav)",
-              lineHeight: "var(--text-nav--line-height)",
-            }}
-          >
-            {wideCard.description}
-          </p>
-        </div>
-
-        {/* Bottom cards — col 3 and col 4, row 2 */}
-        {bottomCards.map((card, i) => (
-          <BentoCard key={i} {...card} />
-        ))}
-      </div>
-
-      {ctaLabel && (
-        <Link
-          href={ctaHref}
-          className="group relative flex items-center gap-3 h-10 w-[559px] rounded-[var(--radius-pill-sm)] border px-[14px] mt-[50px] text-white shadow-[var(--shadow-cta)] transition-all"
-          style={
-            ctaVariant === "yellow"
-              ? { borderColor: "var(--color-bento-devops-border)" }
-              : ctaVariant === "blue"
-              ? { borderColor: "var(--color-bento-dev-border)" }
-              : { borderColor: "var(--color-secondary-400)" }
-          }
-        >
-          {/* Gradient overlay — visible au hover uniquement */}
-          <span
-            aria-hidden="true"
-            className="absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+        {ctaLabel && (
+          <Link
+            href={ctaHref}
+            className="group relative flex items-center gap-3 h-10 w-[559px] rounded-[var(--radius-pill-sm)] border px-[14px] mt-[50px] text-white shadow-[var(--shadow-cta)] transition-all"
             style={
               ctaVariant === "yellow"
-                ? { background: "linear-gradient(135deg, var(--color-cta-devops-from), var(--color-cta-devops-to))" }
+                ? { borderColor: "var(--color-bento-devops-border)" }
                 : ctaVariant === "blue"
-                ? { background: "linear-gradient(135deg, var(--color-cta-gradient-start), var(--color-tab-active-dev))" }
-                : { background: "linear-gradient(135deg, var(--color-cta-gradient-start), var(--color-cta-orange-deep))" }
+                ? { borderColor: "var(--color-bento-dev-border)" }
+                : { borderColor: "var(--color-secondary-400)" }
             }
-          />
-          <span className="relative z-10 flex items-center gap-3">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-              className="shrink-0"
-            >
-              <path
-                d="M5 12h14M15 8l4 4-4 4"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+          >
+            {/* Gradient overlay — visible au hover uniquement */}
             <span
-              className="font-body font-semibold"
-              style={{
-                fontSize: "var(--text-nav)",
-                lineHeight: "var(--text-nav--line-height)",
-              }}
-            >
-              {ctaLabel}
+              aria-hidden="true"
+              className="absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+              style={
+                ctaVariant === "yellow"
+                  ? { background: "linear-gradient(135deg, var(--color-cta-devops-from), var(--color-cta-devops-to))" }
+                  : ctaVariant === "blue"
+                  ? { background: "linear-gradient(135deg, var(--color-cta-gradient-start), var(--color-tab-active-dev))" }
+                  : { background: "linear-gradient(135deg, var(--color-cta-gradient-start), var(--color-cta-orange-deep))" }
+              }
+            />
+            <span className="relative z-10 flex items-center gap-3">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+                className="shrink-0"
+              >
+                <path
+                  d="M5 12h14M15 8l4 4-4 4"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span
+                className="font-body font-semibold"
+                style={{
+                  fontSize: "var(--text-nav)",
+                  lineHeight: "var(--text-nav--line-height)",
+                }}
+              >
+                {ctaLabel}
+              </span>
             </span>
-          </span>
-        </Link>
-      )}
-    </section>
+          </Link>
+        )}
+      </section>
+    </MotionConfig>
   );
 }
 
@@ -224,13 +242,15 @@ function BentoCard({ title, description, variant = "default" }: BentoCardData) {
     : undefined;
 
   return (
-    <div
+    <motion.div
       className={[
-        "rounded-[var(--radius-card)] border flex flex-col gap-[50px] px-[33px] py-[51px]",
+        "rounded-[var(--radius-card)] border flex flex-col gap-[50px] px-[33px] py-[51px] relative cursor-default",
         !isAccent && "bg-card-bg",
         borderClass,
       ].filter(Boolean).join(" ")}
-      style={bgStyle}
+      style={{ ...bgStyle, zIndex: 1 }}
+      whileHover={cardHover}
+      transition={cardTransition}
     >
       <h3
         className="font-sans text-white"
@@ -247,6 +267,6 @@ function BentoCard({ title, description, variant = "default" }: BentoCardData) {
       >
         {description}
       </p>
-    </div>
+    </motion.div>
   );
 }

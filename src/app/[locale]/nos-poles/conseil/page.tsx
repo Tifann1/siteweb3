@@ -7,8 +7,10 @@ import { HeroSection } from "@/components/blocks/HeroSection";
 import { SectionDirecteurPole } from "@/components/blocks/SectionDirecteurPole";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
 import { SectionBentoGrid } from "@/components/blocks/SectionBentoGrid";
+import { FeatureBento } from "@/components/blocks/FeatureBento";
 import { IntegrationSchema } from "@/components/blocks/IntegrationSchema";
 import { SectionNosSucces } from "@/components/blocks/SectionNosSucces";
+import { ScrollRevealSection } from "@/components/blocks/ScrollRevealSection";
 import { PoleIdentityBanner } from "@/components/blocks/PoleIdentityBanner";
 import { PoleTabsNavWrapper } from "./PoleTabsNavWrapper";
 
@@ -109,6 +111,9 @@ export default function PoleConseilPage() {
           ctaHref="/contact"
         />
 
+        {/* SpecialConseil — expertise bento avec flip au scroll */}
+        <FeatureBento />
+
         {/* Section Integration Schema — Des agents IA de l'idée à l'impact */}
         <IntegrationSchema
           title="Des agents IA de l'idée à l'impact"
@@ -155,68 +160,69 @@ export default function PoleConseilPage() {
           ]}
         />
 
-        {/* Section Nos Succès */}
-        <SectionNosSucces
-            title="Nos Succès"
-            subtitle="L'IA concrète au service de nos partenaires."
-            ctaLabel="Voir tous les cas clients"
-            ctaHref="/references"
-            cards={[
-              {
-                image: REFERENCE_IMAGE,
-                imageAlt: "Équipe Armatis en opération",
-                logo: ARMATIS_LOGO,
-                logoAlt: "Armatis Technology",
-                sector: "Secteur Privé",
-                title: "Application métier augmentée de suivi de qualité",
-                stats: [
-                  { value: "+24%", label: "Productivité logistique globale" },
-                  { value: "-18%", label: "Taux d'erreurs de saisie" },
-                ],
-              },
-              {
-                image: REFERENCE_IMAGE,
-                imageAlt: "Projet secteur public",
-                sector: "Secteur Public",
-                title: "Plateforme IA de traitement documentaire automatisé",
-                stats: [
-                  { value: "×3", label: "Vitesse de traitement des dossiers" },
-                  { value: "95%", label: "Taux de satisfaction utilisateurs" },
-                ],
-              },
+        {/* Bulle deep-navy → NosSucces + Directeur + CTA */}
+        <ScrollRevealSection>
+          <SectionNosSucces
+              title="Nos Succès"
+              subtitle="L'IA concrète au service de nos partenaires."
+              ctaLabel="Voir tous les cas clients"
+              ctaHref="/references"
+              cards={[
+                {
+                  image: REFERENCE_IMAGE,
+                  imageAlt: "Équipe Armatis en opération",
+                  logo: ARMATIS_LOGO,
+                  logoAlt: "Armatis Technology",
+                  sector: "Secteur Privé",
+                  title: "Application métier augmentée de suivi de qualité",
+                  href: "/references/test",
+                  stats: [
+                    { value: "+24%", label: "Productivité logistique globale" },
+                    { value: "-18%", label: "Taux d'erreurs de saisie" },
+                  ],
+                },
+                {
+                  image: REFERENCE_IMAGE,
+                  imageAlt: "Projet secteur public",
+                  sector: "Secteur Public",
+                  title: "Plateforme IA de traitement documentaire automatisé",
+                  stats: [
+                    { value: "×3", label: "Vitesse de traitement des dossiers" },
+                    { value: "95%", label: "Taux de satisfaction utilisateurs" },
+                  ],
+                },
+              ]}
+            />
+
+          <SectionDirecteurPole
+            name="Virginie"
+            role="Directrice du Pôle Conseil"
+            imageSrc="/images/team/virginie.png"
+            poleLabel="Conseil"
+            accentColor="var(--color-tab-active)"
+            vision="Notre rôle n'est pas de délivrer des slides — c'est de transformer durablement la façon dont nos clients opèrent. Chaque mission commence par comprendre l'humain derrière le problème."
+            stats={[
+              { value: "12 ans", label: "Expérience" },
+              { value: "+200", label: "Projets livrés" },
             ]}
+            ctaLabel="Discuter avec l'équipe"
+            ctaHref="/contact"
           />
 
-        {/* Section Directrice du Pôle */}
-        <SectionDirecteurPole
-          name="Virginie"
-          role="Directrice du Pôle Conseil"
-          imageSrc="/images/team/virginie.png"
-          poleLabel="Conseil"
-          accentColor="var(--color-tab-active)"
-          vision="Notre rôle n'est pas de délivrer des slides — c'est de transformer durablement la façon dont nos clients opèrent. Chaque mission commence par comprendre l'humain derrière le problème."
-          stats={[
-            { value: "12 ans", label: "Expérience" },
-            { value: "+200", label: "Projets livrés" },
-          ]}
-          ctaLabel="Discuter avec l'équipe"
-          ctaHref="/contact"
-        />
-
-        {/* CTA Banner */}
-        <section
-          className="py-16 md:py-24"
-          style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
-        >
-          <CtaBanner
-            title={"Prêt à augmenter\nvos projets ?"}
-            description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
-            primaryLabel="Parlons de votre projet"
-            primaryHref="/contact"
-            secondaryLabel="Voir nos offres"
-            secondaryHref="/contact"
-          />
-        </section>
+          <section
+            className="py-16 md:py-24"
+            style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+          >
+            <CtaBanner
+              title={"Prêt à augmenter\nvos projets ?"}
+              description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
+              primaryLabel="Parlons de votre projet"
+              primaryHref="/contact"
+              secondaryLabel="Voir nos offres"
+              secondaryHref="/contact"
+            />
+          </section>
+        </ScrollRevealSection>
       </main>
 
       {/* Footer */}

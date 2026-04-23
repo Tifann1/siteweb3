@@ -3,9 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import {
   motion,
-  useScroll,
-  useTransform,
-  useMotionValueEvent,
+  useMotionValue,
   MotionConfig,
 } from "framer-motion";
 import { OfferCard, type OfferCardProps } from "@/components/ui/OfferCard";
@@ -122,6 +120,21 @@ const SCROLL_PER_STEP = 650;
 
 type FlatCard = OfferCardProps & { tabIndex: number };
 
+/**
+ * Easing par pas : dans chaque segment [i/(N-1), (i+1)/(N-1)],
+ * applique une ease-in-out cubique légère qui crée un ralentissement
+ * discret à l'approche de chaque position de carte.
+ */
+function stepEase(progress: number, N: number): number {
+  if (N <= 1) return progress;
+  const step = 1 / (N - 1);
+  const stepIndex = Math.min(N - 2, Math.floor(progress / step));
+  const t = (progress - stepIndex * step) / step; // 0→1 dans le segment
+  // Cubic ease-in-out très léger (facteur 0.4 = intensité réduite)
+  const eased = t + 0.4 * (t * t * (3 - 2 * t) - t);
+  return Math.min(1, (stepIndex + eased) * step);
+}
+
 export function OffersSection({
   title = "Nos offres adaptables.",
   tabs = DEFAULT_TABS,
@@ -137,11 +150,6 @@ export function OffersSection({
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
   useEffect(() => {
     const update = () => {
       setVpWidth(window.innerWidth);
@@ -155,13 +163,30 @@ export function OffersSection({
   // Position X du track : centre la première carte (progress=0) → centre la dernière (progress=1)
   const startX = (vpWidth - CARD_W) / 2;
   const endX = startX - (N - 1) * (CARD_W + CARD_GAP);
-  const x = useTransform(scrollYProgress, [0, 1], [startX, endX]);
+  const x = useMotionValue(startX);
 
-  // Sync onglet actif avec la carte la plus proche du centre
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const idx = Math.max(0, Math.min(N - 1, Math.round(v * (N - 1))));
-    setActiveTab(allCards[idx].tabIndex);
-  });
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const onScroll = () => {
+      const containerTop = el.getBoundingClientRect().top + window.scrollY;
+      const totalScroll = el.offsetHeight - window.innerHeight;
+      const scrolled = Math.max(0, window.scrollY - containerTop);
+      const rawProgress = totalScroll > 0 ? Math.min(1, scrolled / totalScroll) : 0;
+
+      // Easing par pas : léger ralentissement à l'approche de chaque snap de carte
+      const progress = stepEase(rawProgress, N);
+
+      x.set(startX + progress * (endX - startX));
+      const idx = Math.max(0, Math.min(N - 1, Math.round(rawProgress * (N - 1))));
+      setActiveTab(allCards[idx].tabIndex);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [startX, endX, x, N, allCards]);
 
   // Clic sur un onglet → scroll vers la première carte de ce pôle
   function scrollToTab(tabIndex: number) {
@@ -184,7 +209,7 @@ export function OffersSection({
   return (
     <MotionConfig reducedMotion="user">
       <div ref={containerRef} className="relative" style={{ height: outerHeight }}>
-        <div className="sticky top-0 h-screen bg-deep-navy flex flex-col gap-14 items-center justify-center overflow-hidden">
+        <div className="sticky top-0 h-screen bg-deep-navy flex flex-col gap-14 items-center justify-center">
           {/* Titre */}
           <h2
             className="font-sans font-bold text-white text-center whitespace-nowrap"
@@ -220,9 +245,9 @@ export function OffersSection({
               ))}
             </nav>
 
-            {/* Piste de cartes — fade aux bords via mask-image */}
+            {/* Piste de cartes — overflow-hidden ici (pas sur sticky) pour laisser le tilt respirer verticalement */}
             <div
-              className="relative w-full"
+              className="relative w-full overflow-hidden py-8"
               style={{
                 maskImage:
                   "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)",
@@ -232,7 +257,14 @@ export function OffersSection({
             >
               <motion.div className="flex gap-5 items-center" style={{ x }}>
                 {allCards.map((card, i) => (
-                  <OfferCard key={i} {...card} />
+                  <motion.div
+                    key={i}
+                    style={{ transformOrigin: "bottom center" }}
+                    whileHover={{ rotateZ: 3 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  >
+                    <OfferCard {...card} />
+                  </motion.div>
                 ))}
               </motion.div>
             </div>
