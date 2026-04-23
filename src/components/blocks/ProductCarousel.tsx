@@ -24,7 +24,15 @@ export function ProductCarousel({ produits, locale }: ProductCarouselProps) {
     (dir: 1 | -1) => {
       if (lockRef.current) return;
       const next = activeIndex + dir;
-      if (next < 0 || next >= produits.length) return;
+      if (next < 0) return;
+      if (next >= produits.length) {
+        if (dir === 1) {
+          lockRef.current = true;
+          window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
+          setTimeout(() => { lockRef.current = false; }, 1200);
+        }
+        return;
+      }
       lockRef.current = true;
       setActiveIndex(next);
       setTimeout(() => {
@@ -41,7 +49,7 @@ export function ProductCarousel({ produits, locale }: ProductCarouselProps) {
       if (Math.abs(e.deltaY) < 30) return;
       const dir = e.deltaY > 0 ? 1 : -1;
       const next = activeIndex + dir;
-      if (next < 0 || next >= produits.length) return;
+      if (next < 0) return;
       e.preventDefault();
       navigate(dir);
     };
