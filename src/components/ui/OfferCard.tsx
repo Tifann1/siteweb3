@@ -33,10 +33,10 @@ export function OfferCard({
   badge,
 }: OfferCardProps) {
   return (
-    <div className="flex flex-col gap-8 h-[660px] items-start px-8 py-[33px] rounded-[var(--radius-offer-card)] bg-card-bg border border-white/10 shrink-0 w-[534px]">
+    <div className="flex flex-col gap-6 lg:gap-8 h-[500px] lg:h-[570px] xl:h-[620px] 2xl:h-[660px] items-start px-6 lg:px-8 py-6 lg:py-[33px] rounded-[var(--radius-offer-card)] bg-card-bg border border-white/10 shrink-0 w-[340px] lg:w-[420px] xl:w-[480px] 2xl:w-[534px]">
       {/* Header image avec gradient */}
       <div
-        className="flex flex-col h-[283px] items-start justify-between p-5 rounded-[var(--radius-offer-img)] w-full"
+        className="flex flex-col h-[190px] lg:h-[240px] xl:h-[260px] 2xl:h-[283px] items-start justify-between p-5 rounded-[var(--radius-offer-img)] w-full"
         style={{ background: headerGradient }}
       >
         {/* Badge optionnel */}

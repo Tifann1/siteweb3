@@ -19,7 +19,7 @@ export interface LogoItem {
 
 interface LogoBannerProps {
   logos: LogoItem[];
-  /** Durée d'un cycle complet en secondes (défaut : 25) */
+  /** Durée d'un cycle complet en secondes (défaut : 12) */
   duration?: number;
 }
 
@@ -40,7 +40,7 @@ const hoverTransition = { type: "spring", stiffness: 300, damping: 20 } as const
  *  - outer div : contenu dans les marges de la page (var(--page-margin-x))
  *  - inner div : overflow-hidden + mask-image → fondu aux bords du conteneur
  */
-export function LogoBanner({ logos, duration = 25 }: LogoBannerProps) {
+export function LogoBanner({ logos, duration = 12 }: LogoBannerProps) {
   const duplicated = [...logos, ...logos];
   const trackRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -86,12 +86,12 @@ export function LogoBanner({ logos, duration = 25 }: LogoBannerProps) {
     >
       {/* overflow-hidden + fondu aux bords du conteneur contraint */}
       <div
-        className="overflow-hidden py-4"
+        className="overflow-hidden py-8"
         style={{
           maskImage:
-            "linear-gradient(to right, transparent, black 80px, black calc(100% - 80px), transparent)",
+            "linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent)",
           WebkitMaskImage:
-            "linear-gradient(to right, transparent, black 80px, black calc(100% - 80px), transparent)",
+            "linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent)",
         }}
       >
         <motion.div
@@ -105,7 +105,7 @@ export function LogoBanner({ logos, duration = 25 }: LogoBannerProps) {
                 className="relative shrink-0 opacity-70 grayscale hover:opacity-100 hover:grayscale-0 transition-[opacity,filter] duration-300"
                 style={{ width: logo.width, height: logo.height }}
                 variants={logoVariants}
-                whileHover={{ scale: 1.15 }}
+                whileHover={{ scale: 1.35 }}
                 transition={hoverTransition}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}

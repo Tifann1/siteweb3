@@ -5,11 +5,11 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSection } from "@/components/blocks/HeroSection";
+import { HeroSnapWrapper } from "@/components/blocks/HeroSnapWrapper";
 import { LogoBanner, type LogoItem } from "@/components/blocks/LogoBanner";
 import { OffersSection } from "@/components/blocks/OffersSection";
 import { ProcessStepper } from "@/components/blocks/ProcessStepper";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
-import { SectionAgentsFlow } from "@/components/blocks/SectionAgentsFlow";
 import {
   SectionNosPromesses,
   type PromiseItem,
@@ -66,22 +66,21 @@ export default function AccueilPage() {
       <Header />
 
       <main className="flex flex-col flex-1">
-        {/* Héro principal */}
-        <HeroSection />
+        {/* Héro principal — snap vers la section suivante au premier scroll */}
+        <HeroSnapWrapper>
+          <HeroSection />
+        </HeroSnapWrapper>
 
         {/* Nos expertises — process stepper sticky scroll */}
         <ProcessStepper />
 
         {/* Bandeau logos partenaires — full width */}
-        <div className="py-20 md:py-28">
+        <div className="py-6 md:py-10">
           <LogoBanner logos={PARTNER_LOGOS} />
         </div>
 
         {/* Nos offres — full width */}
         <OffersSection />
-
-        {/* Agents IA — pipeline De votre besoin à l'agent IA */}
-        <SectionAgentsFlow />
 
         {/* Nos promesses */}
         <SectionNosPromesses

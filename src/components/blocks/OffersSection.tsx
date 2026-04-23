@@ -6,7 +6,12 @@ import {
   useMotionValue,
   MotionConfig,
 } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { OfferCard, type OfferCardProps } from "@/components/ui/OfferCard";
+import { RevealTitle } from "@/components/ui/RevealTitle";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export interface OfferTab {
   label: string;
@@ -112,8 +117,13 @@ const DEFAULT_TABS: OfferTab[] = [
   },
 ];
 
-/** Largeur d'une carte + gap entre cartes (en px, aligné sur w-[534px] gap-5) */
-const CARD_W = 534;
+/** Largeur d'une carte — aligne exactement les breakpoints Tailwind */
+function getCardW(vpWidth: number): number {
+  if (vpWidth >= 1536) return 534; // 2xl
+  if (vpWidth >= 1280) return 480; // xl
+  if (vpWidth >= 1024) return 420; // lg
+  return 340;                       // md (768-1023px)
+}
 const CARD_GAP = 20;
 /** Pixels de scroll vertical consommés par pas de carte */
 const SCROLL_PER_STEP = 650;
@@ -149,6 +159,7 @@ export function OffersSection({
   const [isMobile, setIsMobile] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const update = () => {
@@ -159,6 +170,8 @@ export function OffersSection({
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
+
+  const CARD_W = getCardW(vpWidth);
 
   // Position X du track : centre la première carte (progress=0) → centre la dernière (progress=1)
   const startX = (vpWidth - CARD_W) / 2;
@@ -202,24 +215,52 @@ export function OffersSection({
   // Hauteur de la zone de scroll : 100vh pour l'affichage sticky + room pour N-1 pas
   const outerHeight = `calc(100vh + ${(N - 1) * SCROLL_PER_STEP}px)`;
 
+  // Révélation en carré au scroll — clip-path sur le sticky div (viewport-sized)
+  useEffect(() => {
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const container = containerRef.current;
+    const sticky = stickyRef.current;
+    if (!container || !sticky || prefersReduced) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        sticky,
+        { clipPath: "inset(28% 20% 28% 20%)" },
+        {
+          clipPath: "inset(0% 0% 0% 0%)",
+          ease: "power1.out",
+          scrollTrigger: {
+            trigger: container,
+            // démarre quand la section entre dans le viewport
+            // termine à 25% AVANT que le sticky s'enclenche (top top)
+            start: "top 95%",
+            end: "top 25%",
+            scrub: 0.8,
+          },
+        }
+      );
+    });
+
+    return () => ctx.revert();
+  }, []);
+
   if (isMobile) {
     return <MobileOffersSection title={title} tabs={tabs} />;
   }
 
   return (
     <MotionConfig reducedMotion="user">
-      <div ref={containerRef} className="relative" style={{ height: outerHeight }}>
-        <div className="sticky top-0 h-screen bg-deep-navy flex flex-col gap-14 items-center justify-center">
+      <div ref={containerRef} id="offers-section" className="relative" style={{ height: outerHeight }}>
+        <div ref={stickyRef} className="sticky top-0 h-screen bg-deep-navy flex flex-col gap-14 items-center justify-center">
           {/* Titre */}
-          <h2
+          <RevealTitle
+            text={title}
             className="font-sans font-bold text-white text-center whitespace-nowrap"
             style={{
               fontSize: "var(--text-card-title)",
               lineHeight: "var(--text-card-title--line-height)",
             }}
-          >
-            {title}
-          </h2>
+          />
 
           <div className="flex flex-col gap-5 items-center w-full">
             {/* Onglets de pôles */}

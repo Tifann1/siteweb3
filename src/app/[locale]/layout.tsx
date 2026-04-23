@@ -1,4 +1,5 @@
 import { Inter, Manrope } from "next/font/google";
+import { StarCursor } from "@/components/ui/StarCursor";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -36,6 +37,7 @@ export default async function LocaleLayout({
     <html lang={locale} className={`${inter.variable} ${manrope.variable}`}>
       <body>
         <NextIntlClientProvider messages={messages}>
+          <StarCursor />
           {children}
         </NextIntlClientProvider>
       </body>

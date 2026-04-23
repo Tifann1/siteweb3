@@ -1,159 +1,156 @@
 "use client";
 
-// SectionNosPromesses — Bento grid asymétrique pour la page accueil
-// Remplace l'IntegrationSchema dans la section "Nos promesses."
-
 import { motion } from "framer-motion";
+import { RevealTitle } from "@/components/ui/RevealTitle";
 
 export interface PromiseItem {
-  /** Petite étiquette au-dessus du titre (ex: "Notre différence", "Paris · France") */
   eyebrow?: string;
   title: string;
   description: string;
-  /** Chiffre-clé affiché en bas de la carte */
   stat?: { value: string; label: string };
-  /** Points concrets (liste à puce) — idéal pour les cartes larges */
   highlights?: string[];
-  /** Couleur d'accentuation : bordure top + eyebrow + stat */
   accent?: "orange" | "blue" | "default";
 }
 
 interface SectionNosPromessesProps {
   title?: string;
   description?: string;
-  /** Exactement 6 items pour le layout bento 3×2 */
   items: PromiseItem[];
 }
 
-// Styles d'accentuation par type
-const ACCENT = {
-  orange: {
-    topBorder: "2px solid var(--color-brand-orange)",
-    eyebrow: "var(--color-brand-orange-light)",
-    stat: "var(--color-brand-orange)",
-    bgImage:
-      "linear-gradient(140deg, rgba(255, 126, 51, 0.09) 0%, transparent 55%)",
-  },
-  blue: {
-    topBorder: "2px solid var(--color-bento-dev-accent)",
-    eyebrow: "var(--color-bento-dev-accent)",
-    stat: "var(--color-bento-dev-accent)",
-    bgImage:
-      "linear-gradient(140deg, rgba(116, 116, 255, 0.08) 0%, transparent 55%)",
-  },
-  default: {
-    topBorder: undefined,
-    eyebrow: "var(--color-text-muted)",
-    stat: "var(--color-text-heading)",
-    bgImage: undefined,
-  },
-} as const;
+const ACCENT_COLOR: Record<string, string> = {
+  orange: "var(--color-brand-orange-light)",
+  blue:   "var(--color-badge-blue)",
+  default: "rgba(255,255,255,0.55)",
+};
 
-function CheckIcon() {
+const NUMBERS = ["01", "02", "03", "04", "05", "06"];
+
+// ─── Icônes par index ──────────────────────────────────────────────────────
+function IconPin() {
   return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      fill="none"
-      aria-hidden="true"
-      className="shrink-0 mt-[3px]"
-    >
-      <path
-        d="M2 7l3.5 3.5L12 3"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+      <circle cx="12" cy="9" r="2.5"/>
+    </svg>
+  );
+}
+function IconBox() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+      <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+      <line x1="12" y1="22.08" x2="12" y2="12"/>
+    </svg>
+  );
+}
+function IconBolt() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
     </svg>
   );
 }
 
-function PromiseCard({
-  item,
-  index,
-  wide,
-}: {
-  item: PromiseItem;
-  index: number;
-  wide: boolean;
-}) {
-  const a = ACCENT[item.accent ?? "default"];
+const ICONS = [<IconPin key="pin" />, <IconBox key="box" />, <IconBolt key="bolt" />];
+
+// ─── Card ─────────────────────────────────────────────────────────────────
+const STAGGER = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+};
+const FADE_UP = {
+  hidden: { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
+};
+
+function PromiseCard({ item, index }: { item: PromiseItem; index: number }) {
+  const color = ACCENT_COLOR[item.accent ?? "default"];
+  const number = NUMBERS[index] ?? "0" + (index + 1);
+  const icon = ICONS[index % ICONS.length];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 22 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -3, transition: { duration: 0.18, ease: "easeOut" } }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{
-        duration: 0.48,
-        delay: index * 0.07,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      }}
-      className="h-full flex flex-col justify-between gap-6 border border-white/5 bg-card-bg cursor-default"
-      style={{
-        borderRadius: "var(--radius-card)",
-        padding: wide ? "2.5rem" : "2rem",
-        ...(a.topBorder ? { borderTop: a.topBorder } : {}),
-        ...(a.bgImage ? { backgroundImage: a.bgImage } : {}),
-      }}
+      className="group relative flex flex-col gap-6 p-8 rounded-[var(--radius-card)] border border-white/10 overflow-hidden cursor-default"
+      style={{ background: "rgba(67,70,116,0.12)", backdropFilter: "blur(8px)" }}
+      variants={FADE_UP}
+      whileHover={{ y: -4, transition: { duration: 0.2 } }}
     >
-      {/* Contenu principal */}
-      <div className="flex flex-col gap-5">
+      {/* Barre accent */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[2px]"
+        style={{ background: `linear-gradient(90deg, ${color}, transparent)` }}
+      />
+
+      {/* Watermark numéro */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute bottom-4 right-5 font-sans font-bold select-none leading-none"
+        style={{ fontSize: "7rem", color, opacity: 0.06 }}
+      >
+        {number}
+      </span>
+
+      {/* Numéro + icône */}
+      <div className="relative z-10 flex items-center justify-between">
+        <span
+          className="font-sans font-bold"
+          style={{ fontSize: "var(--text-stat-value)", color, opacity: 0.5 }}
+        >
+          {number}
+        </span>
+        <div
+          className="flex items-center justify-center w-10 h-10 rounded-[var(--radius-input)]"
+          style={{
+            background: `color-mix(in srgb, ${color} 12%, transparent)`,
+            color,
+            border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+          }}
+        >
+          {icon}
+        </div>
+      </div>
+
+      {/* Contenu */}
+      <div className="relative z-10 flex flex-col gap-3 flex-1">
         {item.eyebrow && (
           <span
-            className="font-ui font-semibold uppercase tracking-widest"
+            className="font-ui font-semibold uppercase"
             style={{
-              fontSize: "var(--text-label)",
-              lineHeight: 1,
-              color: a.eyebrow,
+              fontSize: "var(--text-sector-badge)",
+              letterSpacing: "var(--text-sector-badge--letter-spacing)",
+              color,
             }}
           >
             {item.eyebrow}
           </span>
         )}
 
-        <div className="flex flex-col gap-3">
-          <h3
-            className="font-sans font-bold text-text-heading"
-            style={{
-              fontSize: wide ? "var(--text-tab)" : "var(--text-nav)",
-              lineHeight: 1.25,
-            }}
-          >
-            {item.title}
-          </h3>
-          <p
-            className="font-body text-text-body-warm"
-            style={{
-              fontSize: "var(--text-nav)",
-              lineHeight: "var(--text-nav--line-height)",
-              opacity: 0.85,
-            }}
-          >
-            {item.description}
-          </p>
-        </div>
+        <h3
+          className="font-sans font-semibold text-text-heading"
+          style={{ fontSize: "var(--text-tab)", lineHeight: 1.3 }}
+        >
+          {item.title}
+        </h3>
+
+        <p
+          className="font-body text-text-body-warm"
+          style={{ fontSize: "var(--text-nav)", lineHeight: "var(--text-nav--line-height)", opacity: 0.8 }}
+        >
+          {item.description}
+        </p>
 
         {item.highlights && item.highlights.length > 0 && (
-          <ul className="flex flex-col gap-2 mt-1">
+          <ul className="flex flex-col gap-2 mt-2">
             {item.highlights.map((h, i) => (
-              <li
-                key={i}
-                className="flex items-start gap-2 text-text-body-warm"
-              >
-                <span className="text-brand-orange">
-                  <CheckIcon />
-                </span>
+              <li key={i} className="flex items-center gap-2">
                 <span
-                  className="font-body"
-                  style={{
-                    fontSize: "var(--text-nav)",
-                    lineHeight: "var(--text-nav--line-height)",
-                    opacity: 0.85,
-                  }}
+                  className="size-1.5 rounded-full shrink-0"
+                  style={{ backgroundColor: color }}
+                />
+                <span
+                  className="font-body text-text-body-warm"
+                  style={{ fontSize: "var(--text-nav)", lineHeight: "var(--text-nav--line-height)", opacity: 0.8 }}
                 >
                   {h}
                 </span>
@@ -163,41 +160,39 @@ function PromiseCard({
         )}
       </div>
 
-      {/* Stat — collé en bas */}
+      {/* Stat footer */}
       {item.stat && (
-        <div className="flex flex-col gap-1 pt-5 border-t border-white/10">
+        <div className="relative z-10 flex items-center gap-2 pt-5 border-t border-white/[0.06]">
           <span
-            className="font-sans font-bold"
+            className="font-ui font-semibold uppercase"
             style={{
-              fontSize: "var(--text-stat-value)",
-              lineHeight: "var(--text-stat-value--line-height)",
-              color: a.stat,
+              fontSize: "var(--text-sector-badge)",
+              letterSpacing: "var(--text-sector-badge--letter-spacing)",
+              color: "var(--color-text-muted)",
             }}
           >
-            {item.stat.value}
+            Résultat
           </span>
-          <span
-            className="font-body text-text-muted"
-            style={{ fontSize: "var(--text-label)", lineHeight: 1.5 }}
-          >
-            {item.stat.label}
-          </span>
+          <div className="flex items-center gap-1.5">
+            <span className="size-1.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
+            <span
+              className="font-ui font-bold uppercase"
+              style={{
+                fontSize: "var(--text-sector-badge)",
+                letterSpacing: "var(--text-sector-badge--letter-spacing)",
+                color,
+              }}
+            >
+              {item.stat.value} — {item.stat.label}
+            </span>
+          </div>
         </div>
       )}
     </motion.div>
   );
 }
 
-/**
- * Section "Nos promesses" en bento grid asymétrique.
- *
- * Layout 3 colonnes, zigzag :
- *   Row 1 : [0 ── wide ──] [1 narrow]
- *   Row 2 : [2 narrow] [3 ──── wide ────]
- *   Row 3 : [4 ── wide ──] [5 narrow]
- *
- * Passe exactement 6 items dans la prop `items`.
- */
+// ─── Section ───────────────────────────────────────────────────────────────
 export function SectionNosPromesses({
   title = "Nos promesses.",
   description = "Ce qui nous différencie, concrètement.",
@@ -206,58 +201,42 @@ export function SectionNosPromesses({
   return (
     <section
       className="w-full py-20 md:py-28"
-      style={{
-        paddingLeft: "var(--page-margin-x)",
-        paddingRight: "var(--page-margin-x)",
-      }}
+      style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
     >
-      <div className="flex flex-col gap-12 max-w-[1280px] mx-auto w-full">
-        {/* En-tête de section */}
+      <div className="flex flex-col gap-16 max-w-[1280px] mx-auto w-full">
+        {/* En-tête */}
         <motion.div
-          initial={{ opacity: 0, y: 14 }}
+          className="flex flex-col lg:flex-row lg:items-end justify-between gap-8"
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="flex flex-col gap-4"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
         >
-          <h2
+          <RevealTitle
+            text={title}
             className="font-sans font-bold text-white"
-            style={{
-              fontSize: "var(--text-card-title)",
-              lineHeight: "var(--text-card-title--line-height)",
-            }}
-          >
-            {title}
-          </h2>
+            style={{ fontSize: "var(--text-card-title)", lineHeight: "var(--text-card-title--line-height)" }}
+          />
           <p
-            className="font-body text-text-body-warm max-w-[500px]"
-            style={{
-              fontSize: "var(--text-nav)",
-              lineHeight: "var(--text-nav--line-height)",
-              opacity: 0.85,
-            }}
+            className="font-body text-text-body-warm max-w-[420px] lg:text-right"
+            style={{ fontSize: "var(--text-nav)", lineHeight: "var(--text-nav--line-height)", opacity: 0.8 }}
           >
             {description}
           </p>
         </motion.div>
 
-        {/* Bento grid — layout asymétrique si 6 items, colonnes égales si 3 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {items.slice(0, 6).map((item, index) => {
-            const isWide = items.length === 6 && (index === 0 || index === 3 || index === 4);
-            return (
-              <div
-                key={index}
-                className={[
-                  "col-span-1",
-                  isWide ? "md:col-span-2" : "md:col-span-1",
-                ].join(" ")}
-              >
-                <PromiseCard item={item} index={index} wide={isWide} />
-              </div>
-            );
-          })}
-        </div>
+        {/* Grille 3 colonnes */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-3 gap-5"
+          variants={STAGGER}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          {items.slice(0, 3).map((item, i) => (
+            <PromiseCard key={i} item={item} index={i} />
+          ))}
+        </motion.div>
       </div>
     </section>
   );

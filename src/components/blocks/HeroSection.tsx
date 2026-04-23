@@ -1,5 +1,6 @@
 import React from "react";
 import { HeroHalos } from "./HeroHalos";
+import { RevealTitle } from "@/components/ui/RevealTitle";
 
 interface HeroSectionProps {
   /** Texte du badge en haut */
@@ -42,12 +43,12 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({
-  eyebrow = "VOS AGENTS IA, CONÇUS POUR LE TERRAIN",
-  title = "L'ingénieur\naugmenté au service\nde vos ambitions.",
-  highlightWord = "augmenté",
+  eyebrow = "VOS PRODUITS AUGMENTÉS PAR L'IA, CONÇUS POUR LE TERRAIN",
+  title = "Vos projets sur mesure,\naugmentés à l'IA, au service\nde vos ambitions.",
+  highlightWord = "augmentés à l'IA",
   highlightStyle = "gradient",
   highlightColor = "#FBA275",
-  description = "Nous imaginons et déployons des agents IA sur mesure, connectés à vos usages, pour accélérer vos opérations et renforcer votre impact.",
+  description = "Nous concevons et déployons des produits sur mesure, augmentés par des agents IA, intégrés à vos usages métiers, pour accélérer vos opérations et maximiser votre impact.",
   align = "left",
   titleSize = "default",
   sizeMode = "fill",
@@ -64,7 +65,7 @@ export function HeroSection({
       {/* Contenu — z-10 au-dessus des halos */}
       <div
         className={[
-          "relative z-10 flex flex-col gap-[70px] w-full",
+          "relative z-10 flex flex-col gap-10 md:gap-[70px] w-full",
           isRight ? "items-end" : "items-start",
         ].join(" ")}
         style={{
@@ -88,9 +89,12 @@ export function HeroSection({
         )}
 
         {/* Titre */}
-        <h1
+        <RevealTitle
+          as="h1"
+          text={title}
+          highlightWord={highlightStyle === "gradient" ? highlightWord : undefined}
           className={[
-            "font-sans font-bold text-text-heading whitespace-pre-line",
+            "font-sans font-bold text-text-heading",
             isRight ? "text-right" : "text-left",
           ].join(" ")}
           style={
@@ -106,9 +110,7 @@ export function HeroSection({
                   letterSpacing: "var(--text-hero-title--letter-spacing)",
                 }
           }
-        >
-          {renderTitleWithHighlight(title, highlightWord, highlightStyle, highlightColor)}
-        </h1>
+        />
 
         {/* Description */}
         {description && (

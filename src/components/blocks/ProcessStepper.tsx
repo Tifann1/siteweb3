@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { RevealTitle } from "@/components/ui/RevealTitle";
 import {
   motion,
   AnimatePresence,
@@ -391,29 +392,17 @@ export function ProcessStepper() {
               Nos expertises
             </motion.span>
 
-            <motion.h2
+            <RevealTitle
+              text="Notre savoir-faire."
+              highlightWord="savoir-faire."
+              delay={0.1}
               className="font-sans font-bold text-text-heading"
               style={{
                 fontSize: "clamp(2rem, 4vw, 3.5rem)",
                 letterSpacing: "-0.02em",
                 lineHeight: 1.1,
               }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.55, ease: EASE, delay: 0.1 }}
-            >
-              Notre{" "}
-              <span
-                className="bg-clip-text text-transparent"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(162.47deg, #FFB692 0%, #FF7E33 100%)",
-                }}
-              >
-                savoir-faire.
-              </span>
-            </motion.h2>
+            />
           </div>
 
           {/* Grille : navigation gauche (2/5) + contenu droite (3/5) */}
