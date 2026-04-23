@@ -1,12 +1,31 @@
 'use client'
 
 // SectionDirecteurPole — Présentation éditoriale du directeur de pôle
-// Layout : vidéo gauche 42% / contenu droit
-// Entrée : useInView → contenu slide depuis la droite, vision staggerée en temps fixe
+// Hauteur fixe (520px). Trigger à 90% visible + delay 0.5s → "un scroll de plus".
+// Vidéo : clip-path full → inset(0 58% 0 0) + translateX 0→-29% (centre dans le cadre gauche)
+// Overlay gradient externe → fondu navy sur le bord droit de la vidéo clippée
+// Contenu : stagger variants — chaque élément slide-up individuellement
 
 import { useRef } from "react"
-import { motion, useInView, MotionConfig } from "framer-motion"
+import { motion, useInView, MotionConfig, type Variants } from "framer-motion"
 import { Link } from "@/navigation"
+
+// Variants pour le stagger du contenu droit
+const CONTENT_CONTAINER: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.1, delayChildren: 0.65 },
+  },
+}
+
+const CONTENT_ITEM: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+  },
+}
 
 const DIRECTOR_VIDEO = "/videos/directeur.mp4"
 
@@ -44,34 +63,48 @@ export function SectionDirecteurPole({
   className,
 }: SectionDirecteurPoleProps) {
   const badge = badgeColor ?? accentColor
+
+  // 90% visible + delay 0.5s sur les animations → l'utilisateur voit la vidéo pleine largeur avant que ça bouge
   const ref = useRef<HTMLDivElement>(null)
-
-  // Déclenche une seule fois quand le composant entre dans le viewport
-  const isInView = useInView(ref, { once: true, margin: "-80px" })
-
-  const words = vision.split(" ")
+  const isInView = useInView(ref, { once: true, amount: 0.9 })
 
   return (
     <MotionConfig reducedMotion="user">
+
       {/* ── Desktop ────────────────────────────────────────────── */}
       <section
-        ref={ref}
         className={["relative hidden md:block py-16 md:py-24", className ?? ""].join(" ")}
         style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
       >
+        {/* Card — hauteur fixe, overflow hidden pour le clip */}
         <div
-          className="relative flex overflow-hidden w-full max-w-[1280px] mx-auto bg-deep-navy rounded-[var(--radius-card)]"
-          style={{ minHeight: "520px" }}
+          ref={ref}
+          className="relative w-full max-w-[1280px] mx-auto bg-deep-navy rounded-[var(--radius-card)] overflow-hidden"
+          style={{ height: "520px" }}
         >
-          {/* ── Vidéo gauche — 42% fixe ──────────────────────── */}
-          <div className="relative w-[42%] shrink-0 self-stretch">
-            <video
+          {/* ── Vidéo — clip-path full → 42% gauche + translateX pour centrer le cadre ── */}
+          <motion.div
+            className="absolute inset-0"
+            initial={{ clipPath: "inset(0% 0% 0% 0%)" }}
+            animate={isInView ? { clipPath: "inset(0% 58% 0% 0%)" } : { clipPath: "inset(0% 0% 0% 0%)" }}
+            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+          >
+            {/*
+              translateX(-29%) déplace la vidéo vers la gauche de 29% de sa propre largeur.
+              La vidéo occupe toujours 100% du wrapper. Avec object-cover/center, son centre
+              visuel est à 50% du wrapper. Après le translateX(-29%), le centre visuel se
+              retrouve à 21% du wrapper = centre exact du cadre clippé (42%/2 = 21%). ✓
+            */}
+            <motion.video
               src={DIRECTOR_VIDEO}
               autoPlay
               muted
               loop
               playsInline
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover object-center"
+              initial={{ x: 0 }}
+              animate={isInView ? { x: "-29%" } : { x: 0 }}
+              transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
             />
 
             {/* Dégradé bas vers la couleur du pôle */}
@@ -85,16 +118,6 @@ export function SectionDirecteurPole({
                   color-mix(in srgb, ${accentColor} 10%, transparent) 70%,
                   color-mix(in srgb, ${accentColor} 22%, var(--color-deep-navy)) 100%
                 )`,
-              }}
-            />
-
-            {/* Fondu latéral droit vers le fond */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(to right, transparent 55%, var(--color-deep-navy) 100%)",
               }}
             />
 
@@ -124,17 +147,39 @@ export function SectionDirecteurPole({
                 </span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* ── Contenu droit — slide depuis la droite ─────────── */}
+          {/*
+            Overlay gradient externe — en dehors du clip, donc toujours visible.
+            Apparaît après la fin du clip pour recréer le fondu navy sur le bord droit de la vidéo.
+            Couvre exactement la zone vidéo clippée (left 0, width 42%).
+          */}
           <motion.div
-            className="relative flex flex-1 flex-col justify-center gap-10 px-12 py-16 lg:px-16 lg:py-20"
-            initial={{ opacity: 0, x: 40 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            aria-hidden="true"
+            className="absolute inset-y-0 pointer-events-none"
+            style={{ left: 0, width: "42%", zIndex: 1 }}
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ delay: 1.0, duration: 0.35, ease: "easeOut" }}
+          >
+            <div
+              className="absolute inset-0"
+              style={{
+                background: "linear-gradient(to right, transparent 65%, var(--color-deep-navy) 100%)",
+              }}
+            />
+          </motion.div>
+
+          {/* ── Contenu droit — stagger variants, chaque élément slide-up ── */}
+          <motion.div
+            className="absolute top-0 bottom-0 right-0 flex flex-col justify-center gap-10 px-12 py-16 lg:px-16 lg:py-20"
+            style={{ width: "58%" }}
+            variants={CONTENT_CONTAINER}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
           >
             {/* Identité */}
-            <div className="flex flex-col gap-1">
+            <motion.div className="flex flex-col gap-1" variants={CONTENT_ITEM}>
               <h2
                 className="font-sans font-bold text-text-heading"
                 style={{
@@ -153,10 +198,10 @@ export function SectionDirecteurPole({
               >
                 {role}
               </p>
-            </div>
+            </motion.div>
 
-            {/* Vision — stagger temps fixe, tous les mots en ~0.6s */}
-            <blockquote className="flex flex-col gap-3">
+            {/* Vision */}
+            <motion.blockquote className="flex flex-col gap-3" variants={CONTENT_ITEM}>
               <span
                 aria-hidden="true"
                 className="select-none font-sans font-bold leading-none"
@@ -172,29 +217,15 @@ export function SectionDirecteurPole({
                   maxWidth: "52ch",
                 }}
               >
-                {words.map((word, i) => (
-                  <motion.span
-                    key={i}
-                    className="inline-block mr-[0.25em]"
-                    initial={{ opacity: 0.1 }}
-                    animate={isInView ? { opacity: 1 } : { opacity: 0.1 }}
-                    transition={{
-                      // délai décalé de 40ms par mot, commençant après le slide du contenu
-                      delay: 0.3 + i * 0.04,
-                      duration: 0.25,
-                      ease: "easeOut",
-                    }}
-                  >
-                    {word}
-                  </motion.span>
-                ))}
+                {vision}
               </p>
-            </blockquote>
+            </motion.blockquote>
 
             {/* Stats */}
-            <div
+            <motion.div
               className="grid gap-3"
               style={{ gridTemplateColumns: "repeat(auto-fill, minmax(148px, 1fr))" }}
+              variants={CONTENT_ITEM}
             >
               {stats.slice(0, 2).map((stat, i) => (
                 <div
@@ -229,11 +260,11 @@ export function SectionDirecteurPole({
                   </span>
                 </div>
               ))}
-            </div>
+            </motion.div>
 
             {/* CTA */}
             {ctaLabel && (
-              <div>
+              <motion.div variants={CONTENT_ITEM}>
                 <Link
                   href={ctaHref}
                   className="group relative inline-flex items-center justify-center gap-3 rounded-[var(--radius-pill-sm)] border px-[17px] py-[9px] font-sans text-white shadow-[var(--shadow-cta)] transition-all"
@@ -255,7 +286,7 @@ export function SectionDirecteurPole({
                     <ArrowRightIcon />
                   </span>
                 </Link>
-              </div>
+              </motion.div>
             )}
           </motion.div>
         </div>
