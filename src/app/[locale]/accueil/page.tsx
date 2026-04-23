@@ -9,6 +9,11 @@ import { LogoBanner, type LogoItem } from "@/components/blocks/LogoBanner";
 import { OffersSection } from "@/components/blocks/OffersSection";
 import { ProcessStepper } from "@/components/blocks/ProcessStepper";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
+import { SectionAgentsFlow } from "@/components/blocks/SectionAgentsFlow";
+import {
+  SectionNosPromesses,
+  type PromiseItem,
+} from "@/components/blocks/SectionNosPromesses";
 
 const PARTNER_LOGOS: LogoItem[] = [
   { src: "/images/logos/carrefour.svg", alt: "Carrefour", width: 100, height: 30 },
@@ -20,6 +25,41 @@ const PARTNER_LOGOS: LogoItem[] = [
   { src: "/images/logos/marketpay.svg", alt: "MarketPay", width: 100, height: 30 },
 ];
 
+const NOS_PROMESSES: PromiseItem[] = [
+  {
+    eyebrow: "Paris · France",
+    title: "Acteur français au cœur de Paris.",
+    description:
+      "Même fuseau horaire, même langue, mêmes contraintes réglementaires. Disponibles rapidement, ancrés dans l'écosystème tech parisien.",
+    stat: { value: "< 2h", label: "Délai de réponse moyen" },
+    accent: "orange",
+  },
+  {
+    eyebrow: "Livraison",
+    title: "Solution sur mesure, clés en main.",
+    description:
+      "Pas de template, pas de raccourci. Chaque solution est conçue pour votre contexte, vos contraintes, vos équipes. On livre quelque chose qui fonctionne — et qui dure.",
+    highlights: [
+      "Architecture alignée avec vos systèmes existants",
+      "Documentation de prise en main incluse dans chaque livraison",
+      "Formation de vos équipes à la solution livrée",
+    ],
+    accent: "default",
+  },
+  {
+    eyebrow: "Notre différence",
+    title: "Travailler avec des ingénieurs augmentés.",
+    description:
+      "Nos ingénieurs embarquent l'IA dans leurs processus quotidiens. Moins d'erreurs, plus de vélocité, des livrables plus solides — sans jamais sacrifier la qualité.",
+    highlights: [
+      "IA intégrée à chaque phase : cadrage, code, revue",
+      "Vélocité accrue sur les projets complexes",
+      "Rigueur ingénieur maintenue en toutes circonstances",
+    ],
+    accent: "blue",
+  },
+];
+
 export default function AccueilPage() {
   return (
     <div className="bg-nav-bg min-h-screen flex flex-col">
@@ -29,6 +69,9 @@ export default function AccueilPage() {
         {/* Héro principal */}
         <HeroSection />
 
+        {/* Nos expertises — process stepper sticky scroll */}
+        <ProcessStepper />
+
         {/* Bandeau logos partenaires — full width */}
         <div className="py-20 md:py-28">
           <LogoBanner logos={PARTNER_LOGOS} />
@@ -37,8 +80,15 @@ export default function AccueilPage() {
         {/* Nos offres — full width */}
         <OffersSection />
 
-        {/* Promesses — process stepper */}
-        <ProcessStepper />
+        {/* Agents IA — pipeline De votre besoin à l'agent IA */}
+        <SectionAgentsFlow />
+
+        {/* Nos promesses */}
+        <SectionNosPromesses
+          title="Nos promesses."
+          description="Ce qui nous différencie, concrètement."
+          items={NOS_PROMESSES}
+        />
 
         {/* CTA bas de page */}
         <section className="py-20 md:py-28">

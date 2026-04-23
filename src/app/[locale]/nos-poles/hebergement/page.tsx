@@ -88,7 +88,7 @@ export default function PoleHebergementPage() {
                 "Nous structurons des socles techniques conformes, traçables et opérables, adaptés à vos contraintes métier et réglementaires.",
             },
           ]}
-          ctaLabel="Je réserve un rendez-vous avec un expert."
+          ctaLabel="Réserver un rendez-vous avec un expert"
           ctaVariant="yellow"
         />
 
@@ -254,6 +254,7 @@ export default function PoleHebergementPage() {
           />
 
           <SectionDirecteurPole
+            className="mt-12 md:mt-20"
             name="Thibault Buze"
             role="Directeur du Pôle Hébergement"
             imageSrc="/images/team/thibault-buze.png"

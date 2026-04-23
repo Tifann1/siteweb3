@@ -107,7 +107,7 @@ export default function PoleConseilPage() {
               variant: "default",
             },
           ]}
-          ctaLabel="Je réserve un rendez-vous avec un expert."
+          ctaLabel="Réserver un rendez-vous avec un expert"
           ctaHref="/contact"
         />
 
@@ -195,6 +195,7 @@ export default function PoleConseilPage() {
             />
 
           <SectionDirecteurPole
+            className="mt-12 md:mt-20"
             name="Virginie"
             role="Directrice du Pôle Conseil"
             imageSrc="/images/team/virginie.png"

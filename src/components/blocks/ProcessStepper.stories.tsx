@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { ProcessStepper } from "./ProcessStepper";
 
 const meta: Meta<typeof ProcessStepper> = {
-  title: "Blocks/accueil/Promesses",
+  title: "Blocks/accueil/NosExpertises",
   component: ProcessStepper,
   parameters: {
     layout: "fullscreen",

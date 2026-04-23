@@ -241,12 +241,10 @@ export function SectionNosPromesses({
           </p>
         </motion.div>
 
-        {/* Bento grid */}
+        {/* Bento grid — layout asymétrique si 6 items, colonnes égales si 3 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {items.slice(0, 6).map((item, index) => {
-            // Indices larges : 0, 3, 4 → col-span-2
-            // Indices étroits : 1, 2, 5 → col-span-1
-            const isWide = index === 0 || index === 3 || index === 4;
+            const isWide = items.length === 6 && (index === 0 || index === 3 || index === 4);
             return (
               <div
                 key={index}

@@ -57,7 +57,7 @@ export function SectionBentoGrid({
   featureCard,
   wideCard,
   bottomCards,
-  ctaLabel = "Je réserve un rendez-vous avec un expert.",
+  ctaLabel = "Réserver un rendez-vous avec un expert",
   ctaHref = "/contact",
   onCtaClick,
   featureCardGradientFrom = "var(--color-conseil-orange)",
@@ -83,7 +83,10 @@ export function SectionBentoGrid({
           {/* Feature card — col 1-2, row 1-2 */}
           <motion.div
             className="col-start-1 col-span-2 row-start-1 row-span-2 relative rounded-[var(--radius-card)] overflow-hidden bg-card-bg flex flex-col cursor-default"
-            style={{ zIndex: 1 }}
+            style={{
+              zIndex: 1,
+              boxShadow: "0 12px 40px rgba(0,0,0,0.55), 0 3px 10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
+            }}
             whileHover={cardHover}
             transition={cardTransition}
           >
@@ -124,7 +127,10 @@ export function SectionBentoGrid({
           {/* Wide card — col 3-4, row 1 */}
           <motion.div
             className="col-start-3 col-span-2 row-start-1 relative rounded-[var(--radius-card)] bg-card-bg border border-card-border p-[41px] flex flex-col justify-center gap-[30px] cursor-default"
-            style={{ zIndex: 1 }}
+            style={{
+              zIndex: 1,
+              boxShadow: "0 8px 32px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05)",
+            }}
             whileHover={cardHover}
             transition={cardTransition}
           >
@@ -154,7 +160,7 @@ export function SectionBentoGrid({
         {ctaLabel && (
           <Link
             href={ctaHref}
-            className="group relative flex items-center gap-3 h-10 w-[559px] rounded-[var(--radius-pill-sm)] border px-[14px] mt-[50px] text-white shadow-[var(--shadow-cta)] transition-all"
+            className="group relative flex items-center justify-center h-10 w-[480px] rounded-[var(--radius-pill-sm)] border px-6 mt-[50px] text-white shadow-[var(--shadow-cta)] transition-all"
             style={
               ctaVariant === "yellow"
                 ? { borderColor: "var(--color-bento-devops-border)" }
@@ -175,32 +181,14 @@ export function SectionBentoGrid({
                   : { background: "linear-gradient(135deg, var(--color-cta-gradient-start), var(--color-cta-orange-deep))" }
               }
             />
-            <span className="relative z-10 flex items-center gap-3">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-                className="shrink-0"
-              >
-                <path
-                  d="M5 12h14M15 8l4 4-4 4"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span
-                className="font-body font-semibold"
-                style={{
-                  fontSize: "var(--text-nav)",
-                  lineHeight: "var(--text-nav--line-height)",
-                }}
-              >
-                {ctaLabel}
-              </span>
+            <span
+              className="relative z-10 font-body font-semibold"
+              style={{
+                fontSize: "var(--text-nav)",
+                lineHeight: "var(--text-nav--line-height)",
+              }}
+            >
+              {ctaLabel}
             </span>
           </Link>
         )}
@@ -248,7 +236,11 @@ function BentoCard({ title, description, variant = "default" }: BentoCardData) {
         !isAccent && "bg-card-bg",
         borderClass,
       ].filter(Boolean).join(" ")}
-      style={{ ...bgStyle, zIndex: 1 }}
+      style={{
+        ...bgStyle,
+        zIndex: 1,
+        boxShadow: "0 8px 32px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05)",
+      }}
       whileHover={cardHover}
       transition={cardTransition}
     >

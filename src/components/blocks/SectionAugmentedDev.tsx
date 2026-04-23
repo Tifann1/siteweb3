@@ -169,7 +169,7 @@ export function SectionAugmentedDev({
 
   return (
     <section
-      className="flex flex-col gap-16 items-center overflow-hidden w-full"
+      className="flex flex-col gap-16 items-center overflow-hidden w-full pb-16 md:pb-24"
       style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
     >
       <div className="flex flex-col gap-16 items-center w-full">
@@ -253,9 +253,9 @@ export function SectionAugmentedDev({
                     </h3>
                   </div>
 
-                  {/* Description — fades in/out, always takes space to keep grid stable */}
+                  {/* Description — pleine opacité au centre, réduite sur les côtés */}
                   <motion.p
-                    animate={{ opacity: isActive ? 1 : 0 }}
+                    animate={{ opacity: isActive ? 1 : 0.32 }}
                     transition={{ duration: 0.22 }}
                     className="font-sans text-text-body-warm text-center w-full"
                     style={{
@@ -270,12 +270,15 @@ export function SectionAugmentedDev({
             })}
           </div>
 
-          {/* Tech cards row — icônes en couleur du pôle */}
+          {/* Tech cards row — répondent au carrousel (activeIndex) */}
           <div className="flex gap-5 items-center w-full">
             {techCards.map((card, i) => (
-              <div
+              <motion.div
                 key={i}
-                className="bg-deep-navy border border-white/5 flex flex-1 gap-5 items-center justify-center px-[41px] py-[25px] rounded-[var(--radius-card)]"
+                animate={{ opacity: i === activeIndex ? 1 : 0.35 }}
+                transition={{ duration: 0.25 }}
+                onClick={() => setActiveIndex(i)}
+                className="bg-deep-navy border border-white/5 flex flex-1 gap-5 items-center justify-center px-[41px] py-[25px] rounded-[var(--radius-card)] cursor-pointer"
               >
                 <div
                   className="shrink-0"
@@ -303,7 +306,7 @@ export function SectionAugmentedDev({
                     {card.subtitle}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

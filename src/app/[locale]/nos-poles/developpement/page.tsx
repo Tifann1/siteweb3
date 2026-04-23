@@ -88,7 +88,7 @@ export default function PoleDeveloppementPage() {
                 "Nos agents IA sont conçus pour s'intégrer à vos outils, vos données et vos contraintes de sécurité, avec une approche robuste et souveraine.",
             },
           ]}
-          ctaLabel="Je réserve un rendez-vous avec un expert."
+          ctaLabel="Réserver un rendez-vous avec un expert"
         />
 
         {/* Section Développement augmenté par l'IA (node 533:5404) */}
@@ -131,6 +131,7 @@ export default function PoleDeveloppementPage() {
           />
 
           <SectionDirecteurPole
+            className="mt-12 md:mt-20"
             name="Sylvain Gourio"
             role="Directeur du Pôle Développement"
             imageSrc="/images/team/sylvain-gourio.png"

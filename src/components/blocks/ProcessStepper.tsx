@@ -25,54 +25,54 @@ interface Step {
 
 const STEPS: Step[] = [
   {
-    id: "cadrage",
+    id: "developpement",
     num: "01",
-    title: "Cadrage",
+    title: "Développement",
     description:
-      "Avant d'écrire une seule ligne de code, nous comprenons votre contexte. Contraintes techniques, objectifs métier, équipes en place — tout est cartographié.",
+      "Applications web sur mesure, APIs robustes, architectures scalables. Nos ingénieurs livrent du code qui dure — pas du code qui impressionne en présentation.",
     highlights: [
-      "Audit de l'existant (stack, dette technique, dépendances)",
-      "Définition des critères de succès mesurables",
-      "Découpage en livrables concrets et priorisés",
+      "Full-stack : React, Next.js, Node.js, Go, Python",
+      "Architecture micro-services et APIs RESTful / GraphQL",
+      "Revue de code systématique à chaque pull request",
     ],
     accent: "var(--color-offer-blue)",
   },
   {
-    id: "conception",
+    id: "ia",
     num: "02",
-    title: "Conception",
+    title: "Intelligence Artificielle",
     description:
-      "L'architecture est décidée, pas subie. Nous choisissons les patterns qui correspondent à vos contraintes — pas ceux qui impressionnent en présentation.",
+      "Agents IA, automatisations intelligentes, LLM intégrés aux workflows métier. Nous industrialisons l'IA sur des cas d'usage réels — pas des démos.",
     highlights: [
-      "Architecture Decision Records documentés",
-      "Prototype de validation avant construction",
-      "Revue par un second expert senior",
+      "Conception et déploiement d'agents IA autonomes",
+      "Intégration LLM dans vos processus existants",
+      "Formation de vos équipes à l'IA augmentée",
     ],
     accent: "var(--color-offer-green)",
   },
   {
-    id: "construction",
+    id: "hebergement",
     num: "03",
-    title: "Construction",
+    title: "Hébergement & Infrastructure",
     description:
-      "Des sprints courts, des livrables réels, des démonstrations régulières. Vous voyez avancer le projet à chaque étape — pas à la livraison finale.",
+      "Cloud, on-premise ou hybride — nous concevons et opérons l'infrastructure adaptée à vos contraintes de sécurité, de performance et de coût.",
     highlights: [
-      "Revue de code à chaque pull request",
-      "CI/CD en place dès le premier sprint",
-      "Démos client toutes les 2 semaines",
+      "Cloud souverain ou multi-cloud selon vos contraintes",
+      "CI/CD, monitoring et alerting en production",
+      "SLA garantis et astreinte disponible",
     ],
     accent: "var(--color-brand-orange)",
   },
   {
-    id: "livraison",
+    id: "conseil",
     num: "04",
-    title: "Livraison",
+    title: "Conseil & Transformation",
     description:
-      "La mise en production n'est pas la fin de notre responsabilité. Documentation, formation, monitoring — nous livrons quelque chose qui dure.",
+      "Audit technique, roadmap produit, accompagnement à la transformation digitale. Nous structurons votre vision avant d'écrire la première ligne de code.",
     highlights: [
-      "Documentation technique et utilisateur incluse",
-      "Formation de vos équipes à la solution",
-      "Transfert de compétences progressif",
+      "Audit de l'existant et détection des dettes techniques",
+      "Cadrage stratégique et découpage en livrables concrets",
+      "Accompagnement des équipes internes dans la durée",
     ],
     accent: "var(--color-offer-yellow)",
   },
@@ -388,7 +388,7 @@ export function ProcessStepper() {
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5 }}
             >
-              Notre méthode
+              Nos expertises
             </motion.span>
 
             <motion.h2
@@ -403,7 +403,7 @@ export function ProcessStepper() {
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.55, ease: EASE, delay: 0.1 }}
             >
-              Comment on{" "}
+              Notre{" "}
               <span
                 className="bg-clip-text text-transparent"
                 style={{
@@ -411,7 +411,7 @@ export function ProcessStepper() {
                     "linear-gradient(162.47deg, #FFB692 0%, #FF7E33 100%)",
                 }}
               >
-                travaille.
+                savoir-faire.
               </span>
             </motion.h2>
           </div>
