@@ -55,10 +55,66 @@ export const Default: Story = {
       },
     ],
     steps: [
-      { number: "01", title: "Cadre & conception", accent: "orange" },
-      { number: "02", title: "Predictive QA", accent: "blue" },
-      { number: "03", title: "Code Generation", accent: "orange" },
-      { number: "04", title: "Auto-Doc", accent: "blue" },
+      {
+        number: "01",
+        title: "Cadre & conception",
+        accent: "orange",
+        detail: {
+          heading: "Cadrage du besoin métier",
+          description:
+            "Avant d'écrire une ligne de code, nous avons audité les workflows existants. Chaque friction opérationnelle a été cartographiée, chaque cas d'usage priorisé selon son impact réel.",
+          points: [
+            "Analyse des workflows de traitement d'appels",
+            "Identification des cas d'usage IA à fort ROI",
+            "Définition des critères de succès mesurables",
+          ],
+        },
+      },
+      {
+        number: "02",
+        title: "Predictive QA",
+        accent: "blue",
+        detail: {
+          heading: "Assurance qualité prédictive",
+          description:
+            "Système de QA piloté par IA qui anticipe les régressions avant production. Les cas limites sont générés automatiquement à chaque pull request.",
+          points: [
+            "Génération automatique de suites de tests sur chaque PR",
+            "Réduction de 68% des régressions en production",
+            "Couverture de test passée de 42% à 91%",
+          ],
+        },
+      },
+      {
+        number: "03",
+        title: "Code Generation",
+        accent: "orange",
+        detail: {
+          heading: "Accélération par génération de code",
+          description:
+            "Chaque ingénieur travaille en binôme avec un assistant IA. Le boilerplate et les algorithmes répétitifs sont générés en temps réel.",
+          points: [
+            "Pair-programming IA sur 100% des sprints",
+            "Vélocité de livraison multipliée par 3",
+            "Zéro dette technique introduite",
+          ],
+        },
+      },
+      {
+        number: "04",
+        title: "Auto-Doc",
+        accent: "blue",
+        detail: {
+          heading: "Documentation générée en continu",
+          description:
+            "Documentation technique et fonctionnelle produite automatiquement à chaque livraison. Transfert de compétences sans formation longue.",
+          points: [
+            "Documentation API générée à chaque déploiement",
+            "Guides utilisateur mis à jour en continu",
+            "Transfert de compétences en 2 semaines",
+          ],
+        },
+      },
     ],
   },
 };

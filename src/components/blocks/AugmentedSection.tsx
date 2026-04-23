@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import {
   motion,
+  AnimatePresence,
   useScroll,
   useMotionValueEvent,
 } from "framer-motion";
@@ -15,10 +16,17 @@ export interface AugmentedFeature {
   description: string;
 }
 
+export interface AugmentedStepDetail {
+  heading?: string;
+  description: string;
+  points?: string[];
+}
+
 export interface AugmentedStep {
   number: string;
   title: string;
   accent?: "orange" | "blue";
+  detail?: AugmentedStepDetail;
 }
 
 export interface AugmentedSectionProps {
@@ -30,6 +38,182 @@ export interface AugmentedSectionProps {
 }
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+// ─── Icône checkmark ──────────────────────────────────────────────────────────
+
+function CheckIcon({ color }: { color: string }) {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      aria-hidden="true"
+      className="shrink-0 mt-[3px]"
+    >
+      <path
+        d="M2 7l3.5 3.5L12 3"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+// ─── Contenu gauche : soit le contenu global, soit le détail de l'étape ──────
+
+function LeftContent({
+  eyebrow,
+  title,
+  description,
+  features,
+  activeStep,
+  steps,
+}: {
+  eyebrow?: string;
+  title: string;
+  description: string;
+  features: AugmentedFeature[];
+  activeStep: number;
+  steps: AugmentedStep[];
+}) {
+  const hasActiveStep = activeStep >= 0 && steps[activeStep]?.detail;
+  const step = hasActiveStep ? steps[activeStep] : null;
+  const detail = step?.detail;
+  const accentColor =
+    step?.accent === "blue"
+      ? "var(--color-bento-dev-accent)"
+      : "var(--color-brand-orange-light)";
+
+  return (
+    <div className="flex flex-1 flex-col gap-[50px] items-start">
+      {/* Eyebrow — toujours visible */}
+      {eyebrow && (
+        <div className="flex items-center gap-2 px-[17px] py-[9px] rounded-full bg-badge-blue-bg border border-badge-blue-border w-fit">
+          <span className="size-2 rounded-full bg-badge-blue shrink-0" />
+          <span className="font-body font-normal text-badge-blue tracking-[var(--text-sector-badge--letter-spacing)] text-[length:var(--text-sector-badge)] uppercase whitespace-nowrap">
+            {eyebrow}
+          </span>
+        </div>
+      )}
+
+      {/* Zone animée : change par étape */}
+      <AnimatePresence mode="wait">
+        {!hasActiveStep ? (
+          // État initial : titre + description + features
+          <motion.div
+            key="initial"
+            className="flex flex-col gap-[50px] w-full"
+            initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -12, filter: "blur(6px)" }}
+            transition={{ duration: 0.4, ease }}
+          >
+            <h2
+              className="font-sans font-bold text-white w-full"
+              style={{ fontSize: "40px", lineHeight: "40px" }}
+            >
+              {title}
+            </h2>
+            <p
+              className="font-sans text-meta-secondary max-w-[519px]"
+              style={{ fontSize: "22px" }}
+            >
+              {description}
+            </p>
+            <div className="flex flex-col gap-6 w-full">
+              {features.map((feature, i) => (
+                <div key={i} className="flex gap-4 items-start opacity-70">
+                  <div className="flex items-center justify-center size-12 rounded-full bg-dropdown-open shrink-0">
+                    {feature.iconSrc ? (
+                      <div className="relative size-5">
+                        <Image
+                          src={feature.iconSrc}
+                          alt={feature.iconAlt ?? ""}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                    ) : (
+                      <DefaultFeatureIcon />
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="font-sans text-white whitespace-nowrap" style={{ fontSize: "22px" }}>
+                      {feature.title}
+                    </span>
+                    <span className="font-body font-normal text-text-muted" style={{ fontSize: "16px", lineHeight: "20px" }}>
+                      {feature.description}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        ) : (
+          // Étape active : contenu spécifique de l'étape
+          <motion.div
+            key={`step-${activeStep}`}
+            className="flex flex-col gap-8 w-full"
+            initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -14, filter: "blur(6px)" }}
+            transition={{ duration: 0.42, ease }}
+          >
+            {/* Numéro + titre de l'étape */}
+            <div className="flex flex-col gap-3">
+              <span
+                className="font-body font-semibold uppercase tracking-widest"
+                style={{ fontSize: "var(--text-badge)", letterSpacing: "0.12em", color: accentColor }}
+              >
+                Étape {step!.number}
+              </span>
+              <h2
+                className="font-sans font-bold text-white"
+                style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)", lineHeight: 1.15, letterSpacing: "-0.02em" }}
+              >
+                {detail!.heading ?? step!.title}
+              </h2>
+            </div>
+
+            {/* Description de l'étape */}
+            <p
+              className="font-body text-meta-secondary max-w-[480px]"
+              style={{ fontSize: "18px", lineHeight: "1.6" }}
+            >
+              {detail!.description}
+            </p>
+
+            {/* Points clés */}
+            {detail!.points && detail!.points.length > 0 && (
+              <ul className="flex flex-col gap-3 mt-2">
+                {detail!.points.map((point, i) => (
+                  <motion.li
+                    key={i}
+                    className="flex items-start gap-3 font-body text-text-body-warm"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, ease, delay: 0.1 + i * 0.08 }}
+                    style={{ fontSize: "var(--text-nav)" }}
+                  >
+                    <span style={{ color: accentColor }}>
+                      <CheckIcon color={accentColor} />
+                    </span>
+                    {point}
+                  </motion.li>
+                ))}
+              </ul>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ─── Composant principal ──────────────────────────────────────────────────────
 
 export function AugmentedSection({
   eyebrow = "Innovation IA",
@@ -54,12 +238,6 @@ export function AugmentedSection({
     setActiveStep(Math.max(-1, Math.min(steps.length - 1, step)));
   });
 
-  // Feature active : suit l'étape courante, clampé à l'index max des features
-  const activeFeature = Math.min(
-    Math.max(0, activeStep),
-    features.length - 1
-  );
-
   const leftSteps = steps.filter((_, i) => i % 2 === 0);
   const rightSteps = steps.filter((_, i) => i % 2 === 1);
 
@@ -73,78 +251,15 @@ export function AugmentedSection({
       {/* Zone sticky — reste à l'écran pendant toute la durée du scroll */}
       <div className="sticky top-0 h-screen flex items-center overflow-hidden">
         <div className="flex gap-[50px] items-start w-full">
-          {/* ── Colonne gauche ── */}
-          <div className="flex flex-1 flex-col gap-[50px] items-start">
-            {eyebrow && (
-              <div className="flex items-center gap-2 px-[17px] py-[9px] rounded-full bg-badge-blue-bg border border-badge-blue-border w-fit">
-                <span className="size-2 rounded-full bg-badge-blue shrink-0" />
-                <span className="font-body font-normal text-badge-blue tracking-[var(--text-sector-badge--letter-spacing)] text-[length:var(--text-sector-badge)] uppercase whitespace-nowrap">
-                  {eyebrow}
-                </span>
-              </div>
-            )}
-
-            <h2
-              className="font-sans font-bold text-white w-full"
-              style={{ fontSize: "40px", lineHeight: "40px" }}
-            >
-              {title}
-            </h2>
-
-            <p
-              className="font-sans text-meta-secondary max-w-[519px]"
-              style={{ fontSize: "22px" }}
-            >
-              {description}
-            </p>
-
-            {/* Liste de features — la feature active est mise en avant */}
-            <div className="flex flex-col gap-6 w-full">
-              {features.map((feature, i) => {
-                const isActive = i === activeFeature && activeStep >= 0;
-                return (
-                  <motion.div
-                    key={i}
-                    animate={{
-                      opacity: isActive ? 1 : 0.3,
-                      x: isActive ? 0 : -6,
-                    }}
-                    transition={{ duration: 0.4, ease }}
-                    className="flex gap-4 items-start"
-                  >
-                    <div className="flex items-center justify-center size-12 rounded-full bg-dropdown-open shrink-0">
-                      {feature.iconSrc ? (
-                        <div className="relative size-5">
-                          <Image
-                            src={feature.iconSrc}
-                            alt={feature.iconAlt ?? ""}
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      ) : (
-                        <DefaultFeatureIcon />
-                      )}
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <span
-                        className="font-sans text-white whitespace-nowrap"
-                        style={{ fontSize: "22px" }}
-                      >
-                        {feature.title}
-                      </span>
-                      <span
-                        className="font-body font-normal text-text-muted"
-                        style={{ fontSize: "16px", lineHeight: "20px" }}
-                      >
-                        {feature.description}
-                      </span>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
+          {/* ── Colonne gauche : contenu animé par étape ── */}
+          <LeftContent
+            eyebrow={eyebrow}
+            title={title}
+            description={description}
+            features={features}
+            activeStep={activeStep}
+            steps={steps}
+          />
 
           {/* ── Colonne droite : grille 2×2 décalée — étapes apparaissent au scroll ── */}
           <div className="flex gap-5 items-center self-stretch w-[549px] shrink-0">
@@ -163,7 +278,7 @@ export function AugmentedSection({
                     transition={{ duration: 0.45, ease }}
                     className="w-full"
                   >
-                    <StepCard step={step} />
+                    <StepCard step={step} isActive={stepIndex === activeStep} />
                   </motion.div>
                 );
               })}
@@ -184,7 +299,7 @@ export function AugmentedSection({
                     transition={{ duration: 0.45, ease }}
                     className="w-full"
                   >
-                    <StepCard step={step} />
+                    <StepCard step={step} isActive={stepIndex === activeStep} />
                   </motion.div>
                 );
               })}
@@ -196,12 +311,26 @@ export function AugmentedSection({
   );
 }
 
-function StepCard({ step }: { step: AugmentedStep }) {
+function StepCard({ step, isActive }: { step: AugmentedStep; isActive: boolean }) {
   const numberColor =
     step.accent === "blue" ? "text-badge-blue" : "text-brand-orange-light";
+  const accentColor =
+    step.accent === "blue"
+      ? "var(--color-bento-dev-accent)"
+      : "var(--color-brand-orange-light)";
 
   return (
-    <div className="flex flex-col items-start justify-between p-[33px] bg-card-bg border border-white/5 rounded-[16px] w-full gap-4">
+    <div
+      className="flex flex-col items-start justify-between p-[33px] border rounded-[16px] w-full gap-4 transition-colors duration-500"
+      style={{
+        background: isActive
+          ? `color-mix(in srgb, ${accentColor} 8%, var(--color-card-bg))`
+          : "var(--color-card-bg)",
+        borderColor: isActive
+          ? `color-mix(in srgb, ${accentColor} 40%, transparent)`
+          : "rgba(255,255,255,0.05)",
+      }}
+    >
       <span
         className={["font-body font-semibold", numberColor].join(" ")}
         style={{ fontSize: "48px", lineHeight: "48px" }}

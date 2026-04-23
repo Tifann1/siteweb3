@@ -53,13 +53,16 @@ export default function ReferencesTestPage() {
           <LogoBanner logos={PARTNER_LOGOS} duration={25} />
         </div>
 
-        {/* Quote + Bento */}
-        <section className="flex flex-col gap-6 w-full max-w-[1045px] mx-auto">
+        {/* Quote — sticky scroll */}
+        <div className="w-full max-w-[1045px] mx-auto">
           <QuoteBlock
             quote="L'intégration d'une intelligence artificielle au cœur des process ouvre des perspectives fortes en matière de performance, de qualité de service et d'accompagnement des conseillers"
             attribution="Strategic Vision 2025"
           />
+        </div>
 
+        {/* Bento */}
+        <section className="flex flex-col gap-6 w-full max-w-[1045px] mx-auto">
           <ReferenceBento
             expertImageSrc={EXPERT_IMAGE}
             expertImageAlt="Emeric, Chef de projet"
@@ -122,10 +125,66 @@ export default function ReferencesTestPage() {
               },
             ]}
             steps={[
-              { number: "01", title: "Cadre & conception", accent: "orange" },
-              { number: "02", title: "Predictive QA", accent: "blue" },
-              { number: "03", title: "Code Generation", accent: "orange" },
-              { number: "04", title: "Auto-Doc", accent: "blue" },
+              {
+                number: "01",
+                title: "Cadre & conception",
+                accent: "orange",
+                detail: {
+                  heading: "Cadrage du besoin métier",
+                  description:
+                    "Avant d'écrire une ligne de code, nous avons audité les workflows existants chez Armatis. Chaque friction opérationnelle a été cartographiée, chaque cas d'usage priorisé selon son impact réel.",
+                  points: [
+                    "Analyse des 12 workflows de traitement d'appels",
+                    "Identification de 4 cas d'usage IA à fort ROI",
+                    "Définition des critères de succès mesurables",
+                  ],
+                },
+              },
+              {
+                number: "02",
+                title: "Predictive QA",
+                accent: "blue",
+                detail: {
+                  heading: "Assurance qualité prédictive",
+                  description:
+                    "Nos ingénieurs ont déployé un système de QA piloté par IA qui anticipe les régressions avant qu'elles n'atteignent la production. Les cas limites sont générés automatiquement à chaque pull request.",
+                  points: [
+                    "Génération automatique de suites de tests sur chaque PR",
+                    "Réduction de 68% des régressions en production",
+                    "Couverture de test passée de 42% à 91%",
+                  ],
+                },
+              },
+              {
+                number: "03",
+                title: "Code Generation",
+                accent: "orange",
+                detail: {
+                  heading: "Accélération par génération de code",
+                  description:
+                    "Chaque ingénieur travaille en binôme avec un assistant IA. Le boilerplate, les algorithmes répétitifs et la documentation inline sont générés en temps réel — les ingénieurs se concentrent sur la valeur métier.",
+                  points: [
+                    "Pair-programming IA sur 100% des sprints",
+                    "Vélocité de livraison multipliée par 3",
+                    "Zéro dette technique introduite sur la période",
+                  ],
+                },
+              },
+              {
+                number: "04",
+                title: "Auto-Doc",
+                accent: "blue",
+                detail: {
+                  heading: "Documentation générée en continu",
+                  description:
+                    "La documentation technique et fonctionnelle est produite et maintenue automatiquement à chaque livraison. Les équipes Armatis prennent en main la solution sans formation longue.",
+                  points: [
+                    "Documentation API générée à chaque déploiement",
+                    "Guides utilisateur mis à jour en continu",
+                    "Transfert de compétences en 2 semaines",
+                  ],
+                },
+              },
             ]}
           />
         </section>

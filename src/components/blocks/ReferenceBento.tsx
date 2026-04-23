@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import {
   motion,
@@ -43,7 +43,7 @@ export interface ReferenceBentoProps {
 const spring = { type: "spring", stiffness: 260, damping: 28 } as const;
 
 const rowVariants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 32 },
   visible: { opacity: 1, y: 0 },
 };
 
@@ -67,6 +67,7 @@ function AnimatedStatCard({
   isInView: boolean;
   delay: number;
 }) {
+  const [activated, setActivated] = useState(false);
   const { prefix, numeric, suffix } = parseStatValue(stat.value);
   const count = useMotionValue(0);
   const display = useTransform(count, (v) => {
@@ -92,14 +93,31 @@ function AnimatedStatCard({
     <motion.div
       variants={rowVariants}
       whileHover={{ scale: 1.04, transition: spring }}
-      className="flex flex-col gap-1 items-center p-[25px] bg-card-bg border border-white/5 rounded-[var(--radius-input)] cursor-default"
+      onHoverStart={() => setActivated(true)}
+      className="flex flex-col gap-1 items-center p-[25px] rounded-[var(--radius-input)] cursor-default"
+      style={{
+        background: activated
+          ? "var(--color-badge-blue-bg)"
+          : "var(--color-card-bg)",
+        border: activated
+          ? "1px solid var(--color-bento-dev-accent)"
+          : "1px solid rgba(255,255,255,0.05)",
+        transition: "background 0.5s ease, border-color 0.5s ease",
+      }}
     >
       <motion.span
-        className={[
-          "font-sans text-center",
-          stat.highlight ? "text-brand-orange-light" : "text-white",
-        ].join(" ")}
-        style={{ fontSize: "30px", lineHeight: "36px" }}
+        className="font-sans text-center"
+        style={{
+          fontSize: "30px",
+          lineHeight: "36px",
+          color:
+            stat.highlight
+              ? "var(--color-brand-orange-light)"
+              : activated
+              ? "var(--color-bento-dev-accent)"
+              : "white",
+          transition: "color 0.5s ease",
+        }}
       >
         {isNaN(numeric) ? stat.value : display}
       </motion.span>
@@ -132,11 +150,14 @@ export function ReferenceBento({
   brandCtaHref,
 }: ReferenceBentoProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  // Déclenche quand le composant est bien dans le viewport (200px minimum)
+  const isInView = useInView(ref, { once: true, margin: "-200px 0px" });
 
-  const row0Transition = { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const, delay: 0 };
-  const row1Transition = { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const, delay: 0.18 };
-  const row2Transition = { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const, delay: 0.36 };
+  // Stagger ligne par ligne : row 0 → row 1 → row 2
+  const ease = [0.22, 1, 0.36, 1] as const;
+  const row0Transition = { duration: 0.65, ease, delay: 0 };
+  const row1Transition = { duration: 0.65, ease, delay: 0.3 };
+  const row2Transition = { duration: 0.65, ease, delay: 0.6 };
 
   return (
     <div ref={ref} className="grid grid-cols-3 gap-6 w-full">
@@ -178,7 +199,7 @@ export function ReferenceBento({
         variants={rowVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
-        transition={{ ...row0Transition, delay: 0.08 }}
+        transition={{ ...row0Transition, delay: 0.12 }}
         whileHover={{ scale: 1.02, transition: spring }}
         className="col-start-2 row-start-1 flex flex-col gap-[30px] items-start justify-center p-[34px] bg-deep-navy border border-white/5 rounded-[var(--radius-input)]"
       >
@@ -204,7 +225,7 @@ export function ReferenceBento({
         variants={rowVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
-        transition={{ ...row0Transition, delay: 0.16 }}
+        transition={{ ...row0Transition, delay: 0.24 }}
         whileHover={{ scale: 1.02, transition: spring }}
         className="col-start-3 row-start-1 flex flex-col gap-4 items-start p-8 bg-deep-navy border border-white/5 rounded-[var(--radius-input)]"
       >
@@ -222,7 +243,7 @@ export function ReferenceBento({
         </p>
       </motion.div>
 
-      {/* ── Stats row : cols 2-3 — compteur + hover ── */}
+      {/* ── Stats row : cols 2-3 — compteur + hover one-way bleu ── */}
       <motion.div
         variants={rowVariants}
         initial="hidden"
