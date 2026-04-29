@@ -29,7 +29,7 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
 ];
 
 export function Header({
-  logoSrc = "/images/logos/logo Steamulo Pantones + Baseline-blanc (1).png",
+  logoSrc = "/images/logos/logo-steamulo-blanc.png",
   logoAlt = "Steamulo",
   navItems = DEFAULT_NAV_ITEMS,
   ctaLabel = "Je lance mon projet",

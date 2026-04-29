@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Usine — Animation</title>
+<style>
+  :root {
+    --bg: #0d1b3d;
+    --orange: #e8732a;
+    --orange-d: #b7541a;
+    --blue:   #2e41c6;
+    --blue-d:  #1d2a8f;
+    --yellow: #f2c022;
+    --yellow-d:#c3971a;
+    --green:  #4cb98a;
+    --green-d:#2f8a63;
+    --ink:    #0a1432;
+    --roof:   #d8d2c4;
+    --roof-d: #b6ae9b;
+    --base:   #2c3654;
+    --base-d: #1a2240;
+    --window: #0c1226;
+  }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    color: #fff;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+  body { perspective: 2400px; }
+  .scene {
+    position: relative;
+    width: min(96vw, 1200px);
+    aspect-ratio: 1448 / 1086;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform .5s cubic-bezier(.2,.8,.2,1);
+    will-change: transform;
+  }
+  .scene svg.stage {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    display: block;
+    overflow: visible;
+  }
+
+  /* ---------- Hotspots ---------- */
+  .hotspot {
+    position: absolute;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+  /* Colonnes qui couvrent aussi la grange au premier plan */
+  .hs-orange { left: 22.0%; top: 26.0%; width: 12.5%; height: 55%; }
+  .hs-blue   { left: 34.5%; top: 22.0%; width: 12.0%; height: 59%; }
+  .hs-yellow { left: 46.5%; top: 26.0%; width: 13.0%; height: 55%; }
+  .hs-green  { left: 66.0%; top: 30.0%; width: 12.0%; height: 52%; }
+  .hotspot:focus { outline: none; }
+  .hotspot:focus-visible { outline: none; }
+
+  /* ---------- Mise en avant au survol ---------- */
+  #barn, #silos, #stacks {
+    transition: opacity .35s ease, filter .35s ease;
+  }
+  #orange-shed, #blue-shed, #yellow-shed, #green-stack {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1),
+                filter .35s ease,
+                opacity .35s ease;
+    cursor: pointer;
+  }
+  .scene.focus-orange #orange-shed,
+  .scene.focus-blue   #blue-shed,
+  .scene.focus-yellow #yellow-shed,
+  .scene.focus-green  #green-stack {
+    transform: translateY(-22px) scale(1.09);
+    filter: drop-shadow(0 22px 34px rgba(0,0,0,.55))
+            drop-shadow(0 0 36px rgba(255,255,255,.35));
+  }
+  /* Les autres sheds s'estompent */
+  .scene.focus-orange #blue-shed,
+  .scene.focus-orange #yellow-shed,
+  .scene.focus-orange #green-stack,
+  .scene.focus-blue   #orange-shed,
+  .scene.focus-blue   #yellow-shed,
+  .scene.focus-blue   #green-stack,
+  .scene.focus-yellow #orange-shed,
+  .scene.focus-yellow #blue-shed,
+  .scene.focus-yellow #green-stack,
+  .scene.focus-green  #orange-shed,
+  .scene.focus-green  #blue-shed,
+  .scene.focus-green  #yellow-shed {
+    opacity: .35;
+    filter: saturate(.55) brightness(.75);
+  }
+  /* Grange/silos/cheminées grises s'estompent aussi */
+  .scene.focus-orange #barn, .scene.focus-orange #silos, .scene.focus-orange #stacks,
+  .scene.focus-blue   #barn, .scene.focus-blue   #silos, .scene.focus-blue   #stacks,
+  .scene.focus-yellow #barn, .scene.focus-yellow #silos, .scene.focus-yellow #stacks,
+  .scene.focus-green  #barn, .scene.focus-green  #silos, .scene.focus-green  #stacks {
+    opacity: .38;
+    filter: saturate(.6) brightness(.8);
+  }
+
+  /* ---------- Tooltip ---------- */
+  .tip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 14px);
+    transform: translate(-50%, 8px);
+    background: #fff;
+    color: var(--ink);
+    padding: 11px 18px;
+    border-radius: 999px;
+    font-size: clamp(12px, 1.15vw, 16px);
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 14px 34px rgba(0,0,0,.45), 0 2px 0 rgba(0,0,0,.05) inset;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .25s cubic-bezier(.2,.8,.2,1);
+  }
+  .tip::after {
+    content: "";
+    position: absolute;
+    left: 50%; top: 100%;
+    width: 12px; height: 12px;
+    background: #fff;
+    transform: translate(-50%, -6px) rotate(45deg);
+    border-radius: 2px;
+  }
+  .hotspot:hover .tip, .hotspot:focus-visible .tip {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  .tip .dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: 1px;
+    box-shadow: 0 0 0 2px rgba(0,0,0,.06);
+  }
+  .tip .dot.orange { background: var(--orange); }
+  .tip .dot.blue   { background: var(--blue); }
+  .tip .dot.yellow { background: var(--yellow); }
+  .tip .dot.green  { background: var(--green); }
+
+  /* ---------- Animations (nuages, fumée) ---------- */
+  @keyframes driftA { 0%{transform:translateX(-30px)} 50%{transform:translateX(40px)} 100%{transform:translateX(-30px)} }
+  @keyframes driftB { 0%{transform:translateX(25px)}  50%{transform:translateX(-35px)}100%{transform:translateX(25px)} }
+  @keyframes driftC { 0%{transform:translateX(-45px)} 50%{transform:translateX(55px)} 100%{transform:translateX(-45px)} }
+  .cloud-a { animation: driftA 22s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .cloud-b { animation: driftB 18s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .cloud-c { animation: driftC 28s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+
+  @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  .bob-a { animation: bob 6s ease-in-out infinite;     transform-box: fill-box; }
+  .bob-b { animation: bob 7s ease-in-out infinite .5s; transform-box: fill-box; }
+  .bob-c { animation: bob 8s ease-in-out infinite 1s;  transform-box: fill-box; }
+
+  @keyframes puff {
+    0%   { transform: translate(0,0) scale(.5);  opacity: 0; }
+    15%  { opacity: .9; }
+    70%  { opacity: .5; }
+    100% { transform: translate(var(--dx, 10px), -160px) scale(1.5); opacity: 0; }
+  }
+  .puff { transform-box: fill-box; transform-origin: center; animation: puff 4.5s ease-out infinite; }
+
+  .caption {
+    position: absolute;
+    left: 50%; bottom: -42px;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,.55);
+    font-size: 13px;
+    letter-spacing: .4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<div class="scene" id="scene">
+  <svg class="stage" viewBox="0 0 1448 1086" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <radialGradient id="groundShadow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"  stop-color="#000" stop-opacity=".35"/>
+        <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+      </radialGradient>
+
+      <linearGradient id="gOrange" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ef8336"/><stop offset="100%" stop-color="#cc6420"/>
+      </linearGradient>
+      <linearGradient id="gBlue" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#3b4fde"/><stop offset="100%" stop-color="#2231a6"/>
+      </linearGradient>
+      <linearGradient id="gYellow" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#f5cb35"/><stop offset="100%" stop-color="#d4a018"/>
+      </linearGradient>
+      <linearGradient id="gGreen" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#5cc996"/><stop offset="100%" stop-color="#2f8a63"/>
+      </linearGradient>
+      <linearGradient id="gMetal" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#8a8f97"/>
+        <stop offset="40%" stop-color="#d0d4d9"/>
+        <stop offset="60%" stop-color="#d0d4d9"/>
+        <stop offset="100%" stop-color="#7a7f87"/>
+      </linearGradient>
+      <linearGradient id="gStack" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#757a82"/>
+        <stop offset="50%" stop-color="#a6abb2"/>
+        <stop offset="100%" stop-color="#6e737b"/>
+      </linearGradient>
+      <linearGradient id="gRoof" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ece6d7"/><stop offset="100%" stop-color="#b6ae9b"/>
+      </linearGradient>
+      <linearGradient id="gHull" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#2a3858"/><stop offset="100%" stop-color="#121a30"/>
+      </linearGradient>
+      <linearGradient id="gBase" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#3a476b"/><stop offset="100%" stop-color="#1a2240"/>
+      </linearGradient>
+      <linearGradient id="gCloud" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#d7dce6"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Ombre au sol -->
+    <ellipse cx="724" cy="970" rx="620" ry="60" fill="url(#groundShadow)"/>
+
+    <!-- Nuages -->
+    <g class="cloud-a"><g class="bob-a">
+      <g fill="url(#gCloud)">
+        <ellipse cx="300" cy="195" rx="78" ry="42"/>
+        <ellipse cx="240" cy="210" rx="55" ry="34"/>
+        <ellipse cx="360" cy="210" rx="58" ry="32"/>
+        <ellipse cx="300" cy="170" rx="48" ry="30"/>
+      </g>
+      <ellipse cx="280" cy="165" rx="40" ry="8" fill="#ffffff" opacity=".6"/>
+    </g></g>
+    <g class="cloud-b"><g class="bob-b">
+      <g fill="url(#gCloud)">
+        <ellipse cx="520" cy="245" rx="52" ry="28"/>
+        <ellipse cx="480" cy="255" rx="36" ry="22"/>
+        <ellipse cx="560" cy="255" rx="40" ry="22"/>
+        <ellipse cx="520" cy="225" rx="30" ry="20"/>
+      </g>
+      <ellipse cx="510" cy="222" rx="24" ry="5" fill="#ffffff" opacity=".55"/>
+    </g></g>
+    <g class="cloud-c"><g class="bob-c">
+      <g fill="url(#gCloud)">
+        <ellipse cx="1120" cy="140" rx="44" ry="24"/>
+        <ellipse cx="1088" cy="150" rx="30" ry="18"/>
+        <ellipse cx="1152" cy="150" rx="32" ry="18"/>
+        <ellipse cx="1120" cy="122" rx="26" ry="16"/>
+      </g>
+    </g></g>
+
+    <!-- Cheminées grises -->
+    <g id="stacks">
+      <g>
+        <rect x="702" y="190" width="46" height="460" rx="6" fill="url(#gStack)"/>
+        <rect x="696" y="186" width="58" height="18" rx="4" fill="#8a9099"/>
+        <rect x="696" y="300" width="58" height="10" rx="3" fill="#8a9099"/>
+        <rect x="696" y="430" width="58" height="10" rx="3" fill="#8a9099"/>
+        <rect x="712" y="210" width="6" height="420" fill="#ffffff" opacity=".15"/>
+      </g>
+      <g>
+        <rect x="790" y="220" width="46" height="430" rx="6" fill="url(#gStack)"/>
+        <rect x="784" y="216" width="58" height="18" rx="4" fill="#8a9099"/>
+        <rect x="784" y="330" width="58" height="10" rx="3" fill="#8a9099"/>
+        <rect x="784" y="460" width="58" height="10" rx="3" fill="#8a9099"/>
+        <rect x="800" y="240" width="6" height="390" fill="#ffffff" opacity=".15"/>
+      </g>
+      <!-- Fumée -->
+      <g>
+        <circle class="puff" cx="725" cy="190" r="12" fill="#d7dbe3" opacity=".85" style="--dx: 8px;  animation-delay: .4s; animation-duration: 5s;"/>
+        <circle class="puff" cx="720" cy="190" r="10" fill="#d7dbe3" opacity=".85" style="--dx: 16px; animation-delay: 2.1s; animation-duration: 5s;"/>
+        <circle class="puff" cx="813" cy="220" r="12" fill="#d7dbe3" opacity=".85" style="--dx: -6px; animation-delay: 1.3s; animation-duration: 5.5s;"/>
+        <circle class="puff" cx="818" cy="220" r="10" fill="#d7dbe3" opacity=".85" style="--dx: 4px;  animation-delay: 3.0s; animation-duration: 5.5s;"/>
+      </g>
+    </g>
+
+    <!-- Silos -->
+    <g id="silos">
+      <g>
+        <rect x="134" y="460" width="96" height="420" fill="url(#gMetal)"/>
+        <ellipse cx="182" cy="460" rx="48" ry="22" fill="url(#gMetal)"/>
+        <ellipse cx="182" cy="456" rx="48" ry="16" fill="#e3e6ea"/>
+        <rect x="130" y="540" width="104" height="6" fill="#8a9099"/>
+        <rect x="130" y="660" width="104" height="6" fill="#8a9099"/>
+        <rect x="130" y="780" width="104" height="6" fill="#8a9099"/>
+        <rect x="152" y="480" width="10" height="380" rx="4" fill="#ffffff" opacity=".5"/>
+        <rect x="176" y="428" width="12" height="36" rx="3" fill="#8a9099"/>
+        <circle cx="182" cy="426" r="6" fill="#8a9099"/>
+      </g>
+      <g>
+        <rect x="240" y="520" width="90" height="360" fill="url(#gMetal)"/>
+        <ellipse cx="285" cy="520" rx="45" ry="20" fill="url(#gMetal)"/>
+        <ellipse cx="285" cy="517" rx="45" ry="14" fill="#e3e6ea"/>
+        <rect x="236" y="600" width="98" height="6" fill="#8a9099"/>
+        <rect x="236" y="720" width="98" height="6" fill="#8a9099"/>
+        <rect x="236" y="840" width="98" height="6" fill="#8a9099"/>
+        <rect x="256" y="540" width="10" height="320" rx="4" fill="#ffffff" opacity=".5"/>
+        <path d="M 182,460 C 215,430 250,430 285,460"
+              fill="none" stroke="#9aa0a8" stroke-width="10" stroke-linecap="round"/>
+      </g>
+      <g stroke="#6e737b" stroke-width="3" fill="none">
+        <line x1="128" y1="470" x2="128" y2="870"/>
+        <line x1="136" y1="470" x2="136" y2="870"/>
+        <g stroke-width="2">
+          <line x1="128" y1="500" x2="136" y2="500"/>
+          <line x1="128" y1="540" x2="136" y2="540"/>
+          <line x1="128" y1="580" x2="136" y2="580"/>
+          <line x1="128" y1="620" x2="136" y2="620"/>
+          <line x1="128" y1="660" x2="136" y2="660"/>
+          <line x1="128" y1="700" x2="136" y2="700"/>
+          <line x1="128" y1="740" x2="136" y2="740"/>
+          <line x1="128" y1="780" x2="136" y2="780"/>
+          <line x1="128" y1="820" x2="136" y2="820"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- === SHEDS COLORÉS (derrière la grange) === -->
+
+    <!-- ORANGE -->
+    <g id="orange-shed">
+      <path d="M 318,860 L 318,400 L 470,300 L 470,860 Z" fill="url(#gOrange)"/>
+      <path d="M 470,300 L 484,312 L 484,872 L 470,860 Z" fill="var(--orange-d)"/>
+      <path d="M 318,400 L 470,300 L 486,318 L 334,418 Z" fill="url(#gRoof)"/>
+      <path d="M 486,318 L 486,328 L 334,428 L 334,418 Z" fill="var(--roof-d)"/>
+      <path d="M 340,412 L 472,326 L 472,360 L 340,446 Z" fill="var(--window)"/>
+      <path d="M 340,412 L 472,326 L 472,332 L 340,418 Z" fill="#2a355c" opacity=".9"/>
+      <rect x="388" y="500" width="38" height="130" rx="4" fill="var(--window)"/>
+      <rect x="388" y="500" width="38" height="8"  fill="#1b2444"/>
+      <path d="M 318,400 L 470,300 L 470,310 L 318,410 Z" fill="#ffffff" opacity=".12"/>
+    </g>
+
+    <!-- BLEU -->
+    <g id="blue-shed">
+      <path d="M 486,860 L 486,360 L 638,260 L 638,860 Z" fill="url(#gBlue)"/>
+      <path d="M 638,260 L 652,272 L 652,872 L 638,860 Z" fill="var(--blue-d)"/>
+      <path d="M 486,360 L 638,260 L 654,278 L 502,378 Z" fill="url(#gRoof)"/>
+      <path d="M 654,278 L 654,288 L 502,388 L 502,378 Z" fill="var(--roof-d)"/>
+      <path d="M 508,372 L 640,286 L 640,320 L 508,406 Z" fill="var(--window)"/>
+      <path d="M 508,372 L 640,286 L 640,292 L 508,378 Z" fill="#2a355c" opacity=".9"/>
+      <rect x="556" y="470" width="40" height="140" rx="4" fill="var(--window)"/>
+      <rect x="556" y="470" width="40" height="8"  fill="#1b2444"/>
+      <path d="M 486,360 L 638,260 L 638,270 L 486,370 Z" fill="#ffffff" opacity=".12"/>
+    </g>
+
+    <!-- JAUNE -->
+    <g id="yellow-shed">
+      <path d="M 654,860 L 654,320 L 806,220 L 806,860 Z" fill="url(#gYellow)"/>
+      <path d="M 806,220 L 820,232 L 820,872 L 806,860 Z" fill="var(--yellow-d)"/>
+      <path d="M 654,320 L 806,220 L 822,238 L 670,338 Z" fill="url(#gRoof)"/>
+      <path d="M 822,238 L 822,248 L 670,348 L 670,338 Z" fill="var(--roof-d)"/>
+      <path d="M 676,332 L 808,246 L 808,280 L 676,366 Z" fill="var(--window)"/>
+      <path d="M 676,332 L 808,246 L 808,252 L 676,338 Z" fill="#2a355c" opacity=".9"/>
+      <rect x="724" y="430" width="42" height="150" rx="4" fill="var(--window)"/>
+      <rect x="724" y="430" width="42" height="8"  fill="#1b2444"/>
+      <path d="M 654,320 L 806,220 L 806,230 L 654,330 Z" fill="#ffffff" opacity=".12"/>
+    </g>
+
+    <!-- === GRANGE CENTRALE (AU PREMIER PLAN) === -->
+    <g id="barn" transform="translate(720 880) scale(0.78) translate(-720 -880)">
+      <!-- Corps large : toit à double pan qui couvre bien les sheds en bas -->
+      <path d="M 340,880 L 340,600 L 720,470 L 1100,600 L 1100,880 Z" fill="url(#gHull)"/>
+      <!-- Toit -->
+      <path d="M 340,600 L 720,470 L 1100,600 L 1078,616 L 720,490 L 362,616 Z" fill="var(--roof-d)"/>
+      <path d="M 362,616 L 720,490 L 1078,616 L 1078,648 L 720,522 L 362,648 Z" fill="url(#gRoof)"/>
+      <g stroke="#a89f8a" stroke-width="2" opacity=".7">
+        <line x1="390" y1="636" x2="720" y2="506"/>
+        <line x1="450" y1="632" x2="720" y2="516"/>
+        <line x1="520" y1="626" x2="720" y2="526"/>
+        <line x1="590" y1="620" x2="720" y2="536"/>
+        <line x1="720" y1="506" x2="1050" y2="636"/>
+        <line x1="720" y1="516" x2="990"  y2="632"/>
+        <line x1="720" y1="526" x2="930"  y2="626"/>
+        <line x1="720" y1="536" x2="870"  y2="620"/>
+      </g>
+      <!-- Grille de fenêtres à gauche -->
+      <g>
+        <rect x="380" y="660" width="300" height="210" rx="6" fill="#efe8d4"/>
+        <g fill="var(--window)">
+          <g>
+            <rect x="392" y="672" width="40" height="44" rx="2"/>
+            <rect x="440" y="672" width="40" height="44" rx="2"/>
+            <rect x="488" y="672" width="40" height="44" rx="2"/>
+            <rect x="536" y="672" width="40" height="44" rx="2"/>
+            <rect x="584" y="672" width="40" height="44" rx="2"/>
+            <rect x="632" y="672" width="40" height="44" rx="2"/>
+          </g>
+          <g>
+            <rect x="392" y="722" width="40" height="44" rx="2"/>
+            <rect x="440" y="722" width="40" height="44" rx="2"/>
+            <rect x="488" y="722" width="40" height="44" rx="2"/>
+            <rect x="536" y="722" width="40" height="44" rx="2"/>
+            <rect x="584" y="722" width="40" height="44" rx="2"/>
+            <rect x="632" y="722" width="40" height="44" rx="2"/>
+          </g>
+          <g>
+            <rect x="392" y="772" width="40" height="44" rx="2"/>
+            <rect x="440" y="772" width="40" height="44" rx="2"/>
+            <rect x="488" y="772" width="40" height="44" rx="2"/>
+            <rect x="536" y="772" width="40" height="44" rx="2"/>
+            <rect x="584" y="772" width="40" height="44" rx="2"/>
+            <rect x="632" y="772" width="40" height="44" rx="2"/>
+          </g>
+          <g>
+            <rect x="392" y="822" width="40" height="36" rx="2"/>
+            <rect x="440" y="822" width="40" height="36" rx="2"/>
+            <rect x="488" y="822" width="40" height="36" rx="2"/>
+            <rect x="536" y="822" width="40" height="36" rx="2"/>
+            <rect x="584" y="822" width="40" height="36" rx="2"/>
+            <rect x="632" y="822" width="40" height="36" rx="2"/>
+          </g>
+        </g>
+      </g>
+      <!-- Oculus -->
+      <g>
+        <circle cx="830" cy="720" r="48" fill="#efe8d4"/>
+        <circle cx="830" cy="720" r="36" fill="var(--window)"/>
+        <rect x="792" y="716" width="76" height="8" fill="#efe8d4"/>
+        <rect x="826" y="682" width="8" height="76" fill="#efe8d4"/>
+        <circle cx="830" cy="720" r="6" fill="#efe8d4"/>
+      </g>
+      <!-- Volet -->
+      <g>
+        <rect x="900" y="710" width="90" height="160" rx="4" fill="#c9c3b2"/>
+        <g stroke="#8c8673" stroke-width="1">
+          <line x1="904" y1="730" x2="986" y2="730"/>
+          <line x1="904" y1="750" x2="986" y2="750"/>
+          <line x1="904" y1="770" x2="986" y2="770"/>
+          <line x1="904" y1="790" x2="986" y2="790"/>
+          <line x1="904" y1="810" x2="986" y2="810"/>
+          <line x1="904" y1="830" x2="986" y2="830"/>
+          <line x1="904" y1="850" x2="986" y2="850"/>
+        </g>
+      </g>
+      <!-- Fenêtre droite -->
+      <g>
+        <rect x="1010" y="710" width="68" height="160" rx="4" fill="#efe8d4"/>
+        <g fill="var(--window)">
+          <rect x="1016" y="716" width="26" height="72" rx="2"/>
+          <rect x="1046" y="716" width="26" height="72" rx="2"/>
+          <rect x="1016" y="794" width="26" height="72" rx="2"/>
+          <rect x="1046" y="794" width="26" height="72" rx="2"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- Cheminée verte -->
+    <g id="green-stack">
+      <path d="M 966,870 L 1000,470 L 1110,470 L 1144,870 Z" fill="url(#gGreen)"/>
+      <path d="M 1110,470 L 1144,870 L 1118,870 L 1092,470 Z" fill="var(--green-d)" opacity=".7"/>
+      <rect x="996" y="440" width="118" height="34" fill="url(#gStack)"/>
+      <path d="M 990,440 L 1120,440 L 1114,430 L 996,430 Z" fill="#8a9099"/>
+      <path d="M 1006,440 L 1104,440 L 1092,340 L 1018,340 Z" fill="url(#gStack)"/>
+      <ellipse cx="1055" cy="340" rx="37" ry="8" fill="#6e737b"/>
+      <ellipse cx="1055" cy="340" rx="37" ry="6" fill="#a6abb2"/>
+      <rect x="1015" y="490" width="12" height="370" fill="#ffffff" opacity=".18"/>
+    </g>
+
+    <!-- Grosse fumée de la cheminée verte -->
+    <g id="smoke">
+      <circle class="puff" cx="1060" cy="340" r="36" fill="#ffffff" style="--dx: 14px; animation-delay: 0s;"/>
+      <circle class="puff" cx="1050" cy="340" r="30" fill="#eef1f7" style="--dx: 24px; animation-delay: .9s;"/>
+      <circle class="puff" cx="1072" cy="340" r="38" fill="#f8f9fc" style="--dx: 4px;  animation-delay: 1.8s;"/>
+      <circle class="puff" cx="1055" cy="340" r="32" fill="#e8ebf1" style="--dx: 22px; animation-delay: 2.7s;"/>
+      <circle class="puff" cx="1068" cy="340" r="40" fill="#ffffff" style="--dx: -4px; animation-delay: 3.5s;"/>
+    </g>
+
+    <!-- Socle -->
+    <g id="base">
+      <path d="M 120,880 L 1180,880 L 1220,920 L 80,920 Z" fill="url(#gBase)"/>
+      <path d="M 80,920 L 1220,920 L 1220,945 L 80,945 Z" fill="var(--base-d)"/>
+      <path d="M 120,880 L 1180,880 L 1180,886 L 120,886 Z" fill="#ffffff" opacity=".12"/>
+    </g>
+  </svg>
+
+  <!-- Hotspots -->
+  <button class="hotspot hs-orange" aria-label="Pôle Conseil et Transformation">
+    <span class="tip"><span class="dot orange"></span>Pôle Conseil et Transformation</span>
+  </button>
+  <button class="hotspot hs-blue" aria-label="Développement">
+    <span class="tip"><span class="dot blue"></span>Développement</span>
+  </button>
+  <button class="hotspot hs-yellow" aria-label="Hébergement">
+    <span class="tip"><span class="dot yellow"></span>Hébergement</span>
+  </button>
+  <button class="hotspot hs-green" aria-label="IA">
+    <span class="tip"><span class="dot green"></span>IA</span>
+  </button>
+
+  <div class="caption">Survolez un bâtiment</div>
+</div>
+
+<script>
+(function(){
+  const scene = document.getElementById('scene');
+  // Parallax 3D : la scène s'incline selon la position de la souris
+  let rx = 0, ry = 0, tx = 0, ty = 0;
+  document.addEventListener('mousemove', (e) => {
+    const w = innerWidth, h = innerHeight;
+    tx = (e.clientX / w - 0.5) * 2;  // -1..1
+    ty = (e.clientY / h - 0.5) * 2;
+  });
+  function loop() {
+    rx += ((-ty * 2) - rx) * 0.06;
+    ry += (( tx * 3) - ry) * 0.06;
+    scene.style.setProperty('--rx', rx.toFixed(2) + 'deg');
+    scene.style.setProperty('--ry', ry.toFixed(2) + 'deg');
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  const map = [
+    ['.hs-orange', 'focus-orange'],
+    ['.hs-blue',   'focus-blue'],
+    ['.hs-yellow', 'focus-yellow'],
+    ['.hs-green',  'focus-green'],
+  ];
+  function clear() {
+    scene.classList.remove('focus-orange','focus-blue','focus-yellow','focus-green');
+  }
+  map.forEach(([sel, cls]) => {
+    const el = document.querySelector(sel);
+    if (!el) return;
+    el.addEventListener('mouseenter', () => { clear(); scene.classList.add(cls); });
+    el.addEventListener('mouseleave', clear);
+    el.addEventListener('focus',      () => { clear(); scene.classList.add(cls); });
+    el.addEventListener('blur',       clear);
+  });
+})();
+</script>
+
+</body>
+</html>

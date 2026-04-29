@@ -1,6 +1,7 @@
 import React from "react";
 import { HeroHalos } from "./HeroHalos";
 import { RevealTitle } from "@/components/ui/RevealTitle";
+import { FactoryAnimation } from "@/components/ui/FactoryAnimation";
 
 interface HeroSectionProps {
   /** Texte du badge en haut */
@@ -64,69 +65,82 @@ export function HeroSection({
 
       {/* Contenu — z-10 au-dessus des halos */}
       <div
-        className={[
-          "relative z-10 flex flex-col gap-10 md:gap-[70px] w-full",
-          isRight ? "items-end" : "items-start",
-        ].join(" ")}
+        className="relative z-10 w-full"
         style={{
-          paddingTop: "var(--header-height)",
+          paddingTop: "calc(var(--header-height) + 3rem)",
           paddingLeft: "var(--page-margin-x)",
           paddingRight: "var(--page-margin-x)",
           paddingBottom: "6rem",
         }}
       >
-        {/* Badge eyebrow */}
-        {eyebrow && (
-          <div className="flex items-center gap-2 px-4 py-[6px] rounded-full bg-[color:var(--color-badge-blue-bg)] w-fit">
-            <span
-              className="size-2 rounded-full bg-badge-blue shrink-0"
-              style={{ boxShadow: "var(--shadow-badge-dot)" }}
-            />
-            <span className="font-body font-semibold text-badge-blue tracking-[1.8px] text-[length:var(--text-badge)] leading-4 uppercase whitespace-nowrap">
-              {eyebrow}
-            </span>
-          </div>
-        )}
-
-        {/* Titre */}
-        <RevealTitle
-          as="h1"
-          text={title}
-          highlightWord={highlightStyle === "gradient" ? highlightWord : undefined}
+        {/* Colonne texte — contrainte à ~52% sur lg+ pour laisser place à l'animation */}
+        <div
           className={[
-            "font-sans font-bold text-text-heading",
-            isRight ? "text-right" : "text-left",
+            "flex flex-col gap-8 md:gap-[70px] w-full lg:max-w-[58%]",
+            isRight ? "items-end ml-auto" : "items-start",
           ].join(" ")}
-          style={
-            isCompact
-              ? {
-                  fontSize: "var(--text-product-hero)",
-                  lineHeight: "var(--text-product-hero--line-height)",
-                  letterSpacing: "var(--text-product-hero--letter-spacing)",
-                }
-              : {
-                  fontSize: "var(--text-hero-title)",
-                  lineHeight: "var(--text-hero-title--line-height)",
-                  letterSpacing: "var(--text-hero-title--letter-spacing)",
-                }
-          }
-        />
+        >
+          {/* Badge + Titre groupés */}
+          <div className={["flex flex-col gap-5", isRight ? "items-end" : "items-start"].join(" ")}>
+            {/* Badge eyebrow */}
+            {eyebrow && (
+              <div className="flex items-center gap-2 px-4 py-[6px] rounded-full bg-[color:var(--color-badge-blue-bg)] w-fit">
+                <span
+                  className="size-2 rounded-full bg-badge-blue shrink-0"
+                  style={{ boxShadow: "var(--shadow-badge-dot)" }}
+                />
+                <span className="font-body font-semibold text-badge-blue tracking-[1.8px] text-[length:var(--text-badge)] leading-4 uppercase sm:whitespace-nowrap">
+                  {eyebrow}
+                </span>
+              </div>
+            )}
 
-        {/* Description */}
-        {description && (
-          <p
+          {/* Titre */}
+          <RevealTitle
+            as="h1"
+            text={title}
+            highlightWord={highlightStyle === "gradient" ? highlightWord : undefined}
             className={[
-              "font-body font-normal text-text-body-warm opacity-80 max-w-[671px]",
+              "font-sans font-bold text-text-heading",
               isRight ? "text-right" : "text-left",
             ].join(" ")}
-            style={{
-              fontSize: "var(--text-body-lg)",
-              lineHeight: "var(--text-body-lg--line-height)",
-            }}
-          >
-            {description}
-          </p>
-        )}
+            style={
+              isCompact
+                ? {
+                    fontSize: "var(--text-product-hero)",
+                    lineHeight: "var(--text-product-hero--line-height)",
+                    letterSpacing: "var(--text-product-hero--letter-spacing)",
+                  }
+                : {
+                    fontSize: "var(--text-hero-title)",
+                    lineHeight: "var(--text-hero-title--line-height)",
+                    letterSpacing: "var(--text-hero-title--letter-spacing)",
+                  }
+            }
+          />
+          </div>
+
+          {/* Description */}
+          {description && (
+            <p
+              className={[
+                "font-body font-normal text-text-body-warm opacity-80 max-w-[671px]",
+                isRight ? "text-right" : "text-left",
+              ].join(" ")}
+              style={{
+                fontSize: "var(--text-body-lg)",
+                lineHeight: "var(--text-body-lg--line-height)",
+              }}
+            >
+              {description}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Animation flottante — positionnée en absolu sur la droite, visible dès lg */}
+      <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 z-10 w-[48%] xl:w-[44%]">
+        <FactoryAnimation />
       </div>
     </section>
   );

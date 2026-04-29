@@ -241,7 +241,7 @@ function ContentPanel({ step }: { step: Step }) {
                 color: step.accent,
               }}
             >
-              Étape {step.num}
+              {step.num}
             </span>
             <h3
               className="font-sans font-bold text-text-heading"
