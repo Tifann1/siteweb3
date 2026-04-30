@@ -374,7 +374,7 @@ export function FactoryTopDown() {
           {([
             { id: "orange" as PoleId, left: "2%",  top: "42%", align: "flex-start" },
             { id: "blue"   as PoleId, left: "50%", top: "1%",  align: "center"     },
-            { id: "yellow" as PoleId, left: "76%", top: "26%", align: "flex-start" },
+            { id: "yellow" as PoleId, left: "72%", top: "38%", align: "flex-start" },
             { id: "green"  as PoleId, left: "50%", top: "94%", align: "center"     },
           ]).map(({ id, left, top, align }) => {
             const p = POLES[id];
