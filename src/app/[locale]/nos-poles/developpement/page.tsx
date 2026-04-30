@@ -14,6 +14,17 @@ import { PoleTabsNavWrapper } from "./PoleTabsNavWrapper";
 import { FeatureBento } from "@/components/blocks/FeatureBento";
 import { PoleOffersGrid } from "@/components/blocks/PoleOffersGrid";
 import { OFFER_GRADIENTS } from "@/components/blocks/OffersSection";
+import { PoleSideNav } from "@/components/ui/PoleSideNav";
+
+const SECTIONS = [
+  { id: "pole-presentation", label: "Présentation" },
+  { id: "pole-savoirfaire",  label: "Savoir-faire" },
+  { id: "pole-projets",      label: "Pour vos projets" },
+  { id: "pole-offres",       label: "Nos offres" },
+  { id: "pole-succes",       label: "Nos succès" },
+];
+
+const ACCENT = "var(--color-offer-blue)";
 
 export default function PoleDeveloppementPage() {
   return (
@@ -22,6 +33,7 @@ export default function PoleDeveloppementPage() {
       style={{ backgroundColor: "var(--color-nav-bg)" }}
     >
       <Header />
+      <PoleSideNav sections={SECTIONS} accentColor={ACCENT} />
 
       <main className="flex flex-col w-full">
         {/* Hero + tabs */}
@@ -57,6 +69,7 @@ export default function PoleDeveloppementPage() {
         />
 
         {/* Présentation */}
+        <div id="pole-presentation">
         <SectionBentoGrid
           title="L'équipe qui conçoit vos agents IA"
           featureCard={{
@@ -89,7 +102,10 @@ export default function PoleDeveloppementPage() {
           ctaLabel="Réserver un rendez-vous avec un expert"
         />
 
+        </div>
+
         {/* Savoir-faire */}
+        <div id="pole-savoirfaire">
         <FeatureBento
           sectionLabel="Nos savoir-faire"
           heading={
@@ -124,12 +140,18 @@ export default function PoleDeveloppementPage() {
           ]}
         />
 
+        </div>
+
         {/* Développement augmenté par l'IA — avant les offres */}
+        <div id="pole-projets">
         <section className="py-16 md:py-24">
           <SectionAugmentedDev accentColor="var(--color-bento-dev-accent)" />
         </section>
 
+        </div>
+
         {/* Nos offres */}
+        <div id="pole-offres">
         <PoleOffersGrid
           variant="list"
           tabs={[
@@ -347,7 +369,10 @@ export default function PoleDeveloppementPage() {
           ]}
         />
 
+        </div>
+
         {/* Nos succès — sans fond bleu */}
+        <div id="pole-succes">
         <SectionNosSucces
           title="Nos Succès"
           subtitle="L'IA concrète au service de nos partenaires."
@@ -409,6 +434,7 @@ export default function PoleDeveloppementPage() {
             secondaryHref="/contact"
           />
         </section>
+        </div>
       </main>
 
       <Footer />
