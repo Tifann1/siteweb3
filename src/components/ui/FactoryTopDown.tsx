@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "@/navigation";
 
 const POLES = {
@@ -40,47 +40,13 @@ const POLES = {
 
 type PoleId = keyof typeof POLES;
 
-const PIN_LABELS: Record<PoleId, { name: string; sub: string }> = {
-  orange: { name: "Conseil",        sub: "Stratégie & transformation" },
-  blue:   { name: "Développement",  sub: "Build & livraison"           },
-  yellow: { name: "DevOps & Infra", sub: "Hébergement & SRE"           },
-  green:  { name: "Nos agents IA",  sub: "Produits & automation"        },
-};
-
-const PIN_POS: Record<PoleId, { left: string; top: string }> = {
-  orange: { left: "22%", top: "52%" },
-  blue:   { left: "50%", top: "8%"  },
-  yellow: { left: "78%", top: "52%" },
-  green:  { left: "50%", top: "94%" },
-};
 
 export function FactoryTopDown() {
   const router = useRouter();
   const stageRef = useRef<HTMLDivElement>(null);
-  const rafRef   = useRef<number>(0);
-  const mouseRef = useRef({ tx: 0, ty: 0 });
 
   const [activeId,   setActiveId]   = useState<PoleId | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
-
-  useEffect(() => {
-    let rx = 0, rz = 0;
-    const onMove = (e: MouseEvent) => {
-      mouseRef.current.tx = (e.clientX / window.innerWidth  - 0.5) * 2;
-      mouseRef.current.ty = (e.clientY / window.innerHeight - 0.5) * 2;
-    };
-    window.addEventListener("mousemove", onMove);
-    const loop = () => {
-      const { tx, ty } = mouseRef.current;
-      rx += ((-ty * 6) - rx) * 0.05;
-      rz += ((tx * 2)  - rz) * 0.05;
-      stageRef.current?.style.setProperty("--rx", rx.toFixed(2) + "deg");
-      stageRef.current?.style.setProperty("--rz", rz.toFixed(2) + "deg");
-      rafRef.current = requestAnimationFrame(loop);
-    };
-    rafRef.current = requestAnimationFrame(loop);
-    return () => { window.removeEventListener("mousemove", onMove); cancelAnimationFrame(rafRef.current); };
-  }, []);
 
   function focus(id: PoleId)  { setActiveId(id); }
   function blur()              { if (!detailOpen) setActiveId(null); }
@@ -94,12 +60,8 @@ export function FactoryTopDown() {
       <style>{`
         .fty-stage {
           position: relative;
-          width: min(100%, 720px);
+          width: min(100%, 920px);
           aspect-ratio: 1/1;
-          transform-style: preserve-3d;
-          transform: rotateX(var(--rx,0deg)) rotateZ(var(--rz,0deg));
-          transition: transform .55s cubic-bezier(.2,.8,.2,1);
-          will-change: transform;
         }
         .fty-building {
           transform-box: fill-box;
@@ -147,7 +109,7 @@ export function FactoryTopDown() {
           onClick={(e) => { if ((e.target as Element).classList.contains("fty-stage")) clearAll(); }}
         >
           <svg
-            viewBox="0 0 1000 1000"
+            viewBox="60 60 880 880"
             preserveAspectRatio="xMidYMid meet"
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}
             aria-hidden="true"
@@ -408,54 +370,48 @@ export function FactoryTopDown() {
             </g>
           </svg>
 
-          {/* Pin labels */}
-          {(["orange","blue","yellow","green"] as const).map((id) => {
-            const p    = POLES[id];
-            const lbl  = PIN_LABELS[id];
-            const pos  = PIN_POS[id];
+          {/* Labels — positionnés hors des bâtiments */}
+          {([
+            { id: "orange" as PoleId, left: "2%",  top: "42%", align: "flex-start" },
+            { id: "blue"   as PoleId, left: "50%", top: "1%",  align: "center"     },
+            { id: "yellow" as PoleId, left: "76%", top: "26%", align: "flex-start" },
+            { id: "green"  as PoleId, left: "50%", top: "94%", align: "center"     },
+          ]).map(({ id, left, top, align }) => {
+            const p = POLES[id];
             const isActive = activeId === id;
+            const names: Record<PoleId, string> = { orange: "Conseil", blue: "Développement", yellow: "DevOps & Infra", green: "Agents IA" };
+            const subs:  Record<PoleId, string> = { orange: "Stratégie & UX", blue: "Build & mobile", yellow: "Hébergement & SRE", green: "Produits & automation" };
             return (
               <div
                 key={id}
                 style={{
-                  position: "absolute", left: pos.left, top: pos.top,
-                  transform: "translate(-50%,-50%)",
+                  position: "absolute", left, top,
+                  transform: "translate(-50%, -50%)",
                   color: p.color, cursor: "pointer", userSelect: "none", zIndex: 10,
+                  display: "flex", flexDirection: "column", alignItems: align,
                 }}
                 onMouseEnter={() => focus(id)}
                 onMouseLeave={blur}
                 onClick={(e) => { e.stopPropagation(); clickPole(id); }}
               >
                 <div style={{
-                  display: "flex", alignItems: "center", gap: 10,
-                  padding: "7px 13px 7px 9px",
-                  background: "rgba(8,14,36,.72)",
+                  display: "flex", alignItems: "center", gap: 8,
+                  padding: "6px 12px 6px 8px",
+                  background: "rgba(8,14,36,.75)",
                   border: `1px solid ${isActive ? p.color : "rgba(255,255,255,.1)"}`,
                   borderRadius: 999, backdropFilter: "blur(12px)",
-                  boxShadow: isActive
-                    ? `0 14px 36px rgba(0,0,0,.55),0 0 0 1px ${p.color},0 0 24px ${p.color}55`
-                    : "0 8px 24px rgba(0,0,0,.4)",
+                  boxShadow: isActive ? `0 0 0 1px ${p.color}, 0 0 20px ${p.color}44` : "0 6px 20px rgba(0,0,0,.4)",
                   whiteSpace: "nowrap",
-                  transform: isActive ? "translateY(-2px)" : "none",
-                  transition: "all .3s cubic-bezier(.2,.8,.2,1)",
+                  transform: isActive ? "scale(1.04)" : "scale(1)",
+                  transition: "all .25s ease",
                 }}>
-                  <span style={{
-                    position: "relative", width: 20, height: 20, borderRadius: "50%",
-                    display: "grid", placeItems: "center", flexShrink: 0,
-                    background: "rgba(255,255,255,.05)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,.1)",
-                  }}>
-                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: "currentColor", boxShadow: "0 0 10px currentColor" }}/>
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: p.color, boxShadow: `0 0 8px ${p.color}`, flexShrink: 0 }}/>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: "#fff", letterSpacing: ".01em" }}>
+                    {names[id]}
                   </span>
-                  <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: ".02em", color: "#fff" }}>
-                    {lbl.name}
-                    <small style={{ display: "block", fontSize: 9, fontWeight: 500, letterSpacing: ".1em", textTransform: "uppercase", color: "rgba(255,255,255,.45)", marginTop: 1 }}>
-                      {lbl.sub}
-                    </small>
+                  <span style={{ fontSize: 9, color: "rgba(255,255,255,.4)", textTransform: "uppercase", letterSpacing: ".08em" }}>
+                    {subs[id]}
                   </span>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                       style={{ marginLeft: 2, color: isActive ? "currentColor" : "rgba(255,255,255,.35)", transition: "all .3s" }}>
-                    <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
                 </div>
               </div>
             );
