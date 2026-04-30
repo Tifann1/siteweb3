@@ -38,6 +38,7 @@ export default function HomeFigmaPage() {
           title="L'ingénieur\naugmenté au service\nde vos ambitions."
           highlightWord="augmenté"
           description="Nous imaginons et déployons des agents IA sur mesure, connectés à vos usages, pour accélérer vos opérations et renforcer votre impact."
+          showFactory
         />
 
         {/* Bandeau logos clients — full width */}

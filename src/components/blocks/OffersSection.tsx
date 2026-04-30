@@ -21,6 +21,9 @@ export interface OfferTab {
 interface OffersSectionProps {
   title?: string;
   tabs?: OfferTab[];
+  sectionId?: string;
+  disableCardHover?: boolean;
+  disableReveal?: boolean;
 }
 
 /** Dégradés extraits des SVG Figma — node 443:2391 */
@@ -96,7 +99,7 @@ const DEFAULT_TABS: OfferTab[] = [
     ],
   },
   {
-    label: "IA",
+    label: "Agents IA",
     cards: [
       {
         title: "Agents IA\nsur mesure",
@@ -148,6 +151,9 @@ function stepEase(progress: number, N: number): number {
 export function OffersSection({
   title = "Nos offres adaptables.",
   tabs = DEFAULT_TABS,
+  sectionId = "offers-section",
+  disableCardHover = false,
+  disableReveal = false,
 }: OffersSectionProps) {
   const allCards: FlatCard[] = tabs.flatMap((tab, tabIndex) =>
     tab.cards.map((card) => ({ ...card, tabIndex }))
@@ -220,7 +226,7 @@ export function OffersSection({
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const container = containerRef.current;
     const sticky = stickyRef.current;
-    if (!container || !sticky || prefersReduced) return;
+    if (!container || !sticky || prefersReduced || disableReveal) return;
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -250,8 +256,8 @@ export function OffersSection({
 
   return (
     <MotionConfig reducedMotion="user">
-      <div ref={containerRef} id="offers-section" className="relative" style={{ height: outerHeight }}>
-        <div ref={stickyRef} className="sticky top-0 h-screen bg-deep-navy flex flex-col gap-14 items-center justify-center">
+      <div ref={containerRef} id={sectionId} className="relative" style={{ height: outerHeight }}>
+        <div ref={stickyRef} className={`sticky top-0 h-screen bg-deep-navy flex flex-col gap-14 items-center ${disableReveal ? "justify-start pt-24" : "justify-center"}`}>
           {/* Titre */}
           <RevealTitle
             text={title}
@@ -301,7 +307,7 @@ export function OffersSection({
                   <motion.div
                     key={i}
                     style={{ transformOrigin: "bottom center" }}
-                    whileHover={{ rotateZ: 3 }}
+                    whileHover={disableCardHover ? undefined : { rotateZ: 3 }}
                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   >
                     <OfferCard {...card} />

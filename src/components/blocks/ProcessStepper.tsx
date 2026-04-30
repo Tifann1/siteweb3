@@ -15,6 +15,11 @@ const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 /** Pixels de scroll consommés par étape */
 const SCROLL_PER_STEP = 700;
 
+interface PipelinePhase {
+  label: string;
+  description: string;
+}
+
 interface Step {
   id: string;
   num: string;
@@ -22,60 +27,48 @@ interface Step {
   description: string;
   highlights: string[];
   accent: string;
+  pipeline?: PipelinePhase[];
 }
 
 const STEPS: Step[] = [
   {
-    id: "developpement",
+    id: "web",
     num: "01",
-    title: "Développement",
+    title: "Projets Web Sur Mesure",
     description:
-      "Applications web sur mesure, APIs robustes, architectures scalables. Nos ingénieurs livrent du code qui dure — pas du code qui impressionne en présentation.",
-    highlights: [
-      "Full-stack : React, Next.js, Node.js, Go, Python",
-      "Architecture micro-services et APIs RESTful / GraphQL",
-      "Revue de code systématique à chaque pull request",
-    ],
+      "De la conception à l'hébergement, nous prenons en charge l'intégralité de votre projet web — conseil stratégique, développement sur mesure et infrastructure robuste.",
+    highlights: [],
     accent: "var(--color-offer-blue)",
+    pipeline: [
+      {
+        label: "Conseil",
+        description:
+          "Cadrage, UX et architecture — on structure votre vision avant d'écrire la première ligne de code.",
+      },
+      {
+        label: "Développement",
+        description:
+          "Applications web et APIs robustes, livrées avec rigueur et qualité.",
+      },
+      {
+        label: "Hébergement",
+        description:
+          "Infrastructure cloud ou on-premise, CI/CD et monitoring en production.",
+      },
+    ],
   },
   {
     id: "ia",
     num: "02",
-    title: "Intelligence Artificielle",
+    title: "Agents IA Prêts à l'Usage",
     description:
-      "Agents IA, automatisations intelligentes, LLM intégrés aux workflows métier. Nous industrialisons l'IA sur des cas d'usage réels — pas des démos.",
+      "Nous concevons des agents IA directement intégrés à vos outils — prêts à l'emploi, connectés à vos workflows, opérationnels dès le premier jour.",
     highlights: [
-      "Conception et déploiement d'agents IA autonomes",
-      "Intégration LLM dans vos processus existants",
-      "Formation de vos équipes à l'IA augmentée",
+      "Agents IA déployés dans vos outils existants",
+      "Intégration LLM dans vos processus métier",
+      "Formation et accompagnement de vos équipes",
     ],
     accent: "var(--color-offer-green)",
-  },
-  {
-    id: "hebergement",
-    num: "03",
-    title: "Hébergement & Infrastructure",
-    description:
-      "Cloud, on-premise ou hybride — nous concevons et opérons l'infrastructure adaptée à vos contraintes de sécurité, de performance et de coût.",
-    highlights: [
-      "Cloud souverain ou multi-cloud selon vos contraintes",
-      "CI/CD, monitoring et alerting en production",
-      "SLA garantis et astreinte disponible",
-    ],
-    accent: "var(--color-brand-orange)",
-  },
-  {
-    id: "conseil",
-    num: "04",
-    title: "Conseil & Transformation",
-    description:
-      "Audit technique, roadmap produit, accompagnement à la transformation digitale. Nous structurons votre vision avant d'écrire la première ligne de code.",
-    highlights: [
-      "Audit de l'existant et détection des dettes techniques",
-      "Cadrage stratégique et découpage en livrables concrets",
-      "Accompagnement des équipes internes dans la durée",
-    ],
-    accent: "var(--color-offer-yellow)",
   },
 ];
 
@@ -267,26 +260,72 @@ function ContentPanel({ step }: { step: Step }) {
             {step.description}
           </p>
 
-          {/* Points clés — stagger à l'entrée */}
-          <ul className="flex flex-col gap-3.5">
-            {step.highlights.map((item, i) => (
-              <motion.li
-                key={item}
-                className="flex items-start gap-3 font-body text-text-light/55"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, ease: EASE, delay: 0.12 + i * 0.08 }}
-                style={{ fontSize: "var(--text-nav)" }}
-              >
-                <span
-                  className="shrink-0 rounded-full mt-[6px] size-[5px]"
-                  style={{ backgroundColor: step.accent }}
-                  aria-hidden="true"
-                />
-                {item}
-              </motion.li>
-            ))}
-          </ul>
+          {/* Pipeline vertical OU points clés selon le type d'étape */}
+          {step.pipeline ? (
+            <div className="flex flex-col">
+              {step.pipeline.map((phase, i) => (
+                <motion.div
+                  key={phase.label}
+                  className="flex gap-4"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, ease: EASE, delay: 0.12 + i * 0.1 }}
+                >
+                  {/* Connecteur vertical */}
+                  <div className="flex flex-col items-center shrink-0">
+                    <span
+                      className="size-2.5 rounded-full mt-[5px] shrink-0"
+                      style={{ backgroundColor: step.accent }}
+                      aria-hidden="true"
+                    />
+                    {i < step.pipeline!.length - 1 && (
+                      <div
+                        className="flex-1 w-px my-2"
+                        style={{ backgroundColor: `${step.accent}40` }}
+                        aria-hidden="true"
+                      />
+                    )}
+                  </div>
+
+                  {/* Texte de la phase */}
+                  <div className="flex flex-col gap-1 pb-6">
+                    <span
+                      className="font-sans font-semibold text-text-heading"
+                      style={{ fontSize: "var(--text-body-lg)" }}
+                    >
+                      {phase.label}
+                    </span>
+                    <p
+                      className="font-body text-text-light/55"
+                      style={{ fontSize: "var(--text-nav)", lineHeight: 1.5 }}
+                    >
+                      {phase.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <ul className="flex flex-col gap-3.5">
+              {step.highlights.map((item, i) => (
+                <motion.li
+                  key={item}
+                  className="flex items-start gap-3 font-body text-text-light/55"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, ease: EASE, delay: 0.12 + i * 0.08 }}
+                  style={{ fontSize: "var(--text-nav)" }}
+                >
+                  <span
+                    className="shrink-0 rounded-full mt-[6px] size-[5px]"
+                    style={{ backgroundColor: step.accent }}
+                    aria-hidden="true"
+                  />
+                  {item}
+                </motion.li>
+              ))}
+            </ul>
+          )}
         </motion.div>
       </AnimatePresence>
     </div>
@@ -310,9 +349,7 @@ export function ProcessStepper() {
   // Un MotionValue par étape — initialisé en dehors de tout callback (règle des hooks)
   const p0 = useMotionValue(0);
   const p1 = useMotionValue(0);
-  const p2 = useMotionValue(0);
-  const p3 = useMotionValue(0);
-  const progressValues: MotionValue<number>[] = [p0, p1, p2, p3];
+  const progressValues: MotionValue<number>[] = [p0, p1];
 
   useEffect(() => {
     const el = containerRef.current;

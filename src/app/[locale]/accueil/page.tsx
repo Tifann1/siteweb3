@@ -16,19 +16,19 @@ import {
 } from "@/components/blocks/SectionNosPromesses";
 
 const PARTNER_LOGOS: LogoItem[] = [
-  { src: "/images/logos/carrefour.svg", alt: "Carrefour", width: 100, height: 30 },
-  { src: "/images/logos/inpi.svg", alt: "INPI", width: 55, height: 30 },
-  { src: "/images/logos/bpce.svg", alt: "BPCE", width: 80, height: 30 },
-  { src: "/images/logos/fdj.svg", alt: "FDJ", width: 50, height: 30 },
-  { src: "/images/logos/laposte.svg", alt: "La Poste", width: 90, height: 30 },
-  { src: "/images/logos/bienveo.png", alt: "Bienveo", width: 80, height: 30 },
-  { src: "/images/logos/marketpay.svg", alt: "MarketPay", width: 100, height: 30 },
+  { src: "/images/logos/carrefour.svg", alt: "Carrefour", width: 200, height: 60 },
+  { src: "/images/logos/inpi.svg", alt: "INPI", width: 110, height: 60 },
+  { src: "/images/logos/bpce.svg", alt: "BPCE", width: 160, height: 60 },
+  { src: "/images/logos/fdj.svg", alt: "FDJ", width: 100, height: 60 },
+  { src: "/images/logos/laposte.svg", alt: "La Poste", width: 180, height: 60 },
+  { src: "/images/logos/bienveo.png", alt: "Bienveo", width: 160, height: 60 },
+  { src: "/images/logos/marketpay.svg", alt: "MarketPay", width: 200, height: 60 },
 ];
 
 const NOS_PROMESSES: PromiseItem[] = [
   {
-    eyebrow: "Paris · France",
-    title: "Acteur français au cœur de Paris.",
+    eyebrow: "Paris · Lyon · France",
+    title: "Acteur français au cœur de Paris et de Lyon.",
     description:
       "Même fuseau horaire, même langue, mêmes contraintes réglementaires. Disponibles rapidement, ancrés dans l'écosystème tech parisien.",
     stat: { value: "< 2h", label: "Délai de réponse moyen" },
@@ -68,7 +68,7 @@ export default function AccueilPage() {
       <main className="flex flex-col flex-1">
         {/* Héro principal — snap vers la section suivante au premier scroll */}
         <HeroSnapWrapper>
-          <HeroSection />
+          <HeroSection showFactory />
         </HeroSnapWrapper>
 
         {/* Nos expertises — process stepper sticky scroll */}

@@ -13,6 +13,9 @@ import { SectionDirecteurPole } from "@/components/blocks/SectionDirecteurPole";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
 import { PoleIdentityBanner } from "@/components/blocks/PoleIdentityBanner";
 import { PoleTabsNavWrapper } from "./PoleTabsNavWrapper";
+import { FeatureBento } from "@/components/blocks/FeatureBento";
+import { PoleOffersGrid } from "@/components/blocks/PoleOffersGrid";
+import { OFFER_GRADIENTS } from "@/components/blocks/OffersSection";
 
 export default function PoleDeveloppementPage() {
   return (
@@ -89,6 +92,221 @@ export default function PoleDeveloppementPage() {
             },
           ]}
           ctaLabel="Réserver un rendez-vous avec un expert"
+        />
+
+        <FeatureBento
+          sectionLabel="Nos savoir-faire"
+          heading={
+            <>
+              Deux expertises.
+              <br />
+              <span
+                className="bg-clip-text text-transparent"
+                style={{ backgroundImage: "linear-gradient(162.47deg, #FFB692 0%, #FF7E33 100%)" }}
+              >
+                Une ambition commune.
+              </span>
+            </>
+          }
+          features={[
+            {
+              label: "Développement Web Sur Mesure",
+              icon: "◈",
+              title: "Des applications qui tiennent dans le temps",
+              description:
+                "Nous concevons des applications full-stack robustes, des APIs scalables et des architectures pensées pour durer — pas pour impressionner en démo.",
+              accent: "var(--color-offer-blue)",
+            },
+            {
+              label: "Agents IA",
+              icon: "◎",
+              title: "Les socles techniques de vos agents IA",
+              description:
+                "Nous construisons les intégrations, les pipelines de données et les interfaces qui permettent à vos agents IA de fonctionner à l'échelle, en production, dans la durée.",
+              accent: "var(--color-offer-green)",
+            },
+          ]}
+        />
+
+        <PoleOffersGrid
+          variant="list"
+          tabs={[
+            {
+              label: "Projets Web Sur Mesure",
+              cards: [
+                {
+                  title: "Développement\nweb & mobile",
+                  accentColor: "var(--color-offer-blue)",
+                  headerGradient: OFFER_GRADIENTS.blue,
+                  features: [
+                    "Applications React / Next.js",
+                    "APIs REST & GraphQL",
+                    "Applications mobiles",
+                    "Tests & qualité",
+                  ],
+                  ctaLabel: "Accéder à l'offre",
+                  ctaHref: "/contact",
+                  discoverLabel: "Découvrir le pôle",
+                  discoverHref: "/nos-poles/developpement",
+                },
+                {
+                  title: "Architecture\n& APIs",
+                  accentColor: "var(--color-offer-blue)",
+                  headerGradient: OFFER_GRADIENTS.blue,
+                  features: [
+                    "Micro-services",
+                    "GraphQL / REST",
+                    "Documentation OpenAPI",
+                    "Revue de code",
+                  ],
+                  ctaLabel: "Accéder à l'offre",
+                  ctaHref: "/contact",
+                  discoverLabel: "Découvrir le pôle",
+                  discoverHref: "/nos-poles/developpement",
+                },
+                {
+                  title: "Développement\nweb & mobile",
+                  accentColor: "var(--color-offer-blue)",
+                  headerGradient: OFFER_GRADIENTS.blue,
+                  features: [
+                    "Applications React / Next.js",
+                    "APIs REST & GraphQL",
+                    "Applications mobiles",
+                    "Tests & qualité",
+                  ],
+                  ctaLabel: "Accéder à l'offre",
+                  ctaHref: "/contact",
+                  discoverLabel: "Découvrir le pôle",
+                  discoverHref: "/nos-poles/developpement",
+                },
+                {
+                  title: "Architecture\n& APIs",
+                  accentColor: "var(--color-offer-blue)",
+                  headerGradient: OFFER_GRADIENTS.blue,
+                  features: [
+                    "Micro-services",
+                    "GraphQL / REST",
+                    "Documentation OpenAPI",
+                    "Revue de code",
+                  ],
+                  ctaLabel: "Accéder à l'offre",
+                  ctaHref: "/contact",
+                  discoverLabel: "Découvrir le pôle",
+                  discoverHref: "/nos-poles/developpement",
+                },
+                {
+                  title: "Développement\nweb & mobile",
+                  accentColor: "var(--color-offer-blue)",
+                  headerGradient: OFFER_GRADIENTS.blue,
+                  features: [
+                    "Applications React / Next.js",
+                    "APIs REST & GraphQL",
+                    "Applications mobiles",
+                    "Tests & qualité",
+                  ],
+                  ctaLabel: "Accéder à l'offre",
+                  ctaHref: "/contact",
+                  discoverLabel: "Découvrir le pôle",
+                  discoverHref: "/nos-poles/developpement",
+                },
+                {
+                  title: "Architecture\n& APIs",
+                  accentColor: "var(--color-offer-blue)",
+                  headerGradient: OFFER_GRADIENTS.blue,
+                  features: [
+                    "Micro-services",
+                    "GraphQL / REST",
+                    "Documentation OpenAPI",
+                    "Revue de code",
+                  ],
+                  ctaLabel: "Accéder à l'offre",
+                  ctaHref: "/contact",
+                  discoverLabel: "Découvrir le pôle",
+                  discoverHref: "/nos-poles/developpement",
+                },
+              ],
+            },
+            {
+              label: "Agents IA",
+              cards: [
+                {
+                  title: "Agents IA\nsur mesure",
+                  accentColor: "var(--color-offer-green)",
+                  headerGradient: OFFER_GRADIENTS.teal,
+                  features: [
+                    "Conception d'agents IA",
+                    "Intégration LLM",
+                    "RAG & bases vectorielles",
+                    "Déploiement production",
+                  ],
+                  ctaLabel: "Accéder à l'offre",
+                  ctaHref: "/contact",
+                  discoverLabel: "Découvrir le pôle",
+                  discoverHref: "/nos-poles/developpement",
+                },
+                {
+                  title: "Intégration\nmétier",
+                  accentColor: "var(--color-offer-green)",
+                  headerGradient: OFFER_GRADIENTS.teal,
+                  features: [
+                    "Connexion aux outils existants",
+                    "Automatisation de workflows",
+                    "Monitoring des agents",
+                    "Formation équipes",
+                  ],
+                  ctaLabel: "Accéder à l'offre",
+                  ctaHref: "/contact",
+                  discoverLabel: "Découvrir le pôle",
+                  discoverHref: "/nos-poles/developpement",
+                },
+                {
+                  title: "Agents IA\nsur mesure",
+                  accentColor: "var(--color-offer-green)",
+                  headerGradient: OFFER_GRADIENTS.teal,
+                  features: [
+                    "Conception d'agents IA",
+                    "Intégration LLM",
+                    "RAG & bases vectorielles",
+                    "Déploiement production",
+                  ],
+                  ctaLabel: "Accéder à l'offre",
+                  ctaHref: "/contact",
+                  discoverLabel: "Découvrir le pôle",
+                  discoverHref: "/nos-poles/developpement",
+                },
+                {
+                  title: "Intégration\nmétier",
+                  accentColor: "var(--color-offer-green)",
+                  headerGradient: OFFER_GRADIENTS.teal,
+                  features: [
+                    "Connexion aux outils existants",
+                    "Automatisation de workflows",
+                    "Monitoring des agents",
+                    "Formation équipes",
+                  ],
+                  ctaLabel: "Accéder à l'offre",
+                  ctaHref: "/contact",
+                  discoverLabel: "Découvrir le pôle",
+                  discoverHref: "/nos-poles/developpement",
+                },
+                {
+                  title: "Agents IA\nsur mesure",
+                  accentColor: "var(--color-offer-green)",
+                  headerGradient: OFFER_GRADIENTS.teal,
+                  features: [
+                    "Conception d'agents IA",
+                    "Intégration LLM",
+                    "RAG & bases vectorielles",
+                    "Déploiement production",
+                  ],
+                  ctaLabel: "Accéder à l'offre",
+                  ctaHref: "/contact",
+                  discoverLabel: "Découvrir le pôle",
+                  discoverHref: "/nos-poles/developpement",
+                },
+              ],
+            },
+          ]}
         />
 
         {/* Section Développement augmenté par l'IA (node 533:5404) */}

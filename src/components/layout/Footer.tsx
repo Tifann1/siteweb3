@@ -108,15 +108,26 @@ export function Footer({
             )}
           </div>
 
-          <span
-            className="font-sans text-white/60 whitespace-nowrap"
-            style={{
-              fontSize: "var(--text-label)",
-              lineHeight: "var(--text-label--line-height)",
-            }}
-          >
-            {address}
-          </span>
+          <div className="flex flex-col items-end gap-1">
+            <span
+              className="font-sans text-white/60 whitespace-nowrap"
+              style={{
+                fontSize: "var(--text-label)",
+                lineHeight: "var(--text-label--line-height)",
+              }}
+            >
+              {address}
+            </span>
+            <span
+              className="font-sans text-white/60 whitespace-nowrap"
+              style={{
+                fontSize: "var(--text-label)",
+                lineHeight: "var(--text-label--line-height)",
+              }}
+            >
+              49 Bd Marius Vivier Merle — 69003 Lyon
+            </span>
+          </div>
         </div>
       </div>
     </footer>

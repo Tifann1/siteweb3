@@ -13,6 +13,8 @@ import { SectionAugmentedDev } from "@/components/blocks/SectionAugmentedDev";
 import { ScrollRevealSection } from "@/components/blocks/ScrollRevealSection";
 import { PoleIdentityBanner } from "@/components/blocks/PoleIdentityBanner";
 import { PoleTabsNavWrapper } from "./PoleTabsNavWrapper";
+import { PoleOffersGrid } from "@/components/blocks/PoleOffersGrid";
+import { OFFER_GRADIENTS } from "@/components/blocks/OffersSection";
 
 const TEAM_PHOTO =
   "https://www.figma.com/api/mcp/asset/c59d9ca1-e33b-4ab1-b16e-d8b34e291938";
@@ -98,8 +100,81 @@ export default function PoleConseilPage() {
           ctaHref="/contact"
         />
 
-        {/* SpecialConseil — expertise bento avec flip au scroll */}
-        <FeatureBento />
+        {/* Grille de lecture — 2 savoir-faire */}
+        <FeatureBento
+          sectionLabel="Nos savoir-faire"
+          heading={
+            <>
+              Deux expertises.
+              <br />
+              <span
+                className="bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: "linear-gradient(162.47deg, #FFB692 0%, #FF7E33 100%)",
+                }}
+              >
+                Une ambition commune.
+              </span>
+            </>
+          }
+          features={[
+            {
+              icon: "◈",
+              label: "Projets Web Sur Mesure",
+              title: "De l'idée au produit livré",
+              description:
+                "Nous prenons en charge l'intégralité de votre projet web — du cadrage stratégique jusqu'à l'infrastructure en production. Conseil, développement, hébergement : une seule équipe, une seule responsabilité.",
+              accent: "var(--color-offer-blue)",
+            },
+            {
+              icon: "◎",
+              label: "Agents IA",
+              title: "Des agents prêts à l'usage, pensés pour le terrain",
+              description:
+                "Nous concevons des agents IA directement intégrés à vos outils — prêts à l'emploi, connectés à vos workflows, opérationnels dès le premier jour.",
+              accent: "var(--color-offer-green)",
+            },
+          ]}
+        />
+
+        {/* Offres — grille paginée par savoir-faire */}
+        <PoleOffersGrid
+          variant="list"
+          tabs={[
+            {
+              label: "Projets Web Sur Mesure",
+              cards: Array.from({ length: 6 }, (_, i) => ({
+                title: i % 3 === 0 ? "Etudes UX\n& Maquettes" : i % 3 === 1 ? "Développement\nweb & mobile" : "Infrastructure\n& Cloud",
+                accentColor: i % 3 === 0 ? "var(--color-offer-orange)" : i % 3 === 1 ? "var(--color-offer-blue)" : "var(--color-offer-yellow)",
+                headerGradient: i % 3 === 0 ? OFFER_GRADIENTS.orange : i % 3 === 1 ? OFFER_GRADIENTS.blue : OFFER_GRADIENTS.yellow,
+                ctaLabel: "Accéder à l'offre",
+                ctaHref: "/contact",
+                features: i % 3 === 0
+                  ? ["Compréhension de votre besoin", "Atelier Design Thinking", "Propositions UX", "Maquettes UX - UI"]
+                  : i % 3 === 1
+                  ? ["Applications React / Next.js", "APIs REST & GraphQL", "Applications mobiles", "Tests & qualité"]
+                  : ["CI/CD automatisée", "Migration Cloud", "Monitoring & alerting", "Infrastructure as Code"],
+                discoverLabel: "Découvrir le pôle",
+                discoverHref: "/nos-poles/conseil",
+              })),
+            },
+            {
+              label: "Agents IA",
+              cards: Array.from({ length: 5 }, (_, i) => ({
+                title: i % 2 === 0 ? "Agents IA\nsur mesure" : "Automatisation\nmétier",
+                accentColor: "var(--color-offer-green)",
+                headerGradient: OFFER_GRADIENTS.teal,
+                ctaLabel: "Accéder à l'offre",
+                ctaHref: "/contact",
+                features: i % 2 === 0
+                  ? ["Conception d'agents IA", "Fine-tuning de modèles", "RAG & bases vectorielles", "Intégration métier"]
+                  : ["Automatisation de workflows", "Intégration LLM", "Monitoring des agents", "Formation équipes"],
+                discoverLabel: "Découvrir le pôle",
+                discoverHref: "/nos-poles/conseil",
+              })),
+            },
+          ]}
+        />
 
         {/* Section Augmented — Notre approche conseil */}
         <section className="py-16 md:py-24">

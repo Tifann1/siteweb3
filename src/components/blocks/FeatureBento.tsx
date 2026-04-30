@@ -54,15 +54,17 @@ function BentoCard({
   feature,
   delay,
   isFlipped,
+  forceFullWidth = false,
 }: {
   feature: Feature;
   delay: number;
   isFlipped: boolean;
+  forceFullWidth?: boolean;
 }) {
   return (
     /* Outer container : gère le col-span + la perspective 3D */
     <div
-      className={[feature.wide ? "md:col-span-2" : "md:col-span-1", "h-full"].join(" ")}
+      className={[forceFullWidth ? "md:col-span-1" : feature.wide ? "md:col-span-2" : "md:col-span-1", "h-full"].join(" ")}
       style={{ perspective: "1200px" }}
     >
       {/* Flip wrapper : effectue la rotation 3D */}
@@ -253,18 +255,29 @@ export function FeatureBento({ features = FEATURES_DEFAULT, sectionLabel = "Ce q
           </motion.h2>
         </div>
 
-        {/* Grille bento 3 colonnes — hauteur fixe pour égaliser les 4 blocs */}
-        <div className="md:h-[640px]">
-        <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 md:h-full gap-4">
-          {features.map((feature, i) => (
-            <BentoCard
-              key={feature.label}
-              feature={feature}
-              delay={i * 0.12}
-              isFlipped={isFlipped}
-            />
-          ))}
-        </div>
+        {/* Grille bento — 2 cols si 2 features, 2×2 si 4, sinon 3 cols / 2 rows */}
+        <div className={features.length === 2 || features.length === 4 ? "" : "md:h-[640px]"}>
+          <div
+            ref={gridRef}
+            className={[
+              "grid grid-cols-1 gap-4",
+              features.length === 2
+                ? "md:grid-cols-2"
+                : features.length === 4
+                ? "md:grid-cols-2"
+                : "md:grid-cols-3 md:grid-rows-2 md:h-full",
+            ].join(" ")}
+          >
+            {features.map((feature, i) => (
+              <BentoCard
+                key={feature.label}
+                feature={feature}
+                delay={i * 0.12}
+                isFlipped={isFlipped}
+                forceFullWidth={features.length === 2}
+              />
+            ))}
+          </div>
         </div>
       </section>
     </MotionConfig>

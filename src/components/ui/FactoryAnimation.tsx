@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "@/navigation";
 
 type Focus = "orange" | "blue" | "yellow" | "green" | null;
 
@@ -8,6 +9,7 @@ const POLE_LABELS: Partial<Record<NonNullable<Focus>, { name: string; color: str
   orange: { name: "Conseil",                  color: "#ef8336" },
   blue:   { name: "Développement",            color: "#3b4fde" },
   yellow: { name: "DevOps & Infrastructure",  color: "#f5cb35" },
+  green:  { name: "Nos agents IA",            color: "#5cc996" },
 };
 
 export function FactoryAnimation() {
@@ -18,6 +20,25 @@ export function FactoryAnimation() {
   const ty = useRef(0);
   const rafId = useRef(0);
   const [focus, setFocus] = useState<Focus>(null);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const router = useRouter();
+
+  const POLE_ROUTES: Partial<Record<NonNullable<Focus>, string>> = {
+    orange: "/nos-poles/conseil",
+    blue:   "/nos-poles/developpement",
+    yellow: "/nos-poles/hebergement",
+    green:  "/produits",
+  };
+
+  function handleEnter(id: Focus) {
+    setFocus(id);
+    setHasInteracted(true);
+  }
+
+  function handleClick(id: NonNullable<Focus>) {
+    const route = POLE_ROUTES[id];
+    if (route) router.push(route);
+  }
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
@@ -71,6 +92,8 @@ export function FactoryAnimation() {
         @keyframes driftC { 0%{transform:translateX(-45px)} 50%{transform:translateX(55px)} 100%{transform:translateX(-45px)} }
         @keyframes bob    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
         @keyframes puff   { 0%{transform:translate(0,0) scale(.5); opacity:0} 15%{opacity:.9} 70%{opacity:.5} 100%{transform:translate(var(--pdx,10px),-160px) scale(1.5); opacity:0} }
+        @keyframes shedPulse { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.18) drop-shadow(0 0 18px rgba(255,255,255,.18))} }
+        @keyframes labelBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
         .fa-cloud-a { animation: driftA 22s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
         .fa-cloud-b { animation: driftB 18s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
         .fa-cloud-c { animation: driftC 28s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
@@ -78,7 +101,62 @@ export function FactoryAnimation() {
         .fa-bob-b   { animation: bob 7s ease-in-out infinite .5s;  transform-box: fill-box; }
         .fa-bob-c   { animation: bob 8s ease-in-out infinite 1s;   transform-box: fill-box; }
         .fa-puff    { transform-box: fill-box; transform-origin: center; animation: puff 4.5s ease-out infinite; }
+        .fa-shed-idle { animation: shedPulse 3s ease-in-out infinite; }
+        .fa-label   { animation: labelBob 3s ease-in-out infinite; }
       `}</style>
+
+      {/* Étiquettes cliquables — toujours visibles, disparaissent après interaction */}
+      {([
+        { id: "orange", label: "Conseil",           color: "#ef8336", left: "26%", top: "26%" },
+        { id: "blue",   label: "Développement",     color: "#6c7ff2", left: "38%", top: "21%" },
+        { id: "yellow", label: "DevOps",            color: "#f5cb35", left: "50%", top: "17%" },
+        { id: "green",  label: "Nos agents IA",     color: "#5cc996", left: "72%", top: "27%" },
+      ] as const).map(({ id, label, color, left, top }) => (
+        <div
+          key={id}
+          className="fa-label"
+          onClick={() => handleClick(id)}
+          style={{
+            position: "absolute",
+            left,
+            top,
+            transform: "translateX(-50%)",
+            pointerEvents: "auto",
+            cursor: "pointer",
+            zIndex: 20,
+            transition: "opacity .5s ease",
+            opacity: hasInteracted ? 0 : 1,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              padding: "4px 10px 4px 8px",
+              borderRadius: "999px",
+              background: "rgba(10,14,30,0.75)",
+              border: `1px solid ${color}55`,
+              backdropFilter: "blur(6px)",
+              boxShadow: `0 0 12px ${color}33`,
+              whiteSpace: "nowrap",
+            }}
+          >
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: color, flexShrink: 0, boxShadow: `0 0 6px ${color}` }} />
+            <span style={{ fontFamily: "var(--font-sans, sans-serif)", fontWeight: 600, fontSize: "0.7rem", letterSpacing: "0.04em", color: "#fff" }}>
+              {label}
+            </span>
+            {/* Icône curseur */}
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none" style={{ opacity: 0.7 }}>
+              <path d="M2 2l7 3.5-3.5 1L4 10 2 2z" fill={color} />
+            </svg>
+          </div>
+          {/* Flèche vers le bas */}
+          <div style={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+            <div style={{ width: 0, height: 0, borderLeft: "4px solid transparent", borderRight: "4px solid transparent", borderTop: `5px solid ${color}99` }} />
+          </div>
+        </div>
+      ))}
 
       {/* Label flottant au hover */}
       <div
@@ -110,6 +188,41 @@ export function FactoryAnimation() {
             {POLE_LABELS[focus]!.name}
           </span>
         )}
+      </div>
+
+      {/* Hint "survol" — disparaît après la première interaction */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "14%",
+          left: 0,
+          right: 0,
+          display: "flex",
+          justifyContent: "center",
+          pointerEvents: "none",
+          zIndex: 10,
+          transition: "opacity .6s ease",
+          opacity: hasInteracted ? 0 : 1,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "var(--font-sans, sans-serif)",
+            fontWeight: 500,
+            fontSize: "clamp(.7rem, 1.2vw, .9rem)",
+            letterSpacing: ".04em",
+            color: "rgba(255,255,255,.5)",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+          }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 3h6M12 3v4M5.5 7.5l1.5 1.5M18.5 7.5l-1.5 1.5M12 7a5 5 0 100 10 5 5 0 000-10z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            <path d="M9 17v3m6-3v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+          Survolez les bâtiments
+        </span>
       </div>
 
       <div style={{ perspective: "2400px", width: "100%", height: "100%" }}>
@@ -261,7 +374,7 @@ export function FactoryAnimation() {
             </g>
 
             {/* Sheds colorés */}
-            <g style={shedStyle("orange")} onMouseEnter={() => setFocus("orange")} onMouseLeave={() => setFocus(null)}>
+            <g style={shedStyle("orange")} className={!hasInteracted && !focus ? "fa-shed-idle" : ""} onMouseEnter={() => handleEnter("orange")} onMouseLeave={() => setFocus(null)} onClick={() => handleClick("orange")}>
               <path d="M 318,860 L 318,400 L 470,300 L 470,860 Z" fill="url(#fa-gOrange)"/>
               <path d="M 470,300 L 484,312 L 484,872 L 470,860 Z" fill="#b7541a"/>
               <path d="M 318,400 L 470,300 L 486,318 L 334,418 Z" fill="url(#fa-gRoof)"/>
@@ -273,7 +386,7 @@ export function FactoryAnimation() {
               <path d="M 318,400 L 470,300 L 470,310 L 318,410 Z" fill="#ffffff" opacity=".12"/>
             </g>
 
-            <g style={shedStyle("blue")} onMouseEnter={() => setFocus("blue")} onMouseLeave={() => setFocus(null)}>
+            <g style={shedStyle("blue")} className={!hasInteracted && !focus ? "fa-shed-idle" : ""} onMouseEnter={() => handleEnter("blue")} onMouseLeave={() => setFocus(null)} onClick={() => handleClick("blue")}>
               <path d="M 486,860 L 486,360 L 638,260 L 638,860 Z" fill="url(#fa-gBlue)"/>
               <path d="M 638,260 L 652,272 L 652,872 L 638,860 Z" fill="#1d2a8f"/>
               <path d="M 486,360 L 638,260 L 654,278 L 502,378 Z" fill="url(#fa-gRoof)"/>
@@ -285,7 +398,7 @@ export function FactoryAnimation() {
               <path d="M 486,360 L 638,260 L 638,270 L 486,370 Z" fill="#ffffff" opacity=".12"/>
             </g>
 
-            <g style={shedStyle("yellow")} onMouseEnter={() => setFocus("yellow")} onMouseLeave={() => setFocus(null)}>
+            <g style={shedStyle("yellow")} className={!hasInteracted && !focus ? "fa-shed-idle" : ""} onMouseEnter={() => handleEnter("yellow")} onMouseLeave={() => setFocus(null)} onClick={() => handleClick("yellow")}>
               <path d="M 654,860 L 654,320 L 806,220 L 806,860 Z" fill="url(#fa-gYellow)"/>
               <path d="M 806,220 L 820,232 L 820,872 L 806,860 Z" fill="#c3971a"/>
               <path d="M 654,320 L 806,220 L 822,238 L 670,338 Z" fill="url(#fa-gRoof)"/>
@@ -352,7 +465,7 @@ export function FactoryAnimation() {
             </g>
 
             {/* Cheminée verte */}
-            <g style={shedStyle("green")} onMouseEnter={() => setFocus("green")} onMouseLeave={() => setFocus(null)}>
+            <g style={shedStyle("green")} className={!hasInteracted && !focus ? "fa-shed-idle" : ""} onMouseEnter={() => handleEnter("green")} onMouseLeave={() => setFocus(null)} onClick={() => handleClick("green")}>
               <path d="M 966,870 L 1000,470 L 1110,470 L 1144,870 Z" fill="url(#fa-gGreen)"/>
               <path d="M 1110,470 L 1144,870 L 1118,870 L 1092,470 Z" fill="#2f8a63" opacity=".7"/>
               <rect x="996" y="440" width="118" height="34" fill="url(#fa-gStack)"/>

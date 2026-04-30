@@ -1,8 +1,23 @@
 import { Link } from "@/navigation";
 
+export interface OfferLabItem {
+  title: string;
+  tags: string[];
+  status: "done" | "active" | "soon";
+  cat: "cyber" | "infra" | "devops";
+}
+
+export interface OfferArticleItem {
+  title: string;
+  category: string;
+  href: string;
+}
+
 export interface OfferCardProps {
   /** Titre de l'offre */
   title: string;
+  /** Si true, la carte prend toute la largeur de son conteneur (mode grille) */
+  fluid?: boolean;
   /** Couleur principale de la carte (bouton CTA + gradient image) */
   accentColor: string;
   /** Dégradé CSS pour le fond du header image */
@@ -19,21 +34,31 @@ export interface OfferCardProps {
   discoverHref?: string;
   /** Badge optionnel en haut à droite du header (ex: "meilleure vente") */
   badge?: string;
+  /** Items Lab liés à cette offre */
+  labItems?: OfferLabItem[];
+  /** Actualités liées à cette offre */
+  articles?: OfferArticleItem[];
+  /** Références clients */
+  clientRefs?: string[];
 }
 
 export function OfferCard({
   title,
   accentColor,
   headerGradient,
-  ctaLabel,
-  ctaHref = "#",
   features,
   discoverLabel = "Découvrir le pôle",
   discoverHref = "#",
   badge,
+  fluid = false,
 }: OfferCardProps) {
   return (
-    <div className="flex flex-col gap-6 lg:gap-8 h-[500px] lg:h-[570px] xl:h-[620px] 2xl:h-[660px] items-start px-6 lg:px-8 py-6 lg:py-[33px] rounded-[var(--radius-offer-card)] bg-card-bg border border-white/10 shrink-0 w-[340px] lg:w-[420px] xl:w-[480px] 2xl:w-[534px]">
+    <div className={[
+      "flex flex-col gap-6 lg:gap-8 items-start px-6 lg:px-8 py-6 lg:py-[33px] rounded-[var(--radius-offer-card)] bg-card-bg border border-white/10",
+      fluid
+        ? "w-full h-auto"
+        : "h-[500px] lg:h-[570px] xl:h-[620px] 2xl:h-[660px] shrink-0 w-[340px] lg:w-[420px] xl:w-[480px] 2xl:w-[534px]",
+    ].join(" ")}>
       {/* Header image avec gradient */}
       <div
         className="flex flex-col h-[190px] lg:h-[240px] xl:h-[260px] 2xl:h-[283px] items-start justify-between p-5 rounded-[var(--radius-offer-img)] w-full"
@@ -65,22 +90,13 @@ export function OfferCard({
         />
       </div>
 
-      {/* Bouton CTA principal */}
-      <Link
-        href={ctaHref}
-        className="flex items-center justify-center w-full py-[9px] rounded-[var(--radius-offer-btn)] font-sans text-[length:var(--text-tab)] text-white text-center transition-opacity hover:opacity-90"
-        style={{ backgroundColor: accentColor }}
-      >
-        {ctaLabel}
-      </Link>
-
       {/* Features + footer */}
       <div className="flex flex-1 flex-col justify-between w-full min-h-0">
         {/* Liste de features */}
         <ul className="flex flex-col gap-3">
           {features.map((feature, i) => (
             <li key={i} className="flex items-center gap-3">
-              <CheckCircleIcon />
+              <CheckCircleIcon accentColor={accentColor} />
               <span className="font-sans text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] text-white/90 whitespace-nowrap">
                 {feature}
               </span>
@@ -110,7 +126,7 @@ export function OfferCard({
   );
 }
 
-function CheckCircleIcon() {
+function CheckCircleIcon({ accentColor }: { accentColor: string }) {
   return (
     <svg
       width="20"
@@ -121,10 +137,10 @@ function CheckCircleIcon() {
       aria-hidden="true"
       className="shrink-0"
     >
-      <circle cx="10" cy="10" r="9" stroke="white" strokeOpacity="0.7" strokeWidth="1.2" />
+      <circle cx="10" cy="10" r="9" stroke={accentColor} strokeOpacity="0.5" strokeWidth="1.2" />
       <path
         d="M6.5 10L9 12.5L13.5 7.5"
-        stroke="white"
+        stroke={accentColor}
         strokeOpacity="0.9"
         strokeWidth="1.4"
         strokeLinecap="round"

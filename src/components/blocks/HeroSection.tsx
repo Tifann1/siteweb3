@@ -41,6 +41,8 @@ interface HeroSectionProps {
    *   → à utiliser avec un wrapper min-h-screen flex flex-col pour combiner hero + tabs
    */
   sizeMode?: "fill" | "flex";
+  /** Afficher l'animation usine — uniquement sur la page d'accueil */
+  showFactory?: boolean;
 }
 
 export function HeroSection({
@@ -53,6 +55,7 @@ export function HeroSection({
   align = "left",
   titleSize = "default",
   sizeMode = "fill",
+  showFactory = false,
 }: HeroSectionProps) {
   const isRight = align === "right";
   const isCompact = titleSize === "compact";
@@ -73,10 +76,11 @@ export function HeroSection({
           paddingBottom: "6rem",
         }}
       >
-        {/* Colonne texte — contrainte à ~52% sur lg+ pour laisser place à l'animation */}
+        {/* Colonne texte */}
         <div
           className={[
-            "flex flex-col gap-8 md:gap-[70px] w-full lg:max-w-[58%]",
+            "flex flex-col gap-8 md:gap-[70px] w-full",
+            showFactory ? "lg:max-w-[58%]" : "lg:max-w-[75%]",
             isRight ? "items-end ml-auto" : "items-start",
           ].join(" ")}
         >
@@ -95,29 +99,29 @@ export function HeroSection({
               </div>
             )}
 
-          {/* Titre */}
-          <RevealTitle
-            as="h1"
-            text={title}
-            highlightWord={highlightStyle === "gradient" ? highlightWord : undefined}
-            className={[
-              "font-sans font-bold text-text-heading",
-              isRight ? "text-right" : "text-left",
-            ].join(" ")}
-            style={
-              isCompact
-                ? {
-                    fontSize: "var(--text-product-hero)",
-                    lineHeight: "var(--text-product-hero--line-height)",
-                    letterSpacing: "var(--text-product-hero--letter-spacing)",
-                  }
-                : {
-                    fontSize: "var(--text-hero-title)",
-                    lineHeight: "var(--text-hero-title--line-height)",
-                    letterSpacing: "var(--text-hero-title--letter-spacing)",
-                  }
-            }
-          />
+            {/* Titre */}
+            <RevealTitle
+              as="h1"
+              text={title}
+              highlightWord={highlightStyle === "gradient" ? highlightWord : undefined}
+              className={[
+                "font-sans font-bold text-text-heading",
+                isRight ? "text-right" : "text-left",
+              ].join(" ")}
+              style={
+                isCompact
+                  ? {
+                      fontSize: "var(--text-product-hero)",
+                      lineHeight: "var(--text-product-hero--line-height)",
+                      letterSpacing: "var(--text-product-hero--letter-spacing)",
+                    }
+                  : {
+                      fontSize: "var(--text-hero-title)",
+                      lineHeight: "var(--text-hero-title--line-height)",
+                      letterSpacing: "var(--text-hero-title--letter-spacing)",
+                    }
+              }
+            />
           </div>
 
           {/* Description */}
@@ -139,56 +143,11 @@ export function HeroSection({
       </div>
 
       {/* Animation flottante — positionnée en absolu sur la droite, visible dès lg */}
-      <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 z-10 w-[48%] xl:w-[44%]">
-        <FactoryAnimation />
-      </div>
+      {showFactory && (
+        <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 z-10 w-[48%] xl:w-[44%]">
+          <FactoryAnimation />
+        </div>
+      )}
     </section>
   );
-}
-
-function renderTitleWithHighlight(
-  title: string,
-  highlightWord?: string,
-  highlightStyle: "gradient" | "solid" = "gradient",
-  highlightColor = "#FBA275"
-): React.ReactNode {
-  if (!highlightWord) return title;
-
-  const escaped = highlightWord.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const regex = new RegExp(`(${escaped})`, "gi");
-  const parts = title.split(regex);
-
-  return parts.map((part, i) => {
-    if (part.toLowerCase() === highlightWord.toLowerCase()) {
-      // Découper sur \n pour insérer des <br /> explicites dans le span coloré
-      const lines = part.split("\n");
-      if (highlightStyle === "solid") {
-        return lines.map((line, j) => (
-          <React.Fragment key={`${i}-${j}`}>
-            <span style={{ color: highlightColor }}>{line}</span>
-            {j < lines.length - 1 && <br />}
-          </React.Fragment>
-        ));
-      }
-      return lines.map((line, j) => (
-        <React.Fragment key={`${i}-${j}`}>
-          <span
-            className="bg-clip-text text-transparent"
-            style={{
-              backgroundImage: "linear-gradient(162.47deg, #FFB692 0%, #FF7E33 100%)",
-            }}
-          >
-            {line}
-          </span>
-          {j < lines.length - 1 && <br />}
-        </React.Fragment>
-      ));
-    }
-    return part.split("\n").map((line, j, arr) => (
-      <span key={`${i}-${j}`}>
-        {line}
-        {j < arr.length - 1 && <br />}
-      </span>
-    ));
-  });
 }

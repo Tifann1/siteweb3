@@ -24,7 +24,7 @@ interface HeaderProps {
 const DEFAULT_NAV_ITEMS: NavItem[] = [
   { label: "Nos pôles", href: "/nos-poles/conseil", matchPrefix: "/nos-poles" },
   { label: "Nos références", href: "/references", matchPrefix: "/references" },
-  { label: "Nos produits IA", href: "/produits", matchPrefix: "/produits" },
+  { label: "Nos agents", href: "/produits", matchPrefix: "/produits" },
   { label: "Actualités", href: "/actualite" },
 ];
 
@@ -68,14 +68,14 @@ export function Header({
           transform: hiddenForOffers ? "translateY(-8px)" : "translateY(0)",
         }}
       >
-        {/* Conteneur centré avec largeur max */}
+        {/* Conteneur — pleine largeur en haut, max-width au scroll */}
         <div
-          className="flex items-center justify-between mx-auto w-full pt-4 md:pt-6 lg:pt-8 pb-3 px-6 md:px-10 lg:px-16"
-          style={{ maxWidth: "1200px" }}
+          className="flex items-center justify-between mx-auto w-full pt-4 md:pt-6 lg:pt-8 pb-3 px-6 md:px-10 lg:px-16 transition-all duration-500"
+          style={{ maxWidth: scrolled ? "1200px" : "100%" }}
         >
 
           {/* Logo */}
-          <div className="relative h-[44px] w-[120px] shrink-0">
+          <Link href="/accueil" className="relative h-[44px] w-[120px] shrink-0 block">
             <Image
               src={logoSrc}
               alt={logoAlt}
@@ -83,7 +83,7 @@ export function Header({
               className="object-contain object-left"
               priority
             />
-          </div>
+          </Link>
 
           {/* Nav + CTA container — desktop uniquement */}
           <motion.div
@@ -121,20 +121,21 @@ export function Header({
             <div className="flex items-center gap-[13px] shrink-0">
               <Link
                 href={ctaHref}
-                className="flex items-center justify-center px-[17px] py-[5px] bg-gradient-to-b from-[var(--color-brand-orange-cta-from)] to-[var(--color-brand-orange-cta-to)] rounded-[var(--radius-cta)] shadow-[var(--shadow-cta)] text-white text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] font-sans whitespace-nowrap"
+                className="flex items-center justify-center px-5 bg-gradient-to-b from-[var(--color-brand-orange-cta-from)] to-[var(--color-brand-orange-cta-to)] rounded-[var(--radius-cta)] shadow-[var(--shadow-cta)] text-white text-[length:var(--text-nav)] font-sans whitespace-nowrap shrink-0"
+                style={{ height: "36px" }}
               >
                 {ctaLabel}
               </Link>
 
               {/* Logo WTTJ */}
-              <div className="relative h-[30px] w-[80px] shrink-0 rounded-[var(--radius-cta)] overflow-hidden">
-                <Image
-                  src="/images/logos/logoWTTJ.png"
-                  alt="Welcome to the Jungle"
-                  fill
-                  className="object-contain"
-                />
-              </div>
+              <Image
+                src="/images/logos/wttj-icon.png"
+                alt="Welcome to the Jungle"
+                width={40}
+                height={40}
+                className="shrink-0"
+                style={{ width: 40, height: 40 }}
+              />
             </div>
           </motion.div>
 
