@@ -1,6 +1,5 @@
 // Page — Pôle Développement Full-stack
 // Route : /[locale]/nos-poles/developpement
-// Figma node 533:5358
 
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -8,7 +7,6 @@ import { HeroSection } from "@/components/blocks/HeroSection";
 import { SectionBentoGrid } from "@/components/blocks/SectionBentoGrid";
 import { SectionAugmentedDev } from "@/components/blocks/SectionAugmentedDev";
 import { SectionNosSucces } from "@/components/blocks/SectionNosSucces";
-import { ScrollRevealSection } from "@/components/blocks/ScrollRevealSection";
 import { SectionDirecteurPole } from "@/components/blocks/SectionDirecteurPole";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
 import { PoleIdentityBanner } from "@/components/blocks/PoleIdentityBanner";
@@ -23,11 +21,10 @@ export default function PoleDeveloppementPage() {
       className="min-h-screen flex flex-col w-full"
       style={{ backgroundColor: "var(--color-nav-bg)" }}
     >
-      {/* Header sticky */}
       <Header />
 
       <main className="flex flex-col w-full">
-        {/* Hero + tabs dans un écran — hero flex-1, tabs ancrés en bas */}
+        {/* Hero + tabs */}
         <div className="min-h-screen flex flex-col">
           <HeroSection
             eyebrow="Pôle Développement Full-stack"
@@ -38,8 +35,6 @@ export default function PoleDeveloppementPage() {
             align="right"
             sizeMode="flex"
           />
-
-          {/* Tabs navigation pôles (node 533:5506) */}
           <div className="py-6">
             <div className="max-w-[1280px] mx-auto px-6 md:px-8">
               <PoleTabsNavWrapper />
@@ -61,7 +56,7 @@ export default function PoleDeveloppementPage() {
           keywords={["Next.js", "APIs", "Agents IA", "Mobile", "Tests"]}
         />
 
-        {/* Bento Grid — L'équipe qui conçoit vos agents IA (node 533:5371) */}
+        {/* Présentation */}
         <SectionBentoGrid
           title="L'équipe qui conçoit vos agents IA"
           featureCard={{
@@ -94,6 +89,7 @@ export default function PoleDeveloppementPage() {
           ctaLabel="Réserver un rendez-vous avec un expert"
         />
 
+        {/* Savoir-faire */}
         <FeatureBento
           sectionLabel="Nos savoir-faire"
           heading={
@@ -128,234 +124,291 @@ export default function PoleDeveloppementPage() {
           ]}
         />
 
+        {/* Développement augmenté par l'IA — avant les offres */}
+        <section className="py-16 md:py-24">
+          <SectionAugmentedDev accentColor="var(--color-bento-dev-accent)" />
+        </section>
+
+        {/* Nos offres */}
         <PoleOffersGrid
           variant="list"
           tabs={[
             {
-              label: "Projets Web Sur Mesure",
+              label: "IA & Data",
+              description: "Solutions IA agentique, machine learning et data engineering — du prototype à la production souveraine",
               cards: [
                 {
-                  title: "Développement\nweb & mobile",
-                  accentColor: "var(--color-offer-blue)",
-                  headerGradient: OFFER_GRADIENTS.blue,
+                  title: "Déploiement\nd'IA Agentique",
+                  badge: "meilleure vente",
+                  accentColor: "#5cc996",
+                  headerGradient: OFFER_GRADIENTS.teal,
                   features: [
-                    "Applications React / Next.js",
-                    "APIs REST & GraphQL",
-                    "Applications mobiles",
-                    "Tests & qualité",
+                    "Cadrage des workflows métiers automatisables",
+                    "Conception d'architectures multi-agents",
+                    "Intégration de modèles IA avancés",
+                    "Déploiement full-stack & industrialisation",
                   ],
-                  ctaLabel: "Accéder à l'offre",
+                  profiles: ["Développeur IA", "Architecte LLM", "Lead Technique"],
+                  ctaLabel: "Prendre RDV",
                   ctaHref: "/contact",
+                  articles: [
+                    { title: "L'IA Générative dans l'industrie : Du prototype à la mise en production à l'échelle.", category: "Engineering", href: "/actualite/ia-generative-industrie-prototype-production" },
+                    { title: "Lancement de SteamPulse : Le tableau de bord IA nouvelle génération.", category: "Produit", href: "/actualite/lancement-steampulse-tableau-de-bord-ia" },
+                  ],
+                  clientRefs: ["INPI", "BPCE", "La Poste", "Institut Français"],
                 },
                 {
-                  title: "Architecture\n& APIs",
-                  accentColor: "var(--color-offer-blue)",
-                  headerGradient: OFFER_GRADIENTS.blue,
+                  title: "Développement\nMachine Learning",
+                  accentColor: "#5cc996",
+                  headerGradient: OFFER_GRADIENTS.teal,
                   features: [
-                    "Micro-services",
-                    "GraphQL / REST",
-                    "Documentation OpenAPI",
-                    "Revue de code",
+                    "Étude de faisabilité & choix du modèle adapté",
+                    "Conception & entraînement de modèles prédictifs",
+                    "Visualisation & exploitation des résultats",
+                    "Industrialisation & amélioration continue",
                   ],
-                  ctaLabel: "Accéder à l'offre",
+                  profiles: ["Data Scientist", "ML Engineer", "Lead Data"],
+                  ctaLabel: "Prendre RDV",
                   ctaHref: "/contact",
+                  articles: [
+                    { title: "L'IA Générative dans l'industrie : Du prototype à la mise en production à l'échelle.", category: "Engineering", href: "/actualite/ia-generative-industrie-prototype-production" },
+                  ],
+                  clientRefs: ["BPCE", "La Poste", "CMN"],
                 },
                 {
-                  title: "Développement\nweb & mobile",
-                  accentColor: "var(--color-offer-blue)",
-                  headerGradient: OFFER_GRADIENTS.blue,
+                  title: "Speech-to-Text\n& Voice of Customer",
+                  accentColor: "#5cc996",
+                  headerGradient: OFFER_GRADIENTS.teal,
                   features: [
-                    "Applications React / Next.js",
-                    "APIs REST & GraphQL",
-                    "Applications mobiles",
-                    "Tests & qualité",
+                    "Capture & transcription automatique des interactions",
+                    "Analyse IA des sentiments & de la qualité",
+                    "Détection de signaux faibles métier",
+                    "Infrastructure souveraine & conforme RGPD",
                   ],
-                  ctaLabel: "Accéder à l'offre",
+                  profiles: ["Data Scientist", "ML Engineer", "Développeur Python"],
+                  ctaLabel: "Prendre RDV",
                   ctaHref: "/contact",
+                  clientRefs: ["Institut Français", "CMN", "Agence de la Biomédecine"],
                 },
                 {
-                  title: "Architecture\n& APIs",
-                  accentColor: "var(--color-offer-blue)",
-                  headerGradient: OFFER_GRADIENTS.blue,
+                  title: "Big Data &\nData Visualisation",
+                  accentColor: "#5cc996",
+                  headerGradient: OFFER_GRADIENTS.teal,
                   features: [
-                    "Micro-services",
-                    "GraphQL / REST",
-                    "Documentation OpenAPI",
-                    "Revue de code",
+                    "Collecte & structuration de données massives",
+                    "Traitement & enrichissement des données",
+                    "Visualisation & pilotage métier",
+                    "Infrastructure cloud sécurisée & scalable",
                   ],
-                  ctaLabel: "Accéder à l'offre",
+                  profiles: ["Data Engineer", "Architecte Data", "Lead Data"],
+                  ctaLabel: "Prendre RDV",
                   ctaHref: "/contact",
+                  articles: [
+                    { title: "Gouvernance des données en 2024 : Les enjeux du secteur public", category: "Data", href: "/actualite/gouvernance-donnees-2024-secteur-public" },
+                  ],
+                  clientRefs: ["INPI", "La Poste", "Paris Musées", "Atout France"],
                 },
                 {
-                  title: "Développement\nweb & mobile",
-                  accentColor: "var(--color-offer-blue)",
-                  headerGradient: OFFER_GRADIENTS.blue,
+                  title: "Exposer ses données\nen Open Data",
+                  accentColor: "#5cc996",
+                  headerGradient: OFFER_GRADIENTS.teal,
                   features: [
-                    "Applications React / Next.js",
-                    "APIs REST & GraphQL",
-                    "Applications mobiles",
-                    "Tests & qualité",
+                    "Structuration & mise en qualité des données",
+                    "Conception de portails Open Data modernes",
+                    "Exposition des données via API ouvertes",
+                    "Architecture robuste, accessible & conforme",
                   ],
-                  ctaLabel: "Accéder à l'offre",
+                  profiles: ["Data Engineer", "Développeur API", "Architecte Data"],
+                  ctaLabel: "Prendre RDV",
                   ctaHref: "/contact",
+                  articles: [
+                    { title: "Gouvernance des données en 2024 : Les enjeux du secteur public", category: "Data", href: "/actualite/gouvernance-donnees-2024-secteur-public" },
+                  ],
+                  clientRefs: ["CNIL", "Atout France", "CMN"],
                 },
                 {
-                  title: "Architecture\n& APIs",
-                  accentColor: "var(--color-offer-blue)",
-                  headerGradient: OFFER_GRADIENTS.blue,
+                  title: "Caviardage de\ndocuments",
+                  accentColor: "#5cc996",
+                  headerGradient: OFFER_GRADIENTS.teal,
                   features: [
-                    "Micro-services",
-                    "GraphQL / REST",
-                    "Documentation OpenAPI",
-                    "Revue de code",
+                    "Détection automatique des données personnelles (PII)",
+                    "Traitement intelligent multi-formats",
+                    "Caviardage IA avancé et contextualisé",
+                    "Architecture souveraine & industrialisable",
                   ],
-                  ctaLabel: "Accéder à l'offre",
+                  profiles: ["Développeur IA", "Expert NLP", "Architecte IA"],
+                  ctaLabel: "Prendre RDV",
                   ctaHref: "/contact",
+                  clientRefs: ["CNIL", "Institut Français", "Agence de la Biomédecine"],
                 },
               ],
             },
             {
-              label: "Agents IA",
+              label: "Développement",
+              description: "Applications web & mobile, APIs, CMS et expertise technique — des socles robustes pensés pour durer",
               cards: [
                 {
-                  title: "Agents IA\nsur mesure",
-                  accentColor: "var(--color-offer-green)",
-                  headerGradient: OFFER_GRADIENTS.teal,
+                  title: "Développement\nReact",
+                  badge: "meilleure vente",
+                  accentColor: "var(--color-offer-blue)",
+                  headerGradient: OFFER_GRADIENTS.blue,
                   features: [
-                    "Conception d'agents IA",
-                    "Intégration LLM",
-                    "RAG & bases vectorielles",
-                    "Déploiement production",
+                    "Architecture front-end robuste et scalable",
+                    "Design system modulaire et réutilisable",
+                    "Qualité logicielle & tests automatisés",
+                    "Intégration fluide et accessibilité native",
                   ],
-                  ctaLabel: "Accéder à l'offre",
+                  profiles: ["Développeur Front-end", "Lead Front", "UX Engineer"],
+                  ctaLabel: "Prendre RDV",
                   ctaHref: "/contact",
+                  articles: [
+                    { title: "L'IA Générative dans l'industrie : Du prototype à la mise en production à l'échelle.", category: "Engineering", href: "/actualite/ia-generative-industrie-prototype-production" },
+                  ],
+                  clientRefs: ["INPI", "BPCE", "Paris Musées", "Carrefour Spectacles"],
                 },
                 {
-                  title: "Intégration\nmétier",
-                  accentColor: "var(--color-offer-green)",
-                  headerGradient: OFFER_GRADIENTS.teal,
+                  title: "Développement\nAPI REST",
+                  accentColor: "var(--color-offer-blue)",
+                  headerGradient: OFFER_GRADIENTS.blue,
                   features: [
-                    "Connexion aux outils existants",
-                    "Automatisation de workflows",
-                    "Monitoring des agents",
-                    "Formation équipes",
+                    "Conception d'architectures API évolutives",
+                    "Standardisation & documentation des services",
+                    "Sécurité & gestion des accès",
+                    "Intégration & scalabilité dans votre SI",
                   ],
-                  ctaLabel: "Accéder à l'offre",
+                  profiles: ["Développeur Back-end", "Architecte API", "Lead Tech"],
+                  ctaLabel: "Prendre RDV",
                   ctaHref: "/contact",
+                  clientRefs: ["INPI", "BPCE", "La Poste", "CMN"],
                 },
                 {
-                  title: "Agents IA\nsur mesure",
-                  accentColor: "var(--color-offer-green)",
-                  headerGradient: OFFER_GRADIENTS.teal,
+                  title: "Développement\nDrupal",
+                  accentColor: "var(--color-offer-blue)",
+                  headerGradient: OFFER_GRADIENTS.blue,
                   features: [
-                    "Conception d'agents IA",
-                    "Intégration LLM",
-                    "RAG & bases vectorielles",
-                    "Déploiement production",
+                    "Déploiement de plateformes Drupal robustes",
+                    "Structuration de contenus et parcours éditoriaux",
+                    "Recherche avancée et performance SEO",
+                    "Évolutivité, accessibilité et maintenance long terme",
                   ],
-                  ctaLabel: "Accéder à l'offre",
+                  profiles: ["Développeur Drupal", "Intégrateur CMS", "Lead Technique"],
+                  ctaLabel: "Prendre RDV",
                   ctaHref: "/contact",
+                  clientRefs: ["Atout France", "Institut Français", "CMN", "Paris Musées"],
                 },
                 {
-                  title: "Intégration\nmétier",
-                  accentColor: "var(--color-offer-green)",
-                  headerGradient: OFFER_GRADIENTS.teal,
+                  title: "Reprise de\nmaintenance Java",
+                  badge: "meilleure vente",
+                  accentColor: "var(--color-offer-blue)",
+                  headerGradient: OFFER_GRADIENTS.blue,
                   features: [
-                    "Connexion aux outils existants",
-                    "Automatisation de workflows",
-                    "Monitoring des agents",
-                    "Formation équipes",
+                    "Audit et diagnostic du système existant",
+                    "Modernisation progressive des applications",
+                    "Sécurisation et mise à niveau technique",
+                    "Maintenance et évolution continue",
                   ],
-                  ctaLabel: "Accéder à l'offre",
+                  profiles: ["Développeur Java", "Lead Dev", "Architecte SI"],
+                  ctaLabel: "Prendre RDV",
                   ctaHref: "/contact",
+                  clientRefs: ["BPCE", "La Poste", "Paris Musées", "CMN"],
                 },
                 {
-                  title: "Agents IA\nsur mesure",
-                  accentColor: "var(--color-offer-green)",
-                  headerGradient: OFFER_GRADIENTS.teal,
+                  title: "Signature\nélectronique",
+                  accentColor: "var(--color-offer-blue)",
+                  headerGradient: OFFER_GRADIENTS.blue,
                   features: [
-                    "Conception d'agents IA",
-                    "Intégration LLM",
-                    "RAG & bases vectorielles",
-                    "Déploiement production",
+                    "Digitalisation complète des processus documentaires",
+                    "Signature électronique et validation sécurisée",
+                    "Archivage probant et conformité réglementaire",
+                    "Interconnexion avec vos systèmes d'information",
                   ],
-                  ctaLabel: "Accéder à l'offre",
+                  profiles: ["Développeur Back-end", "Lead Technique", "Expert GED"],
+                  ctaLabel: "Prendre RDV",
                   ctaHref: "/contact",
+                  clientRefs: ["INPI", "CNIL", "CMN", "Agence de la Biomédecine"],
+                },
+                {
+                  title: "Keycloak &\nSécurisation d'APIs",
+                  accentColor: "var(--color-offer-blue)",
+                  headerGradient: OFFER_GRADIENTS.blue,
+                  features: [
+                    "Mise en place d'une gestion centralisée des identités",
+                    "Intégration SSO et fédération d'identités",
+                    "Sécurisation des échanges API et services",
+                    "Architecture IAM adaptable et multi-stack",
+                  ],
+                  profiles: ["Développeur Back-end", "Expert IAM", "Architecte Sécurité"],
+                  ctaLabel: "Prendre RDV",
+                  ctaHref: "/contact",
+                  clientRefs: ["INPI", "BPCE", "Atout France", "CMN"],
                 },
               ],
             },
           ]}
         />
 
-        {/* Section Développement augmenté par l'IA (node 533:5404) */}
-        <section className="py-16 md:py-24">
-          <SectionAugmentedDev accentColor="var(--color-bento-dev-accent)" />
+        {/* Nos succès — sans fond bleu */}
+        <SectionNosSucces
+          title="Nos Succès"
+          subtitle="L'IA concrète au service de nos partenaires."
+          ctaLabel="Voir tous les cas clients"
+          cards={[
+            {
+              image: "/images/references/inpi.webp",
+              imageAlt: "Application INPI",
+              logo: "/images/logos/inpi.svg",
+              logoAlt: "INPI",
+              sector: "Secteur Public",
+              title: "Application métier de gestion et de paiement",
+              stats: [
+                { value: "+24%", label: "Productivité logistique globale" },
+                { value: "+18%", label: "Réduction du temps de traitement" },
+              ],
+            },
+            {
+              image: "/images/references/bpce.jpg",
+              imageAlt: "Application BPCE",
+              logo: "/images/logos/bpce.svg",
+              logoAlt: "BPCE",
+              sector: "Secteur Privé",
+              title: "Application métier de suivi des clients",
+              stats: [
+                { value: "+24%", label: "Productivité logistique globale" },
+                { value: "+30%", label: "Satisfaction utilisateur" },
+              ],
+            },
+          ]}
+        />
+
+        <SectionDirecteurPole
+          className="mt-12 md:mt-20"
+          name="Sylvain Gourio"
+          role="Directeur du Pôle Développement"
+          imageSrc="/images/team/sylvain-gourio.png"
+          poleLabel="Développement"
+          accentColor="var(--color-tab-active-dev)"
+          vision="Coder vite c'est bien. Coder juste, c'est mieux. Nous livrons des architectures qui tiennent dans le temps parce que nous refusons la dette technique dès le premier sprint."
+          stats={[
+            { value: "8 ans", label: "Expérience" },
+            { value: "+150", label: "Applis livrées" },
+          ]}
+          ctaLabel="Voir nos réalisations"
+          ctaHref="/references"
+        />
+
+        <section
+          className="py-16 md:py-24"
+          style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+        >
+          <CtaBanner
+            title={"Prêt à augmenter\nvos projets ?"}
+            description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
+            primaryLabel="Parlons de votre projet"
+            primaryHref="/contact"
+            secondaryLabel="Voir nos offres"
+            secondaryHref="/contact"
+          />
         </section>
-
-        {/* Bulle deep-navy → NosSucces + Directeur + CTA */}
-        <ScrollRevealSection>
-          <SectionNosSucces
-            title="Nos Succès"
-            subtitle="L'IA concrète au service de nos partenaires."
-            ctaLabel="Voir tous les cas clients"
-            cards={[
-              {
-                image: "/images/references/inpi.webp",
-                imageAlt: "Application INPI",
-                logo: "/images/logos/inpi.svg",
-                logoAlt: "INPI",
-                sector: "Secteur Public",
-                title: "Application métier de gestion et de paiement",
-                stats: [
-                  { value: "+24%", label: "Productivité logistique globale" },
-                  { value: "+18%", label: "Réduction du temps de traitement" },
-                ],
-              },
-              {
-                image: "/images/references/bpce.jpg",
-                imageAlt: "Application BPCE",
-                logo: "/images/logos/bpce.svg",
-                logoAlt: "BPCE",
-                sector: "Secteur Privé",
-                title: "Application métier de suivi des clients",
-                stats: [
-                  { value: "+24%", label: "Productivité logistique globale" },
-                  { value: "+30%", label: "Satisfaction utilisateur" },
-                ],
-              },
-            ]}
-          />
-
-          <SectionDirecteurPole
-            className="mt-12 md:mt-20"
-            name="Sylvain Gourio"
-            role="Directeur du Pôle Développement"
-            imageSrc="/images/team/sylvain-gourio.png"
-            poleLabel="Développement"
-            accentColor="var(--color-tab-active-dev)"
-            vision="Coder vite c'est bien. Coder juste, c'est mieux. Nous livrons des architectures qui tiennent dans le temps parce que nous refusons la dette technique dès le premier sprint."
-            stats={[
-              { value: "8 ans", label: "Expérience" },
-              { value: "+150", label: "Applis livrées" },
-            ]}
-            ctaLabel="Voir nos réalisations"
-            ctaHref="/references"
-          />
-
-          <section
-            className="py-16 md:py-24"
-            style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
-          >
-            <CtaBanner
-              title={"Prêt à augmenter\nvos projets ?"}
-              description="Nos experts sont prêts à auditer votre stratégie et à identifier vos premiers leviers d'accélération IA."
-              primaryLabel="Parlons de votre projet"
-              primaryHref="/contact"
-              secondaryLabel="Voir nos offres"
-              secondaryHref="/contact"
-            />
-          </section>
-        </ScrollRevealSection>
       </main>
 
       <Footer />
