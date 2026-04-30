@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-type LabCat = "all" | "cyber" | "infra" | "devops";
-type LabFmt = "all" | "projet" | "rex" | "veille";
 type LabStatus = "done" | "active" | "soon";
 
 interface LabItem {
@@ -137,21 +135,18 @@ const STATUS_CONFIG: Record<LabStatus, { label: string; color: string; glow: boo
 };
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+const PER_PAGE = 3;
 
 export function LabSection() {
-  const [activeCat, setActiveCat] = useState<LabCat>("all");
-  const [activeFmt, setActiveFmt] = useState<LabFmt>("all");
+  const [page, setPage] = useState(0);
+  const [dir, setDir] = useState(1);
 
-  const visible = LAB_ITEMS.filter((item) => {
-    const catOk = activeCat === "all" || item.cat === activeCat;
-    const fmtOk = activeFmt === "all" || item.fmt === activeFmt;
-    return catOk && fmtOk;
-  });
+  const totalPages = Math.ceil(LAB_ITEMS.length / PER_PAGE);
+  const visible = LAB_ITEMS.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
 
-  function catCount(cat: string) {
-    return LAB_ITEMS.filter(
-      (i) => (cat === "all" || i.cat === cat) && (activeFmt === "all" || i.fmt === activeFmt)
-    ).length;
+  function goTo(p: number) {
+    setDir(p > page ? 1 : -1);
+    setPage(p);
   }
 
   return (
@@ -164,268 +159,184 @@ export function LabSection() {
       }}
     >
       {/* Header */}
-      <div className="flex flex-col gap-4 mb-10">
-        <span
-          className="font-body font-semibold uppercase tracking-widest text-brand-orange"
-          style={{ fontSize: "var(--text-badge)", letterSpacing: "0.12em" }}
-        >
-          Steamulo Lab
-        </span>
-        <div className="flex flex-col md:flex-row md:items-end gap-4 justify-between">
-          <div>
-            <h2
-              className="font-sans font-bold text-text-heading"
-              style={{ fontSize: "clamp(1.75rem, 3vw, 2.75rem)", letterSpacing: "-0.02em", lineHeight: 1.1 }}
-            >
-              Recherches &amp; expérimentations
-            </h2>
-            <p
-              className="font-body text-text-light/50 mt-3 max-w-xl"
-              style={{ fontSize: "var(--text-body)", lineHeight: 1.65 }}
-            >
-              Notre BU Infrastructure &amp; Sécurité explore en continu les sujets émergents de l&apos;écosystème cloud-native. Projets internes, retours d&apos;expérience terrain et veille technologique structurée.
-            </p>
-          </div>
-          {/* Stats */}
-          <div className="flex gap-0 shrink-0 overflow-hidden rounded-xl border border-white/8">
-            {[
-              { val: "11", label: "Sujets",   color: "inherit" },
-              { val: "5",  label: "En cours", color: "#86efac" },
-              { val: "4",  label: "Publiés",  color: "#34d399" },
-              { val: "2",  label: "À venir",  color: "#fbbf24" },
-            ].map((s, i) => (
-              <div
-                key={s.label}
-                className="flex flex-col items-center justify-center px-5 py-3 border-r border-white/8 last:border-r-0 bg-white/[0.02]"
-                style={{ minWidth: 72 }}
-              >
-                <span
-                  className="font-sans font-bold leading-none"
-                  style={{ fontSize: "clamp(1.1rem, 2vw, 1.5rem)", color: i === 0 ? "white" : s.color }}
-                >
-                  {s.val}
-                </span>
-                <span className="font-body text-white/30 mt-1" style={{ fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                  {s.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-col gap-3 mb-8">
-        {/* Thème */}
-        <div className="flex items-center gap-3 flex-wrap">
-          <span className="font-body text-white/25 uppercase tracking-widest" style={{ fontSize: 10, minWidth: 48 }}>
-            Thème
+      <div className="flex flex-col md:flex-row md:items-end gap-6 justify-between mb-10">
+        <div className="flex flex-col gap-4">
+          <span
+            className="font-body font-semibold uppercase tracking-widest text-brand-orange"
+            style={{ fontSize: "var(--text-badge)", letterSpacing: "0.12em" }}
+          >
+            Steamulo Lab
           </span>
-          {(["all", "cyber", "infra", "devops"] as const).map((cat) => {
-            const labels: Record<string, string> = {
-              all: "Tous",
-              cyber: "Cyber & Sécurité",
-              infra: "Infrastructure",
-              devops: "DevOps",
-            };
-            const count = catCount(cat);
-            const isActive = activeCat === cat;
-            return (
-              <button
-                key={cat}
-                onClick={() => setActiveCat(cat)}
-                className="flex items-center gap-2 px-4 py-1.5 rounded-full font-body transition-colors text-sm"
-                style={{
-                  border: `1px solid ${isActive ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.08)"}`,
-                  background: isActive ? "rgba(255,255,255,0.06)" : "transparent",
-                  color: isActive ? "white" : "rgba(255,255,255,0.4)",
-                }}
-              >
-                {cat !== "all" && (
-                  <span
-                    className="size-[7px] rounded-full shrink-0"
-                    style={{ backgroundColor: CAT_COLORS[cat] }}
-                  />
-                )}
-                {labels[cat]}
-                <span
-                  className="font-mono rounded px-1"
-                  style={{ fontSize: 9, background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.3)" }}
-                >
-                  {count}
-                </span>
-              </button>
-            );
-          })}
+          <h2
+            className="font-sans font-bold text-text-heading"
+            style={{ fontSize: "clamp(1.75rem, 3vw, 2.75rem)", letterSpacing: "-0.02em", lineHeight: 1.1 }}
+          >
+            Recherches &amp; expérimentations
+          </h2>
+          <p
+            className="font-body text-text-light/50 max-w-xl"
+            style={{ fontSize: "var(--text-body)", lineHeight: 1.65 }}
+          >
+            Notre BU Infrastructure &amp; Sécurité explore en continu les sujets émergents de l&apos;écosystème cloud-native. Projets internes, retours d&apos;expérience terrain et veille technologique structurée.
+          </p>
         </div>
 
-        {/* Format */}
-        <div className="flex items-center gap-3 flex-wrap">
-          <span className="font-body text-white/25 uppercase tracking-widest" style={{ fontSize: 10, minWidth: 48 }}>
-            Format
+        {/* Navigation slider */}
+        <div className="flex items-center gap-4 shrink-0">
+          <span className="font-body text-white/30" style={{ fontSize: 13 }}>
+            {page * PER_PAGE + 1}–{Math.min((page + 1) * PER_PAGE, LAB_ITEMS.length)} / {LAB_ITEMS.length}
           </span>
-          {(["all", "projet", "rex", "veille"] as const).map((fmt) => {
-            const labels: Record<string, string> = {
-              all: "Tous",
-              projet: "Projet",
-              rex: "REX",
-              veille: "Veille",
-            };
-            const isActive = activeFmt === fmt;
-            return (
-              <button
-                key={fmt}
-                onClick={() => setActiveFmt(fmt)}
-                className="flex items-center gap-2 px-4 py-1.5 rounded-full font-body transition-colors text-sm"
-                style={{
-                  border: `1px solid ${isActive ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.08)"}`,
-                  background: isActive ? "rgba(255,255,255,0.06)" : "transparent",
-                  color: isActive ? "white" : "rgba(255,255,255,0.4)",
-                }}
-              >
-                {fmt !== "all" && (
-                  <span
-                    className="size-[7px] rounded-full shrink-0"
-                    style={{ backgroundColor: FMT_COLORS[fmt] }}
-                  />
-                )}
-                {labels[fmt]}
-              </button>
-            );
-          })}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => goTo(page - 1)}
+              disabled={page === 0}
+              className="flex items-center justify-center size-9 rounded-full border border-white/15 text-white/50 hover:text-white hover:border-white/40 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+              aria-label="Précédent"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <button
+              onClick={() => goTo(page + 1)}
+              disabled={page === totalPages - 1}
+              className="flex items-center justify-center size-9 rounded-full border border-white/15 text-white/50 hover:text-white hover:border-white/40 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+              aria-label="Suivant"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Legend */}
-      <div className="flex items-center gap-5 mb-8 flex-wrap">
-        <span className="font-body text-white/20 uppercase tracking-widest" style={{ fontSize: 10 }}>Statut</span>
-        {(["active", "done", "soon"] as const).map((s) => {
-          const cfg = STATUS_CONFIG[s];
-          return (
-            <div key={s} className="flex items-center gap-2">
-              <span
-                className="size-2 rounded-full shrink-0"
-                style={{
-                  backgroundColor: cfg.color,
-                  boxShadow: cfg.glow ? `0 0 6px ${cfg.color}` : "none",
-                }}
-              />
-              <span className="font-body text-white/35" style={{ fontSize: 12 }}>{cfg.label}</span>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Grid */}
-      <AnimatePresence mode="wait">
+      {/* Slider */}
+      <AnimatePresence mode="wait" custom={dir}>
         <motion.div
-          key={`${activeCat}-${activeFmt}`}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.3, ease: EASE }}
+          key={page}
+          custom={dir}
+          variants={{
+            enter: (d: number) => ({ opacity: 0, x: d * 40 }),
+            center: { opacity: 1, x: 0 },
+            exit:  (d: number) => ({ opacity: 0, x: d * -40 }),
+          }}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: 0.35, ease: EASE }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
         >
-          {visible.length === 0 ? (
-            <div className="col-span-full flex flex-col items-center justify-center py-20 text-white/20">
-              <span className="text-3xl mb-4 opacity-30">◎</span>
-              <span className="font-body text-sm">Aucun sujet ne correspond à ces filtres.</span>
-            </div>
-          ) : (
-            visible.map((item, i) => {
-              const catColor = CAT_COLORS[item.cat];
-              const fmtColor = FMT_COLORS[item.fmt];
-              const status = STATUS_CONFIG[item.status];
-              return (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.25, ease: EASE, delay: i * 0.04 }}
-                  className="flex flex-col gap-3 p-5 rounded-2xl relative overflow-hidden"
-                  style={{
-                    background: "rgba(255,255,255,0.02)",
-                    border: "1px solid rgba(255,255,255,0.07)",
-                  }}
+          {visible.map((item, i) => {
+            const catColor = CAT_COLORS[item.cat];
+            const fmtColor = FMT_COLORS[item.fmt];
+            const status = STATUS_CONFIG[item.status];
+            return (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, ease: EASE, delay: i * 0.05 }}
+                className="flex flex-col gap-3 p-5 rounded-2xl relative overflow-hidden"
+                style={{
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(255,255,255,0.07)",
+                }}
+              >
+                {/* Top accent line */}
+                <div
+                  className="absolute top-0 left-0 right-0"
+                  style={{ height: 1, background: catColor, opacity: 0.4 }}
+                />
+
+                {/* Top row: badges + status */}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex gap-2 flex-wrap">
+                    <span
+                      className="font-mono px-2.5 py-[3px] rounded-full text-[10px]"
+                      style={{
+                        background: `${catColor}14`,
+                        color: catColor,
+                        border: `1px solid ${catColor}40`,
+                      }}
+                    >
+                      {item.cat === "cyber" ? "Cyber & Sécurité" : item.cat === "infra" ? "Infrastructure" : "DevOps"}
+                    </span>
+                    <span
+                      className="font-mono px-2.5 py-[3px] rounded-full text-[10px]"
+                      style={{
+                        background: `${fmtColor}12`,
+                        color: fmtColor,
+                        border: `1px solid ${fmtColor}38`,
+                      }}
+                    >
+                      {item.fmt === "rex" ? "REX" : item.fmt.charAt(0).toUpperCase() + item.fmt.slice(1)}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <span
+                      className="size-[7px] rounded-full shrink-0"
+                      style={{
+                        backgroundColor: status.color,
+                        boxShadow: status.glow ? `0 0 5px ${status.color}` : "none",
+                      }}
+                    />
+                    <span className="font-mono text-white/30 uppercase tracking-wide" style={{ fontSize: 10 }}>
+                      {status.label}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Title */}
+                <p
+                  className="font-sans font-medium text-white/90 leading-snug"
+                  style={{ fontSize: "var(--text-body-lg)" }}
                 >
-                  {/* Top accent line */}
-                  <div
-                    className="absolute top-0 left-0 right-0"
-                    style={{ height: 1, background: catColor, opacity: 0.4 }}
-                  />
+                  {item.title}
+                </p>
 
-                  {/* Top row: badges + status */}
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex gap-2 flex-wrap">
-                      <span
-                        className="font-mono px-2.5 py-[3px] rounded-full text-[10px]"
-                        style={{
-                          background: `${catColor}14`,
-                          color: catColor,
-                          border: `1px solid ${catColor}40`,
-                        }}
-                      >
-                        {item.cat === "cyber" ? "Cyber & Sécurité" : item.cat === "infra" ? "Infrastructure" : "DevOps"}
-                      </span>
-                      <span
-                        className="font-mono px-2.5 py-[3px] rounded-full text-[10px]"
-                        style={{
-                          background: `${fmtColor}12`,
-                          color: fmtColor,
-                          border: `1px solid ${fmtColor}38`,
-                        }}
-                      >
-                        {item.fmt === "rex" ? "REX" : item.fmt.charAt(0).toUpperCase() + item.fmt.slice(1)}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      <span
-                        className="size-[7px] rounded-full shrink-0"
-                        style={{
-                          backgroundColor: status.color,
-                          boxShadow: status.glow ? `0 0 5px ${status.color}` : "none",
-                        }}
-                      />
-                      <span className="font-mono text-white/30 uppercase tracking-wide" style={{ fontSize: 10 }}>
-                        {status.label}
-                      </span>
-                    </div>
-                  </div>
+                {/* Description */}
+                <p
+                  className="font-body text-white/40 flex-1"
+                  style={{ fontSize: "var(--text-nav)", lineHeight: 1.65 }}
+                >
+                  {item.description}
+                </p>
 
-                  {/* Title */}
-                  <p
-                    className="font-sans font-medium text-white/90 leading-snug"
-                    style={{ fontSize: "var(--text-body-lg)" }}
-                  >
-                    {item.title}
-                  </p>
-
-                  {/* Description */}
-                  <p
-                    className="font-body text-white/40 flex-1"
-                    style={{ fontSize: "var(--text-nav)", lineHeight: 1.65 }}
-                  >
-                    {item.description}
-                  </p>
-
-                  {/* Footer tags */}
-                  <div className="flex gap-2 flex-wrap pt-2 border-t border-white/[0.06]">
-                    {item.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="font-mono text-white/25 bg-white/[0.04] border border-white/[0.07] px-2 py-0.5 rounded"
-                        style={{ fontSize: 10 }}
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </motion.div>
-              );
-            })
-          )}
+                {/* Footer tags */}
+                <div className="flex gap-2 flex-wrap pt-2 border-t border-white/[0.06]">
+                  {item.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="font-mono text-white/25 bg-white/[0.04] border border-white/[0.07] px-2 py-0.5 rounded"
+                      style={{ fontSize: 10 }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            );
+          })}
         </motion.div>
       </AnimatePresence>
+
+      {/* Dots */}
+      <div className="flex items-center justify-center gap-2 mt-8">
+        {Array.from({ length: totalPages }).map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            className="transition-all duration-300 rounded-full"
+            style={{
+              width: i === page ? 24 : 6,
+              height: 6,
+              background: i === page ? "var(--color-brand-orange, #ef8336)" : "rgba(255,255,255,0.15)",
+            }}
+            aria-label={`Page ${i + 1}`}
+          />
+        ))}
+      </div>
     </section>
   );
 }
