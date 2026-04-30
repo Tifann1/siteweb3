@@ -30,7 +30,6 @@ export const Orange: Story = {
       "Propositions UX",
       "Maquettes UX - UI",
     ],
-    discoverLabel: "Découvrir le pôle",
   },
 };
 
@@ -46,7 +45,6 @@ export const BlueBestSeller: Story = {
       "Aide à la priorisation",
       "Restitution structurée",
     ],
-    discoverLabel: "Découvrir le pôle",
     badge: "meilleure vente",
   },
 };
@@ -63,7 +61,6 @@ export const Yellow: Story = {
       "Propositions UX",
       "Maquettes UX - UI",
     ],
-    discoverLabel: "Découvrir",
   },
 };
 
@@ -79,6 +76,5 @@ export const Teal: Story = {
       "RAG & bases vectorielles",
       "Intégration métier",
     ],
-    discoverLabel: "Découvrir",
   },
 };

@@ -146,8 +146,6 @@ export default function PoleDeveloppementPage() {
                   ],
                   ctaLabel: "Accéder à l'offre",
                   ctaHref: "/contact",
-                  discoverLabel: "Découvrir le pôle",
-                  discoverHref: "/nos-poles/developpement",
                 },
                 {
                   title: "Architecture\n& APIs",
@@ -161,8 +159,6 @@ export default function PoleDeveloppementPage() {
                   ],
                   ctaLabel: "Accéder à l'offre",
                   ctaHref: "/contact",
-                  discoverLabel: "Découvrir le pôle",
-                  discoverHref: "/nos-poles/developpement",
                 },
                 {
                   title: "Développement\nweb & mobile",
@@ -176,8 +172,6 @@ export default function PoleDeveloppementPage() {
                   ],
                   ctaLabel: "Accéder à l'offre",
                   ctaHref: "/contact",
-                  discoverLabel: "Découvrir le pôle",
-                  discoverHref: "/nos-poles/developpement",
                 },
                 {
                   title: "Architecture\n& APIs",
@@ -191,8 +185,6 @@ export default function PoleDeveloppementPage() {
                   ],
                   ctaLabel: "Accéder à l'offre",
                   ctaHref: "/contact",
-                  discoverLabel: "Découvrir le pôle",
-                  discoverHref: "/nos-poles/developpement",
                 },
                 {
                   title: "Développement\nweb & mobile",
@@ -206,8 +198,6 @@ export default function PoleDeveloppementPage() {
                   ],
                   ctaLabel: "Accéder à l'offre",
                   ctaHref: "/contact",
-                  discoverLabel: "Découvrir le pôle",
-                  discoverHref: "/nos-poles/developpement",
                 },
                 {
                   title: "Architecture\n& APIs",
@@ -221,8 +211,6 @@ export default function PoleDeveloppementPage() {
                   ],
                   ctaLabel: "Accéder à l'offre",
                   ctaHref: "/contact",
-                  discoverLabel: "Découvrir le pôle",
-                  discoverHref: "/nos-poles/developpement",
                 },
               ],
             },
@@ -241,8 +229,6 @@ export default function PoleDeveloppementPage() {
                   ],
                   ctaLabel: "Accéder à l'offre",
                   ctaHref: "/contact",
-                  discoverLabel: "Découvrir le pôle",
-                  discoverHref: "/nos-poles/developpement",
                 },
                 {
                   title: "Intégration\nmétier",
@@ -256,8 +242,6 @@ export default function PoleDeveloppementPage() {
                   ],
                   ctaLabel: "Accéder à l'offre",
                   ctaHref: "/contact",
-                  discoverLabel: "Découvrir le pôle",
-                  discoverHref: "/nos-poles/developpement",
                 },
                 {
                   title: "Agents IA\nsur mesure",
@@ -271,8 +255,6 @@ export default function PoleDeveloppementPage() {
                   ],
                   ctaLabel: "Accéder à l'offre",
                   ctaHref: "/contact",
-                  discoverLabel: "Découvrir le pôle",
-                  discoverHref: "/nos-poles/developpement",
                 },
                 {
                   title: "Intégration\nmétier",
@@ -286,8 +268,6 @@ export default function PoleDeveloppementPage() {
                   ],
                   ctaLabel: "Accéder à l'offre",
                   ctaHref: "/contact",
-                  discoverLabel: "Découvrir le pôle",
-                  discoverHref: "/nos-poles/developpement",
                 },
                 {
                   title: "Agents IA\nsur mesure",
@@ -301,8 +281,6 @@ export default function PoleDeveloppementPage() {
                   ],
                   ctaLabel: "Accéder à l'offre",
                   ctaHref: "/contact",
-                  discoverLabel: "Découvrir le pôle",
-                  discoverHref: "/nos-poles/developpement",
                 },
               ],
             },

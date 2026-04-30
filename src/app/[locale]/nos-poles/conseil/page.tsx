@@ -154,8 +154,6 @@ export default function PoleConseilPage() {
                   : i % 3 === 1
                   ? ["Applications React / Next.js", "APIs REST & GraphQL", "Applications mobiles", "Tests & qualité"]
                   : ["CI/CD automatisée", "Migration Cloud", "Monitoring & alerting", "Infrastructure as Code"],
-                discoverLabel: "Découvrir le pôle",
-                discoverHref: "/nos-poles/conseil",
               })),
             },
             {
@@ -169,8 +167,6 @@ export default function PoleConseilPage() {
                 features: i % 2 === 0
                   ? ["Conception d'agents IA", "Fine-tuning de modèles", "RAG & bases vectorielles", "Intégration métier"]
                   : ["Automatisation de workflows", "Intégration LLM", "Monitoring des agents", "Formation équipes"],
-                discoverLabel: "Découvrir le pôle",
-                discoverHref: "/nos-poles/conseil",
               })),
             },
           ]}

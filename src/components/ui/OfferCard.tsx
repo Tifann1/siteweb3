@@ -1,4 +1,3 @@
-import { Link } from "@/navigation";
 
 export interface OfferLabItem {
   title: string;
@@ -28,10 +27,8 @@ export interface OfferCardProps {
   ctaHref?: string;
   /** Features listées sous le CTA */
   features: string[];
-  /** Label du bouton secondaire "Découvrir" */
-  discoverLabel?: string;
-  /** Href du bouton secondaire */
-  discoverHref?: string;
+  /** Tags de profils qui font ces missions */
+  profiles?: string[];
   /** Badge optionnel en haut à droite du header (ex: "meilleure vente") */
   badge?: string;
   /** Items Lab liés à cette offre */
@@ -47,8 +44,7 @@ export function OfferCard({
   accentColor,
   headerGradient,
   features,
-  discoverLabel = "Découvrir le pôle",
-  discoverHref = "#",
+  profiles,
   badge,
   fluid = false,
 }: OfferCardProps) {
@@ -111,16 +107,30 @@ export function OfferCard({
           role="separator"
         />
 
-        {/* Bouton secondaire Découvrir */}
-        <div className="flex items-center justify-end">
-          <Link
-            href={discoverHref}
-            className="flex items-center gap-[10px] px-[17px] py-[5px] rounded-[var(--radius-pill-sm)] border border-white font-sans text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] text-white shadow-[var(--shadow-cta)] hover:bg-white/10 transition-colors whitespace-nowrap"
-          >
-            {discoverLabel}
-            <ArrowRightIcon />
-          </Link>
-        </div>
+        {/* Tags profils */}
+        {profiles && profiles.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <span className="font-body text-white/30 uppercase tracking-widest" style={{ fontSize: 9, letterSpacing: "0.12em" }}>
+              Profils
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {profiles.map((p) => (
+                <span
+                  key={p}
+                  className="font-body px-2.5 py-1 rounded-full"
+                  style={{
+                    fontSize: 11,
+                    color: accentColor,
+                    background: `${accentColor}14`,
+                    border: `1px solid ${accentColor}35`,
+                  }}
+                >
+                  {p}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

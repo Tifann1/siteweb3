@@ -436,79 +436,16 @@ function ExpandedPanel({ card, accentColor }: { card: OfferCardProps; accentColo
       className="rounded-2xl p-5 mt-2 mb-4 flex flex-col gap-6"
       style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}
     >
-      {/* Carte + formulaire */}
+      {/* Carte + contenu */}
       <div className="flex flex-col lg:flex-row gap-6 items-start">
         {/* Carte offre */}
         <div className="shrink-0">
           <OfferCard {...card} />
         </div>
 
-        {/* Formulaire de contact */}
+        {/* Lab + articles + refs + CTA */}
         <div className="flex flex-col gap-5 flex-1 min-w-0">
-          <h4
-            className="font-sans font-bold text-white"
-            style={{ fontSize: "var(--text-body-lg)", lineHeight: 1.3 }}
-          >
-            Votre demande pour {card.title.replace(/\n/g, " ")}
-          </h4>
-
-          <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex flex-col gap-2 flex-1">
-                <label className="font-body text-white/60 text-sm">Prénom</label>
-                <input
-                  type="text"
-                  placeholder="Votre prénom"
-                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 font-body text-sm text-white placeholder:text-white/40 outline-none focus:border-white/30 transition-colors"
-                />
-              </div>
-              <div className="flex flex-col gap-2 flex-1">
-                <label className="font-body text-white/60 text-sm">Nom</label>
-                <input
-                  type="text"
-                  placeholder="Votre nom"
-                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 font-body text-sm text-white placeholder:text-white/40 outline-none focus:border-white/30 transition-colors"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <label className="font-body text-white/60 text-sm">Adresse email</label>
-              <input
-                type="email"
-                placeholder="votre@email.com"
-                className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 font-body text-sm text-white placeholder:text-white/40 outline-none focus:border-white/30 transition-colors"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label className="font-body text-white/60 text-sm">Message (optionnel)</label>
-              <textarea
-                placeholder="Décrivez votre besoin…"
-                rows={3}
-                className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 font-body text-sm text-white placeholder:text-white/40 outline-none focus:border-white/30 transition-colors resize-none"
-              />
-            </div>
-            <div className="flex justify-start pt-1">
-              <button
-                type="submit"
-                className="flex items-center gap-2 px-6 py-3 rounded-[var(--radius-cta)] font-sans text-sm text-white transition-opacity hover:opacity-90"
-                style={{ backgroundColor: accentColor }}
-              >
-                Envoyer ma demande
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                  <path d="M2 7h10M8 3l4 4-4 4" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      {/* Lab + articles */}
-      {(hasLab || hasArticles) && (
-        <div
-          className="grid grid-cols-1 lg:grid-cols-2 gap-5 pt-5"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
-        >
+          {/* Lab */}
           {hasLab && (
             <div className="flex flex-col gap-3">
               <span className="font-body font-semibold uppercase tracking-widest text-white/30" style={{ fontSize: 10, letterSpacing: "0.12em" }}>
@@ -547,6 +484,7 @@ function ExpandedPanel({ card, accentColor }: { card: OfferCardProps; accentColo
             </div>
           )}
 
+          {/* Actualités liées */}
           {hasArticles && (
             <div className="flex flex-col gap-3">
               <span className="font-body font-semibold uppercase tracking-widest text-white/30" style={{ fontSize: 10, letterSpacing: "0.12em" }}>
@@ -573,29 +511,43 @@ function ExpandedPanel({ card, accentColor }: { card: OfferCardProps; accentColo
               </div>
             </div>
           )}
-        </div>
-      )}
 
-      {/* Références clients */}
-      {hasRefs && (
-        <div className="flex flex-col gap-2 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-          <span className="font-body font-semibold uppercase tracking-widest text-white/25" style={{ fontSize: 9, letterSpacing: "0.12em" }}>
-            Références clients
-          </span>
-          <div className="flex flex-wrap gap-2">
-            {card.clientRefs!.map((ref) => (
-              <Link
-                key={ref}
-                href="/references"
-                className="font-body text-white/45 hover:text-white/80 bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.08] px-3 py-1 rounded-full transition-colors"
-                style={{ fontSize: 12 }}
-              >
-                {ref}
-              </Link>
-            ))}
+          {/* Références clients */}
+          {hasRefs && (
+            <div className="flex flex-col gap-2">
+              <span className="font-body font-semibold uppercase tracking-widest text-white/25" style={{ fontSize: 9, letterSpacing: "0.12em" }}>
+                Références clients
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {card.clientRefs!.map((ref) => (
+                  <Link
+                    key={ref}
+                    href="/references"
+                    className="font-body text-white/45 hover:text-white/80 bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.08] px-3 py-1 rounded-full transition-colors"
+                    style={{ fontSize: 12 }}
+                  >
+                    {ref}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* CTA Prendre RDV */}
+          <div className="pt-2 mt-auto">
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-[var(--radius-cta)] font-sans text-sm font-medium text-white transition-opacity hover:opacity-90"
+              style={{ backgroundColor: accentColor }}
+            >
+              Prendre RDV
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M2 7h10M8 3l4 4-4 4" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </Link>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
