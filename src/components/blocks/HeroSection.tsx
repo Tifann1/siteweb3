@@ -1,7 +1,7 @@
 import React from "react";
 import { HeroHalos } from "./HeroHalos";
 import { RevealTitle } from "@/components/ui/RevealTitle";
-import { FactoryAnimation } from "@/components/ui/FactoryAnimation";
+import { FactoryTopDown } from "@/components/ui/FactoryTopDown";
 
 interface HeroSectionProps {
   /** Texte du badge en haut */
@@ -145,7 +145,7 @@ export function HeroSection({
       {/* Animation flottante — positionnée en absolu sur la droite, visible dès lg */}
       {showFactory && (
         <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 z-10 w-[48%] xl:w-[44%]">
-          <FactoryAnimation />
+          <FactoryTopDown />
         </div>
       )}
     </section>

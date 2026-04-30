@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "@/navigation";
 import { OfferCard, type OfferCardProps } from "@/components/ui/OfferCard";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export interface PoleOfferTab {
   label: string;
@@ -33,6 +37,30 @@ export function PoleOffersGrid({
   const [page, setPage] = useState(0);
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
 
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { clipPath: "inset(6% 4% 6% 4% round 24px)" },
+        {
+          clipPath: "inset(0% 0% 0% 0% round 0px)",
+          ease: "power1.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 90%",
+            end: "top 20%",
+            scrub: 0.8,
+          },
+        }
+      );
+    });
+    return () => ctx.revert();
+  }, []);
+
   const cards = tabs[activeTab]?.cards ?? [];
   const totalPages = Math.ceil(cards.length / perPage);
   const visible = cards.slice(page * perPage, (page + 1) * perPage);
@@ -50,6 +78,7 @@ export function PoleOffersGrid({
 
   return (
     <section
+      ref={sectionRef}
       className="bg-deep-navy py-20 md:py-28 flex flex-col gap-12"
       style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
     >

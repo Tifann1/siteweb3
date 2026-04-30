@@ -820,19 +820,6 @@ export default function PoleHebergementPage() {
               ctaHref="/contact"
             />
 
-            <section
-              className="py-16 md:py-24"
-              style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
-            >
-              <CtaBanner
-                title={"Votre infrastructure\nentre de bonnes mains."}
-                description="Nos experts analysent votre existant, identifient vos risques et vous proposent un plan d'action concret — souveraineté, sécurité et disponibilité garanties."
-                primaryLabel="Demander un audit"
-                primaryHref="/contact"
-                secondaryLabel="Voir nos offres"
-                secondaryHref="/contact"
-              />
-            </section>
           </div>
 
           {/* Lab — même catégorie que les Actualités */}
@@ -899,6 +886,20 @@ export default function PoleHebergementPage() {
               </section>
             );
           })()}
+
+          <section
+            className="py-16 md:py-24"
+            style={{ paddingLeft: "var(--page-margin-x)", paddingRight: "var(--page-margin-x)" }}
+          >
+            <CtaBanner
+              title={"Votre infrastructure\nentre de bonnes mains."}
+              description="Nos experts analysent votre existant, identifient vos risques et vous proposent un plan d'action concret — souveraineté, sécurité et disponibilité garanties."
+              primaryLabel="Demander un audit"
+              primaryHref="/contact"
+              secondaryLabel="Voir nos offres"
+              secondaryHref="/contact"
+            />
+          </section>
         </div>
       </main>
 
