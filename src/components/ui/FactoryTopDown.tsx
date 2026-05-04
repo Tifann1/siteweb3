@@ -1,482 +1,1363 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { useRouter } from "@/navigation";
+/**
+ * FactoryTopDown.tsx
+ * ------------------------------------------------------------------
+ * R3F scene avec 4 pôles 3D uniques, caméra perspective, profondeur
+ * de champ réelle, connexions courbes animées, post-processing Bloom.
+ *
+ * Stack : Next.js 15 / TS strict / @react-three/fiber / @react-three/drei
+ *         / @react-three/postprocessing / framer-motion
+ *
+ * Le composant exporté est <FactoryTopDown />. Il occupe 100 % de la
+ * largeur de son parent avec un aspect-ratio 1/1 ; le parent gère le
+ * positionnement.
+ * ------------------------------------------------------------------
+ */
 
-const POLES = {
-  orange: {
+import {
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
+import {
+  OrbitControls,
+  PerspectiveCamera,
+  Line,
+  Html,
+} from "@react-three/drei";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { AnimatePresence, motion } from "framer-motion";
+import * as THREE from "three";
+// import { useRouter } from "@/navigation"; // décommenter dans le projet réel
+
+/* ─────────────────────────────────────────────────────────────────
+ *  Données pôles
+ * ───────────────────────────────────────────────────────────────── */
+
+export const POLES = {
+  conseil: {
     title: "Conseil & Transformation",
     kicker: "Pôle 01 — Conseil",
     desc: "Cadrage stratégique, design produit et transformation des organisations. Du diagnostic à la mise en mouvement.",
-    stats: [{ v: "+40", k: "Projets/an" }, { v: "12", k: "Experts" }],
+    stats: [
+      { v: "+40", k: "Projets/an" },
+      { v: "12", k: "Experts" },
+    ],
     color: "#ef8336",
+    position: [-4.5, 0, 3] as [number, number, number],
     href: "/nos-poles/conseil",
   },
-  blue: {
+  dev: {
     title: "Développement",
     kicker: "Pôle 02 — Build",
     desc: "Ingénierie logicielle, plateformes web & mobile, architectures évolutives livrées en cycles courts.",
-    stats: [{ v: "120+", k: "Projets/an" }, { v: "38", k: "Experts" }],
+    stats: [
+      { v: "120+", k: "Projets/an" },
+      { v: "38", k: "Experts" },
+    ],
     color: "#6a7dff",
+    position: [0, 0, 0] as [number, number, number],
     href: "/nos-poles/developpement",
   },
-  yellow: {
+  hebergement: {
     title: "DevOps & Infrastructure",
     kicker: "Pôle 03 — Run",
     desc: "Hébergement, SRE et automatisation : un socle production-ready, observable, sécurisé 24/7.",
-    stats: [{ v: "99.98%", k: "Uptime" }, { v: "9", k: "Experts" }],
+    stats: [
+      { v: "99.98%", k: "Uptime" },
+      { v: "9", k: "Experts" },
+    ],
     color: "#f5cb35",
+    position: [4.5, 0, 3] as [number, number, number],
     href: "/nos-poles/hebergement",
   },
-  green: {
-    title: "Nos agents IA",
+  ia: {
+    title: "Nos Agents IA",
     kicker: "Pôle 04 — IA",
     desc: "Agents et copilotes sur-mesure, intégrés au cœur des opérations métier. Du POC à la production.",
-    stats: [{ v: "20+", k: "Agents livrés" }, { v: "11", k: "Experts" }],
+    stats: [
+      { v: "20+", k: "Agents livrés" },
+      { v: "11", k: "Experts" },
+    ],
     color: "#5cc996",
+    position: [0, 3.5, -2] as [number, number, number],
     href: "/produits",
   },
 } as const;
 
-type PoleId = keyof typeof POLES;
+export type PoleId = keyof typeof POLES;
 
+/* ─────────────────────────────────────────────────────────────────
+ *  Helpers
+ * ───────────────────────────────────────────────────────────────── */
+
+const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
+
+function lerpVec3(out: THREE.Vector3, a: THREE.Vector3, b: THREE.Vector3, t: number) {
+  out.x = a.x + (b.x - a.x) * t;
+  out.y = a.y + (b.y - a.y) * t;
+  out.z = a.z + (b.z - a.z) * t;
+  return out;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ *  Pôle Conseil — empilement de plateaux décroissants
+ * ───────────────────────────────────────────────────────────────── */
+
+function ConseilPole({
+  position,
+  hovered,
+  dimmed,
+  onPointerOver,
+  onPointerOut,
+  onClick,
+}: {
+  position: [number, number, number];
+  hovered: boolean;
+  dimmed: boolean;
+  onPointerOver: (e: ThreeEvent<PointerEvent>) => void;
+  onPointerOut: (e: ThreeEvent<PointerEvent>) => void;
+  onClick: (e: ThreeEvent<MouseEvent>) => void;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const wireRef = useRef<THREE.LineSegments>(null);
+  const plates = useRef<THREE.Mesh[]>([]);
+
+  const material = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        color: "#ef8336",
+        metalness: 0.3,
+        roughness: 0.5,
+        emissive: new THREE.Color("#ef8336"),
+        emissiveIntensity: 0.15,
+        clearcoat: 0.4,
+      }),
+    [],
+  );
+
+  const wireGeo = useMemo(() => {
+    const box = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+    return new THREE.WireframeGeometry(box);
+  }, []);
+
+  const wireMat = useMemo(
+    () => new THREE.LineBasicMaterial({ color: "#ffd1a8", transparent: true, opacity: 0.85 }),
+    [],
+  );
+
+  useEffect(() => () => {
+    material.dispose();
+    wireGeo.dispose();
+    wireMat.dispose();
+  }, [material, wireGeo, wireMat]);
+
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    const targetY = hovered ? 0.4 : dimmed ? -0.1 : 0;
+    if (groupRef.current) {
+      groupRef.current.position.y += (targetY - groupRef.current.position.y) * 0.08;
+    }
+    plates.current.forEach((p, i) => {
+      if (!p) return;
+      const base = i * 0.45;
+      p.position.y = base + Math.sin(t * 1.4 - i * 0.3) * 0.04;
+    });
+    if (wireRef.current) {
+      wireRef.current.rotation.y = t * 0.6;
+      wireRef.current.position.y = 1.55 + Math.sin(t * 1.2) * 0.05;
+    }
+    const targetOpacity = dimmed ? 0.55 : 1;
+    material.opacity += (targetOpacity - material.opacity) * 0.1;
+    material.transparent = material.opacity < 0.99;
+    material.emissiveIntensity = hovered ? 0.45 : 0.15;
+  });
+
+  const plateRadii = [1.05, 0.85, 0.65];
+
+  return (
+    <group ref={groupRef} position={position}>
+      <mesh
+        onPointerOver={onPointerOver}
+        onPointerOut={onPointerOut}
+        onClick={onClick}
+      >
+        {/* Hit-box generous */}
+        <cylinderGeometry args={[1.2, 1.2, 2, 16]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+      {plateRadii.map((r, i) => (
+        <mesh
+          key={i}
+          ref={(el) => {
+            if (el) plates.current[i] = el;
+          }}
+          material={material}
+          castShadow
+          receiveShadow
+          position={[0, i * 0.45, 0]}
+        >
+          <cylinderGeometry args={[r, r * 0.95, 0.18, 48]} />
+        </mesh>
+      ))}
+      {/* Petite tour centrale */}
+      <mesh material={material} position={[0, 1.25, 0]}>
+        <cylinderGeometry args={[0.1, 0.12, 0.5, 16]} />
+      </mesh>
+      {/* Wireframe cube qui flotte */}
+      <lineSegments ref={wireRef} geometry={wireGeo} material={wireMat} />
+    </group>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ *  Pôle Développement — rack/serveur (anneaux + piliers)
+ * ───────────────────────────────────────────────────────────────── */
+
+function DevPole({
+  position,
+  hovered,
+  dimmed,
+  onPointerOver,
+  onPointerOut,
+  onClick,
+}: {
+  position: [number, number, number];
+  hovered: boolean;
+  dimmed: boolean;
+  onPointerOver: (e: ThreeEvent<PointerEvent>) => void;
+  onPointerOut: (e: ThreeEvent<PointerEvent>) => void;
+  onClick: (e: ThreeEvent<MouseEvent>) => void;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const ringsRef = useRef<THREE.Mesh[]>([]);
+  const RING_COUNT = 6;
+
+  const mat = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        color: "#1a2360",
+        metalness: 0.7,
+        roughness: 0.2,
+        clearcoat: 1,
+        emissive: new THREE.Color("#6a7dff"),
+        emissiveIntensity: 0.25,
+      }),
+    [],
+  );
+
+  const pillarMat = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        color: "#0e1542",
+        metalness: 0.6,
+        roughness: 0.3,
+      }),
+    [],
+  );
+
+  useEffect(
+    () => () => {
+      mat.dispose();
+      pillarMat.dispose();
+    },
+    [mat, pillarMat],
+  );
+
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    const targetY = hovered ? 0.4 : dimmed ? -0.1 : 0;
+    if (groupRef.current) {
+      groupRef.current.position.y += (targetY - groupRef.current.position.y) * 0.08;
+    }
+    ringsRef.current.forEach((r, i) => {
+      if (!r) return;
+      const sign = i % 2 === 0 ? 1 : -1;
+      r.rotation.z += 0.003 * sign;
+    });
+    const pulse = 0.25 + (Math.sin(t * 2) * 0.5 + 0.5) * 0.2;
+    mat.emissiveIntensity = hovered ? 0.6 : pulse;
+    const targetOpacity = dimmed ? 0.55 : 1;
+    mat.opacity += (targetOpacity - mat.opacity) * 0.1;
+    mat.transparent = mat.opacity < 0.99;
+  });
+
+  return (
+    <group ref={groupRef} position={position}>
+      <mesh onPointerOver={onPointerOver} onPointerOut={onPointerOut} onClick={onClick}>
+        <cylinderGeometry args={[1, 1, 3, 16]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+
+      {/* Axe central */}
+      <mesh material={mat} position={[0, 1.25, 0]}>
+        <cylinderGeometry args={[0.08, 0.08, 2.6, 24]} />
+      </mesh>
+
+      {/* Anneaux empilés */}
+      {Array.from({ length: RING_COUNT }, (_, i) => (
+        <mesh
+          key={i}
+          ref={(el) => {
+            if (el) ringsRef.current[i] = el;
+          }}
+          material={mat}
+          position={[0, 0.2 + i * 0.42, 0]}
+          rotation={[Math.PI / 2, 0, 0]}
+        >
+          <torusGeometry args={[0.7, 0.05, 12, 48]} />
+        </mesh>
+      ))}
+
+      {/* 4 piliers fins */}
+      {[0, 1, 2, 3].map((i) => {
+        const a = (i / 4) * Math.PI * 2;
+        const x = Math.cos(a) * 0.7;
+        const z = Math.sin(a) * 0.7;
+        return (
+          <mesh key={i} material={pillarMat} position={[x, 1.25, z]}>
+            <boxGeometry args={[0.06, 2.4, 0.06]} />
+          </mesh>
+        );
+      })}
+
+      {/* Socle */}
+      <mesh material={mat} position={[0, 0.05, 0]}>
+        <cylinderGeometry args={[0.85, 0.95, 0.1, 32]} />
+      </mesh>
+    </group>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ *  Pôle Hébergement — silo + antenne + particules ascendantes
+ * ───────────────────────────────────────────────────────────────── */
+
+function HebergementPole({
+  position,
+  hovered,
+  dimmed,
+  onPointerOver,
+  onPointerOut,
+  onClick,
+}: {
+  position: [number, number, number];
+  hovered: boolean;
+  dimmed: boolean;
+  onPointerOver: (e: ThreeEvent<PointerEvent>) => void;
+  onPointerOut: (e: ThreeEvent<PointerEvent>) => void;
+  onClick: (e: ThreeEvent<MouseEvent>) => void;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const outerRef = useRef<THREE.Mesh>(null);
+  const particlesRef = useRef<THREE.Points>(null);
+
+  const PARTICLE_COUNT = 24;
+
+  const mat = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        color: "#f5cb35",
+        metalness: 0.8,
+        roughness: 0.15,
+        emissive: new THREE.Color("#f5cb35"),
+        emissiveIntensity: 0.2,
+      }),
+    [],
+  );
+
+  const wireMat = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: "#f5cb35",
+        wireframe: true,
+        transparent: true,
+        opacity: 0.55,
+      }),
+    [],
+  );
+
+  const particleGeo = useMemo(() => {
+    const g = new THREE.BufferGeometry();
+    const positions = new Float32Array(PARTICLE_COUNT * 3);
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      positions[i * 3 + 0] = (Math.random() - 0.5) * 0.05;
+      positions[i * 3 + 1] = Math.random() * 2;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 0.05;
+    }
+    g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    return g;
+  }, []);
+
+  const particleMat = useMemo(
+    () =>
+      new THREE.PointsMaterial({
+        color: "#ffe187",
+        size: 0.07,
+        transparent: true,
+        opacity: 0.9,
+        sizeAttenuation: true,
+        depthWrite: false,
+      }),
+    [],
+  );
+
+  useEffect(
+    () => () => {
+      mat.dispose();
+      wireMat.dispose();
+      particleGeo.dispose();
+      particleMat.dispose();
+    },
+    [mat, wireMat, particleGeo, particleMat],
+  );
+
+  useFrame(() => {
+    const targetY = hovered ? 0.4 : dimmed ? -0.1 : 0;
+    if (groupRef.current) {
+      groupRef.current.position.y += (targetY - groupRef.current.position.y) * 0.08;
+    }
+    if (outerRef.current) outerRef.current.rotation.y += 0.005;
+
+    // Particles
+    if (particlesRef.current) {
+      const arr = (particlesRef.current.geometry.attributes.position as THREE.BufferAttribute).array as Float32Array;
+      const speed = hovered ? 0.05 : 0.018;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        arr[i * 3 + 1] += speed;
+        if (arr[i * 3 + 1] > 2.4) {
+          arr[i * 3 + 1] = 1.6;
+          arr[i * 3 + 0] = (Math.random() - 0.5) * 0.05;
+          arr[i * 3 + 2] = (Math.random() - 0.5) * 0.05;
+        }
+      }
+      (particlesRef.current.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+    }
+
+    mat.emissiveIntensity = hovered ? 0.5 : 0.2;
+    const targetOpacity = dimmed ? 0.55 : 1;
+    mat.opacity += (targetOpacity - mat.opacity) * 0.1;
+    mat.transparent = mat.opacity < 0.99;
+  });
+
+  return (
+    <group ref={groupRef} position={position}>
+      <mesh onPointerOver={onPointerOver} onPointerOut={onPointerOut} onClick={onClick}>
+        <cylinderGeometry args={[1, 1, 2.8, 16]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+
+      {/* Cylindre intérieur plein */}
+      <mesh material={mat} position={[0, 0.7, 0]}>
+        <cylinderGeometry args={[0.55, 0.6, 1.4, 32]} />
+      </mesh>
+
+      {/* Cylindre extérieur en wireframe */}
+      <mesh ref={outerRef} material={wireMat} position={[0, 0.75, 0]}>
+        <cylinderGeometry args={[0.85, 0.9, 1.55, 24, 4, true]} />
+      </mesh>
+
+      {/* Couronnes haut/bas */}
+      <mesh material={mat} position={[0, 1.5, 0]}>
+        <torusGeometry args={[0.85, 0.06, 12, 36]} />
+      </mesh>
+      <mesh material={mat} position={[0, 0, 0]}>
+        <torusGeometry args={[0.9, 0.06, 12, 36]} />
+      </mesh>
+
+      {/* Antenne */}
+      <mesh material={mat} position={[0, 1.85, 0]}>
+        <cylinderGeometry args={[0.025, 0.025, 0.5, 12]} />
+      </mesh>
+      <mesh material={mat} position={[0, 2.15, 0]}>
+        <sphereGeometry args={[0.08, 16, 16]} />
+      </mesh>
+
+      {/* Particules */}
+      <points ref={particlesRef} geometry={particleGeo} material={particleMat} />
+    </group>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ *  Pôle IA — icosaèdre cristallin + 3 anneaux orbitaux
+ * ───────────────────────────────────────────────────────────────── */
+
+function IAPole({
+  position,
+  hovered,
+  dimmed,
+  onPointerOver,
+  onPointerOut,
+  onClick,
+}: {
+  position: [number, number, number];
+  hovered: boolean;
+  dimmed: boolean;
+  onPointerOver: (e: ThreeEvent<PointerEvent>) => void;
+  onPointerOut: (e: ThreeEvent<PointerEvent>) => void;
+  onClick: (e: ThreeEvent<MouseEvent>) => void;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const icoRef = useRef<THREE.Mesh>(null);
+  const coreRef = useRef<THREE.Mesh>(null);
+  const ringX = useRef<THREE.Mesh>(null);
+  const ringY = useRef<THREE.Mesh>(null);
+  const ringZ = useRef<THREE.Mesh>(null);
+
+  const mat = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        color: "#5cc996",
+        metalness: 0.1,
+        roughness: 0.0,
+        transmission: 0.4,
+        thickness: 0.6,
+        emissive: new THREE.Color("#5cc996"),
+        emissiveIntensity: 0.4,
+        transparent: true,
+        opacity: 0.9,
+      }),
+    [],
+  );
+
+  const coreMat = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: "#c8ffe2",
+      }),
+    [],
+  );
+
+  const ringMat = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: "#5cc996",
+        transparent: true,
+        opacity: 0.3,
+        wireframe: true,
+      }),
+    [],
+  );
+
+  useEffect(
+    () => () => {
+      mat.dispose();
+      coreMat.dispose();
+      ringMat.dispose();
+    },
+    [mat, coreMat, ringMat],
+  );
+
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    const targetY = hovered ? 0.4 : dimmed ? -0.1 : 0;
+    if (groupRef.current) {
+      const target = position[1] + targetY + Math.sin(t * 0.8) * 0.08;
+      groupRef.current.position.y += (target - groupRef.current.position.y) * 0.08;
+    }
+    if (icoRef.current) icoRef.current.rotation.y += 0.004;
+    if (coreRef.current) {
+      const s = 1 + (Math.sin(t * 3) * 0.5 + 0.5) * 0.6;
+      coreRef.current.scale.setScalar(s);
+    }
+    if (ringX.current) ringX.current.rotation.x += 0.006;
+    if (ringY.current) ringY.current.rotation.y += 0.0045;
+    if (ringZ.current) ringZ.current.rotation.z += 0.005;
+    mat.emissiveIntensity = hovered ? 0.7 : 0.4;
+    const targetOpacity = dimmed ? 0.45 : 0.9;
+    mat.opacity += (targetOpacity - mat.opacity) * 0.1;
+  });
+
+  return (
+    <group ref={groupRef} position={position}>
+      <mesh onPointerOver={onPointerOver} onPointerOut={onPointerOut} onClick={onClick}>
+        <sphereGeometry args={[1.4, 16, 16]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+
+      <mesh ref={icoRef} material={mat}>
+        <icosahedronGeometry args={[0.7, 1]} />
+      </mesh>
+
+      <mesh ref={coreRef} material={coreMat}>
+        <sphereGeometry args={[0.18, 16, 16]} />
+      </mesh>
+
+      <mesh ref={ringX} material={ringMat} rotation={[Math.PI / 6, 0, 0]}>
+        <torusGeometry args={[1.0, 0.012, 8, 80]} />
+      </mesh>
+      <mesh ref={ringY} material={ringMat} rotation={[Math.PI / 3, Math.PI / 4, 0]}>
+        <torusGeometry args={[1.15, 0.012, 8, 80]} />
+      </mesh>
+      <mesh ref={ringZ} material={ringMat} rotation={[Math.PI / 2, 0, Math.PI / 3]}>
+        <torusGeometry args={[1.3, 0.012, 8, 80]} />
+      </mesh>
+    </group>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ *  Connexion principale (tube courbe + particules le long de la courbe)
+ * ───────────────────────────────────────────────────────────────── */
+
+function MainConnection({
+  from,
+  to,
+  color,
+  highlighted,
+}: {
+  from: [number, number, number];
+  to: [number, number, number];
+  color: string;
+  highlighted: boolean;
+}) {
+  const PARTICLE_COUNT = 8;
+  const tubeRef = useRef<THREE.Mesh>(null);
+  const particlesRef = useRef<THREE.Points>(null);
+  const tRef = useRef<number[]>([]);
+
+  const curve = useMemo(() => {
+    const a = new THREE.Vector3(...from);
+    const b = new THREE.Vector3(...to);
+    const mid = a.clone().add(b).multiplyScalar(0.5);
+    const dist = a.distanceTo(b);
+    // Arc ascendant + courbure latérale légère
+    mid.y += Math.min(dist * 0.35, 1.6);
+    // léger biais perpendiculaire pour éviter les tubes plats
+    const dir = b.clone().sub(a).normalize();
+    const perp = new THREE.Vector3(-dir.z, 0, dir.x).multiplyScalar(0.4);
+    mid.add(perp);
+    return new THREE.CatmullRomCurve3([a, mid, b], false, "catmullrom", 0.5);
+  }, [from, to]);
+
+  const tubeGeo = useMemo(() => new THREE.TubeGeometry(curve, 80, 0.04, 12, false), [curve]);
+
+  const tubeMat = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color,
+        transparent: true,
+        opacity: 0.25,
+      }),
+    [color],
+  );
+
+  const particleGeo = useMemo(() => {
+    const g = new THREE.BufferGeometry();
+    const positions = new Float32Array(PARTICLE_COUNT * 3);
+    const ts: number[] = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const t = i / PARTICLE_COUNT;
+      ts.push(t);
+      const p = curve.getPointAt(t);
+      positions[i * 3] = p.x;
+      positions[i * 3 + 1] = p.y;
+      positions[i * 3 + 2] = p.z;
+    }
+    tRef.current = ts;
+    g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    return g;
+  }, [curve]);
+
+  const particleMat = useMemo(
+    () =>
+      new THREE.PointsMaterial({
+        color,
+        size: 0.08,
+        transparent: true,
+        opacity: 1,
+        sizeAttenuation: true,
+        depthWrite: false,
+      }),
+    [color],
+  );
+
+  useEffect(
+    () => () => {
+      tubeGeo.dispose();
+      tubeMat.dispose();
+      particleGeo.dispose();
+      particleMat.dispose();
+    },
+    [tubeGeo, tubeMat, particleGeo, particleMat],
+  );
+
+  useFrame(() => {
+    const targetOpacity = highlighted ? 1.0 : 0.25;
+    tubeMat.opacity += (targetOpacity - tubeMat.opacity) * 0.1;
+    particleMat.size = highlighted ? 0.12 : 0.08;
+
+    const speed = highlighted ? 0.009 : 0.003;
+    if (particlesRef.current) {
+      const arr = (particlesRef.current.geometry.attributes.position as THREE.BufferAttribute).array as Float32Array;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        tRef.current[i] = (tRef.current[i] + speed) % 1;
+        const p = curve.getPointAt(tRef.current[i]);
+        arr[i * 3] = p.x;
+        arr[i * 3 + 1] = p.y;
+        arr[i * 3 + 2] = p.z;
+      }
+      (particlesRef.current.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+    }
+  });
+
+  return (
+    <>
+      <mesh ref={tubeRef} geometry={tubeGeo} material={tubeMat} />
+      <points ref={particlesRef} geometry={particleGeo} material={particleMat} />
+    </>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ *  Connexion IA — ligne pointillée animée
+ * ───────────────────────────────────────────────────────────────── */
+
+function IAConnection({
+  from,
+  to,
+  color,
+  pulse,
+}: {
+  from: [number, number, number];
+  to: [number, number, number];
+  color: string;
+  pulse: boolean;
+}) {
+  const lineRef = useRef<any>(null);
+  const points = useMemo(() => {
+    const a = new THREE.Vector3(...from);
+    const b = new THREE.Vector3(...to);
+    const mid = a.clone().add(b).multiplyScalar(0.5);
+    mid.y += 0.6;
+    const curve = new THREE.CatmullRomCurve3([a, mid, b]);
+    return curve.getPoints(40);
+  }, [from, to]);
+
+  const tRef = useRef(0);
+
+  useFrame((_, dt) => {
+    tRef.current += dt;
+    if (lineRef.current && lineRef.current.material) {
+      const m = lineRef.current.material;
+      m.dashOffset = -tRef.current * (pulse ? 1.2 : 0.4);
+      const targetOpacity = pulse ? 0.95 : 0.4;
+      m.opacity += (targetOpacity - m.opacity) * 0.1;
+    }
+  });
+
+  return (
+    <Line
+      ref={lineRef}
+      points={points}
+      color={color}
+      lineWidth={1.5}
+      dashed
+      dashSize={0.18}
+      gapSize={0.12}
+      transparent
+      opacity={0.4}
+    />
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ *  Caméra animée (lerp vers les pôles)
+ * ───────────────────────────────────────────────────────────────── */
+
+const HOME_POS = new THREE.Vector3(0, 4, 14);
+const HOME_TARGET = new THREE.Vector3(0, 0, 0);
+
+function CameraRig({
+  activeId,
+  controlsRef,
+}: {
+  activeId: PoleId | null;
+  controlsRef: React.MutableRefObject<any>;
+}) {
+  const { camera } = useThree();
+  const animRef = useRef<{
+    fromPos: THREE.Vector3;
+    toPos: THREE.Vector3;
+    fromTarget: THREE.Vector3;
+    toTarget: THREE.Vector3;
+    start: number;
+    duration: number;
+    active: boolean;
+  }>({
+    fromPos: new THREE.Vector3(),
+    toPos: new THREE.Vector3(),
+    fromTarget: new THREE.Vector3(),
+    toTarget: new THREE.Vector3(),
+    start: 0,
+    duration: 1.8,
+    active: false,
+  });
+
+  useEffect(() => {
+    const a = animRef.current;
+    a.fromPos.copy(camera.position);
+    a.fromTarget.copy(controlsRef.current?.target ?? HOME_TARGET);
+    if (activeId) {
+      const p = POLES[activeId].position;
+      a.toPos.set(p[0] * 0.6, p[1] + 2, p[2] + 5);
+      a.toTarget.set(p[0], p[1], p[2]);
+    } else {
+      a.toPos.copy(HOME_POS);
+      a.toTarget.copy(HOME_TARGET);
+    }
+    a.start = performance.now() / 1000;
+    a.active = true;
+  }, [activeId, camera, controlsRef]);
+
+  useFrame((state) => {
+    const a = animRef.current;
+    if (!a.active) return;
+    const t = (state.clock.elapsedTime - a.start) / a.duration;
+    if (t >= 1) {
+      camera.position.copy(a.toPos);
+      if (controlsRef.current) controlsRef.current.target.copy(a.toTarget);
+      a.active = false;
+      return;
+    }
+    const e = easeOutQuart(Math.min(Math.max(t, 0), 1));
+    lerpVec3(camera.position, a.fromPos, a.toPos, e);
+    if (controlsRef.current) {
+      const tgt = controlsRef.current.target as THREE.Vector3;
+      lerpVec3(tgt, a.fromTarget, a.toTarget, e);
+      controlsRef.current.update();
+    }
+  });
+
+  return null;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ *  Lights animées (intensité hover)
+ * ───────────────────────────────────────────────────────────────── */
+
+function PoleLights({ hoveredId }: { hoveredId: PoleId | null }) {
+  const orange = useRef<THREE.PointLight>(null);
+  const blue = useRef<THREE.PointLight>(null);
+  const yellow = useRef<THREE.PointLight>(null);
+  const green = useRef<THREE.PointLight>(null);
+
+  useFrame(() => {
+    const lerp = (cur: number, target: number) => cur + (target - cur) * 0.1;
+    if (orange.current) orange.current.intensity = lerp(orange.current.intensity, hoveredId === "conseil" ? 2.0 : 0.0);
+    if (blue.current) blue.current.intensity = lerp(blue.current.intensity, hoveredId === "dev" ? 2.0 : 0.4);
+    if (yellow.current) yellow.current.intensity = lerp(yellow.current.intensity, hoveredId === "hebergement" ? 2.0 : 0.0);
+    if (green.current) green.current.intensity = lerp(green.current.intensity, hoveredId === "ia" ? 2.0 : 0.8);
+  });
+
+  return (
+    <>
+      <ambientLight intensity={0.3} color="#1a2040" />
+      <directionalLight position={[8, 12, 6]} intensity={1.2} castShadow color="#ffffff" />
+      <pointLight ref={orange} position={POLES.conseil.position} color="#ef8336" intensity={0} distance={10} decay={2} />
+      <pointLight ref={blue} position={[0, 2, 0]} color="#6a7dff" intensity={0.4} distance={10} decay={2} />
+      <pointLight ref={yellow} position={POLES.hebergement.position} color="#f5cb35" intensity={0} distance={10} decay={2} />
+      <pointLight ref={green} position={POLES.ia.position} color="#5cc996" intensity={0.8} distance={12} decay={2} />
+    </>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ *  Scene
+ * ───────────────────────────────────────────────────────────────── */
+
+function Scene({
+  hoveredId,
+  activeId,
+  setHoveredId,
+  setActiveId,
+  setDetailOpen,
+}: {
+  hoveredId: PoleId | null;
+  activeId: PoleId | null;
+  setHoveredId: (id: PoleId | null) => void;
+  setActiveId: (id: PoleId | null) => void;
+  setDetailOpen: (b: boolean) => void;
+}) {
+  const controlsRef = useRef<any>(null);
+
+  // En mode focus, les 2 autres pôles principaux orbitent autour de l'actif
+  const orbitRef = useRef(0);
+  useFrame((_, dt) => {
+    orbitRef.current += dt * 0.3;
+  });
+
+  const polePos = (id: PoleId): [number, number, number] => {
+    const p = POLES[id].position;
+    if (!activeId || activeId === "ia" || id === "ia" || id === activeId) return p;
+    // orbit autour du pôle actif (uniquement entre conseil/dev/hebergement)
+    const center = POLES[activeId].position;
+    const order: PoleId[] = (["conseil", "dev", "hebergement"] as PoleId[]).filter((x) => x !== activeId);
+    const idx = order.indexOf(id);
+    if (idx < 0) return p;
+    const angle = orbitRef.current + (idx * Math.PI * 2) / order.length;
+    return [center[0] + Math.cos(angle) * 5, center[1], center[2] + Math.sin(angle) * 5];
+  };
+
+  const conseilPos = polePos("conseil");
+  const devPos = polePos("dev");
+  const hebPos = polePos("hebergement");
+  const iaPos = POLES.ia.position;
+
+  const handleOver = (id: PoleId) => (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
+    setHoveredId(id);
+    document.body.style.cursor = "pointer";
+  };
+  const handleOut = (id: PoleId) => (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
+    if (hoveredId === id) setHoveredId(null);
+    document.body.style.cursor = "";
+  };
+  const handleClick = (id: PoleId) => (e: ThreeEvent<MouseEvent>) => {
+    e.stopPropagation();
+    setActiveId(id);
+    setDetailOpen(true);
+  };
+
+  const isFocused = (id: PoleId) => hoveredId === id || activeId === id;
+  const isDimmed = (id: PoleId) => {
+    const focal = activeId ?? hoveredId;
+    return focal !== null && focal !== id;
+  };
+
+  // Connexions IA pulsent toutes quand IA est cliqué
+  const iaActive = activeId === "ia";
+
+  return (
+    <>
+      <PerspectiveCamera makeDefault fov={55} position={[0, 4, 14]} />
+      <OrbitControls
+        ref={controlsRef}
+        enableDamping
+        dampingFactor={0.08}
+        enablePan={false}
+        autoRotate={!activeId}
+        autoRotateSpeed={0.25}
+        minPolarAngle={(30 * Math.PI) / 180}
+        maxPolarAngle={(75 * Math.PI) / 180}
+        minAzimuthAngle={(-60 * Math.PI) / 180}
+        maxAzimuthAngle={(60 * Math.PI) / 180}
+        minDistance={6}
+        maxDistance={22}
+      />
+
+      <CameraRig activeId={activeId} controlsRef={controlsRef} />
+      <PoleLights hoveredId={hoveredId} />
+
+      {/* Sol subtle */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.4, 0]} receiveShadow>
+        <circleGeometry args={[14, 64]} />
+        <meshStandardMaterial color="#0a1024" roughness={1} metalness={0} />
+      </mesh>
+      {/* Anneaux décoratifs au sol */}
+      {[3, 6, 9, 12].map((r) => (
+        <mesh key={r} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.39, 0]}>
+          <ringGeometry args={[r - 0.01, r, 96]} />
+          <meshBasicMaterial color="#1a2350" transparent opacity={0.35} />
+        </mesh>
+      ))}
+
+      {/* Pôles */}
+      <ConseilPole
+        position={conseilPos}
+        hovered={isFocused("conseil")}
+        dimmed={isDimmed("conseil")}
+        onPointerOver={handleOver("conseil")}
+        onPointerOut={handleOut("conseil")}
+        onClick={handleClick("conseil")}
+      />
+      <DevPole
+        position={devPos}
+        hovered={isFocused("dev")}
+        dimmed={isDimmed("dev")}
+        onPointerOver={handleOver("dev")}
+        onPointerOut={handleOut("dev")}
+        onClick={handleClick("dev")}
+      />
+      <HebergementPole
+        position={hebPos}
+        hovered={isFocused("hebergement")}
+        dimmed={isDimmed("hebergement")}
+        onPointerOver={handleOver("hebergement")}
+        onPointerOut={handleOut("hebergement")}
+        onClick={handleClick("hebergement")}
+      />
+      <IAPole
+        position={iaPos}
+        hovered={isFocused("ia")}
+        dimmed={isDimmed("ia")}
+        onPointerOver={handleOver("ia")}
+        onPointerOut={handleOut("ia")}
+        onClick={handleClick("ia")}
+      />
+
+      {/* Connexions principales (tubes courbes) */}
+      <MainConnection
+        from={conseilPos}
+        to={devPos}
+        color={POLES.conseil.color}
+        highlighted={isFocused("conseil") || isFocused("dev") || iaActive}
+      />
+      <MainConnection
+        from={devPos}
+        to={hebPos}
+        color={POLES.hebergement.color}
+        highlighted={isFocused("dev") || isFocused("hebergement") || iaActive}
+      />
+      <MainConnection
+        from={conseilPos}
+        to={hebPos}
+        color={POLES.dev.color}
+        highlighted={isFocused("conseil") || isFocused("hebergement") || iaActive}
+      />
+
+      {/* Connexions IA (lignes pointillées) */}
+      <IAConnection from={iaPos} to={conseilPos} color={POLES.ia.color} pulse={isFocused("ia") || iaActive} />
+      <IAConnection from={iaPos} to={devPos} color={POLES.ia.color} pulse={isFocused("ia") || iaActive} />
+      <IAConnection from={iaPos} to={hebPos} color={POLES.ia.color} pulse={isFocused("ia") || iaActive} />
+
+      {/* Tooltip 3D-anchored */}
+      {hoveredId && !activeId && (
+        <Html
+          position={[
+            POLES[hoveredId].position[0],
+            POLES[hoveredId].position[1] + 2.4,
+            POLES[hoveredId].position[2],
+          ]}
+          center
+          distanceFactor={10}
+          zIndexRange={[10, 0]}
+          style={{ pointerEvents: "none" }}
+        >
+          <PoleTooltip id={hoveredId} />
+        </Html>
+      )}
+
+      <EffectComposer>
+        <Bloom intensity={0.8} luminanceThreshold={0.3} luminanceSmoothing={0.6} radius={0.6} mipmapBlur />
+      </EffectComposer>
+    </>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ *  Tooltip & Panel HTML overlay
+ * ───────────────────────────────────────────────────────────────── */
+
+function PoleTooltip({ id }: { id: PoleId }) {
+  const p = POLES[id];
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 8, scale: 0.96 }}
+      transition={{ duration: 0.18, ease: [0.2, 0.8, 0.2, 1] }}
+      style={{
+        width: 200,
+        padding: "10px 12px",
+        background: "rgba(8,14,36,.78)",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
+        border: `1px solid ${p.color}55`,
+        borderRadius: 12,
+        color: "#fff",
+        boxShadow: `0 8px 28px rgba(0,0,0,.55), 0 0 0 1px ${p.color}22`,
+        fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+      }}
+    >
+      <div
+        style={{
+          fontSize: 9,
+          fontWeight: 700,
+          letterSpacing: ".18em",
+          textTransform: "uppercase",
+          color: p.color,
+          marginBottom: 4,
+        }}
+      >
+        {p.kicker}
+      </div>
+      <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4, letterSpacing: "-0.01em" }}>
+        {p.title}
+      </div>
+      <div style={{ fontSize: 11, lineHeight: 1.45, color: "rgba(255,255,255,.7)" }}>
+        {p.desc.length > 90 ? p.desc.slice(0, 88) + "…" : p.desc}
+      </div>
+    </motion.div>
+  );
+}
+
+function DetailPanel({
+  pole,
+  open,
+  onClose,
+  onCta,
+}: {
+  pole: (typeof POLES)[PoleId] | null;
+  open: boolean;
+  onClose: () => void;
+  onCta: () => void;
+}) {
+  return (
+    <AnimatePresence>
+      {open && pole && (
+        <motion.div
+          key="panel"
+          initial={{ x: 60, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: 60, opacity: 0 }}
+          transition={{ duration: 0.45, ease: [0.2, 0.8, 0.2, 1] }}
+          style={{
+            position: "absolute",
+            top: "50%",
+            right: "3%",
+            transform: "translateY(-50%)",
+            width: 320,
+            background: "rgba(8,14,36,.9)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,.08)",
+            borderRadius: 18,
+            padding: 22,
+            color: "#fff",
+            boxShadow: "0 30px 80px rgba(0,0,0,.6)",
+            zIndex: 30,
+            fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+          }}
+        >
+          <button
+            onClick={onClose}
+            aria-label="Fermer"
+            style={{
+              position: "absolute",
+              top: 12,
+              right: 12,
+              width: 30,
+              height: 30,
+              background: "rgba(255,255,255,.06)",
+              border: "1px solid rgba(255,255,255,.1)",
+              borderRadius: 8,
+              cursor: "pointer",
+              display: "grid",
+              placeItems: "center",
+              color: "rgba(255,255,255,.7)",
+            }}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+            <div
+              style={{
+                width: 38,
+                height: 38,
+                borderRadius: 10,
+                background: pole.color,
+                boxShadow: `0 0 24px ${pole.color}aa, inset 0 0 0 1px rgba(255,255,255,.18)`,
+                flexShrink: 0,
+              }}
+            />
+            <div>
+              <div
+                style={{
+                  fontSize: 9.5,
+                  fontWeight: 700,
+                  letterSpacing: ".18em",
+                  textTransform: "uppercase",
+                  color: "rgba(255,255,255,.5)",
+                }}
+              >
+                {pole.kicker}
+              </div>
+              <h3 style={{ margin: "3px 0 0", fontSize: 17, fontWeight: 700, letterSpacing: "-.01em" }}>
+                {pole.title}
+              </h3>
+            </div>
+          </div>
+
+          <p style={{ margin: "0 0 16px", fontSize: 13, lineHeight: 1.6, color: "rgba(255,255,255,.72)" }}>
+            {pole.desc}
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
+            {pole.stats.map((s) => (
+              <div
+                key={s.k}
+                style={{
+                  background: "rgba(255,255,255,.04)",
+                  border: "1px solid rgba(255,255,255,.07)",
+                  borderRadius: 11,
+                  padding: "9px 11px",
+                }}
+              >
+                <div style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-.02em", color: pole.color }}>
+                  {s.v}
+                </div>
+                <div
+                  style={{
+                    fontSize: 9.5,
+                    fontWeight: 700,
+                    letterSpacing: ".12em",
+                    textTransform: "uppercase",
+                    color: "rgba(255,255,255,.5)",
+                    marginTop: 2,
+                  }}
+                >
+                  {s.k}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={onCta}
+            style={{
+              appearance: "none",
+              border: 0,
+              cursor: "pointer",
+              width: "100%",
+              background: pole.color,
+              color: "#0a1432",
+              fontFamily: "inherit",
+              fontSize: 13,
+              fontWeight: 700,
+              padding: "12px 14px",
+              borderRadius: 11,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+            }}
+          >
+            Découvrir le pôle
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 12h14M13 6l6 6-6 6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ *  Skeleton fallback
+ * ───────────────────────────────────────────────────────────────── */
+
+function FactorySkeleton() {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        background:
+          "radial-gradient(60% 50% at 50% 55%, #131c47 0%, #0a1024 60%, #06091a 100%)",
+        display: "grid",
+        placeItems: "center",
+        color: "rgba(255,255,255,.35)",
+        fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+        fontSize: 12,
+        letterSpacing: ".18em",
+        textTransform: "uppercase",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <span
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            background: "#6a7dff",
+            boxShadow: "0 0 12px #6a7dff",
+            animation: "ftd-pulse 1.4s ease-in-out infinite",
+          }}
+        />
+        Initialisation
+      </div>
+      <style>{`@keyframes ftd-pulse{0%,100%{opacity:.4}50%{opacity:1}}`}</style>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ *  Composant exporté
+ * ───────────────────────────────────────────────────────────────── */
 
 export function FactoryTopDown() {
-  const router = useRouter();
-  const stageRef = useRef<HTMLDivElement>(null);
-
-  const [activeId,   setActiveId]   = useState<PoleId | null>(null);
+  // const router = useRouter();
+  const [hoveredId, setHoveredId] = useState<PoleId | null>(null);
+  const [activeId, setActiveId] = useState<PoleId | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
 
-  function focus(id: PoleId)  { setActiveId(id); }
-  function blur()              { if (!detailOpen) setActiveId(null); }
-  function clearAll()          { setActiveId(null); setDetailOpen(false); }
-  function clickPole(id: PoleId) { setActiveId(id); setDetailOpen(true); }
+  const closeAll = () => {
+    setActiveId(null);
+    setDetailOpen(false);
+  };
+
+  const onCta = () => {
+    if (!activeId) return;
+    // router.push(POLES[activeId].href);
+    if (typeof window !== "undefined") window.location.assign(POLES[activeId].href);
+  };
 
   const pole = activeId ? POLES[activeId] : null;
 
   return (
-    <>
-      <style>{`
-        .fty-stage {
-          position: relative;
-          width: min(100%, 920px);
-          aspect-ratio: 1/1;
-        }
-        .fty-building {
-          transform-box: fill-box;
-          transform-origin: 50% 50%;
-          transition: transform .4s cubic-bezier(.2,.8,.2,1), filter .4s ease, opacity .4s ease;
-          cursor: pointer;
-        }
-        .fty-stage[data-focus] .fty-building:not(.fty-is-focus) {
-          opacity: .28;
-          filter: saturate(.45) brightness(.7);
-        }
-        .fty-stage[data-focus] .fty-conveyors {
-          opacity: .28;
-        }
-        .fty-stage[data-focus] .fty-building.fty-is-focus {
-          transform: translateY(-10px) scale(1.06);
-          filter: drop-shadow(0 24px 28px rgba(0,0,0,.6)) drop-shadow(0 0 32px rgba(255,255,255,.15));
-          opacity: 1 !important;
-        }
-        @keyframes fty-blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-        .fty-blink circle { animation: fty-blink 1.6s ease-in-out infinite; }
-        .fty-blink circle:nth-child(2n) { animation-delay:.3s; }
-        .fty-blink circle:nth-child(3n) { animation-delay:.7s; }
-        @keyframes fty-drift {
-          0%   { transform:translate(0,0) scale(.6); opacity:0; }
-          20%  { opacity:.8; }
-          100% { transform:translate(8px,-22px) scale(1.2); opacity:0; }
-        }
-        .fty-smoke circle { animation:fty-drift 4s ease-out infinite; transform-box:fill-box; transform-origin:center; }
-        .fty-smoke circle:nth-child(2) { animation-delay:1.3s; }
-        .fty-smoke circle:nth-child(3) { animation-delay:2.6s; }
-        @keyframes fty-flow   { 0%{transform:translate(0,0);opacity:0} 20%{opacity:1} 100%{transform:translate(60px,0);opacity:0} }
-        @keyframes fty-flow-v { 0%{transform:translate(0,0);opacity:0} 20%{opacity:1} 100%{transform:translate(0,60px);opacity:0} }
-        .fty-cdash   circle { animation:fty-flow   2.4s linear infinite;         transform-box:fill-box; }
-        .fty-cdash-b circle { animation:fty-flow-v 2.4s linear infinite;         transform-box:fill-box; }
-        .fty-cdash-c circle { animation:fty-flow   2.4s linear infinite reverse; transform-box:fill-box; }
-        .fty-cdash-d circle { animation:fty-flow-v 2.4s linear infinite;         transform-box:fill-box; }
-      `}</style>
-
-      <div style={{ position: "relative", width: "100%", perspective: "2200px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div
-          ref={stageRef}
-          className="fty-stage"
-          data-focus={activeId ?? undefined}
-          onClick={(e) => { if ((e.target as Element).classList.contains("fty-stage")) clearAll(); }}
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        aspectRatio: "1 / 1",
+        background:
+          "radial-gradient(60% 50% at 50% 55%, #131c47 0%, #0a1024 60%, #06091a 100%)",
+        borderRadius: 18,
+        overflow: "hidden",
+        fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+      }}
+      onClick={(e) => {
+        // clic sur le fond -> reset
+        if (e.target === e.currentTarget) closeAll();
+      }}
+    >
+      <Suspense fallback={<FactorySkeleton />}>
+        <Canvas
+          shadows
+          dpr={[1, 2]}
+          gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+          style={{ position: "absolute", inset: 0 }}
         >
-          <svg
-            viewBox="60 60 880 880"
-            preserveAspectRatio="xMidYMid meet"
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}
-            aria-hidden="true"
-          >
-            <defs>
-              <linearGradient id="fty-gOrange" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#ff9a4d"/><stop offset="100%" stopColor="#cc6420"/>
-              </linearGradient>
-              <linearGradient id="fty-gBlue" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#6a7dff"/><stop offset="100%" stopColor="#2231a6"/>
-              </linearGradient>
-              <linearGradient id="fty-gYellow" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#ffd953"/><stop offset="100%" stopColor="#c3971a"/>
-              </linearGradient>
-              <linearGradient id="fty-gGreen" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#7fe0b1"/><stop offset="100%" stopColor="#2f8a63"/>
-              </linearGradient>
-              <linearGradient id="fty-gMetal" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#cfd4dc"/><stop offset="100%" stopColor="#7a808c"/>
-              </linearGradient>
-              <filter id="fty-shadow" x="-30%" y="-30%" width="160%" height="160%">
-                <feGaussianBlur stdDeviation="5"/>
-              </filter>
-              <pattern id="fty-conveyor" x="0" y="0" width="14" height="6" patternUnits="userSpaceOnUse">
-                <rect width="14" height="6" fill="rgba(255,255,255,.06)"/>
-                <rect x="0" y="0" width="7" height="6" fill="rgba(255,255,255,.1)"/>
-              </pattern>
-            </defs>
+          <Scene
+            hoveredId={hoveredId}
+            activeId={activeId}
+            setHoveredId={setHoveredId}
+            setActiveId={setActiveId}
+            setDetailOpen={setDetailOpen}
+          />
+        </Canvas>
+      </Suspense>
 
-            {/* Central plaza dot */}
-            <circle cx="500" cy="500" r="8" fill="rgba(255,255,255,.15)"/>
-            <circle cx="500" cy="500" r="18" fill="none" stroke="rgba(255,255,255,.07)" strokeWidth="1"/>
-
-            {/* Conveyors */}
-            <g className="fty-conveyors">
-              <rect x="225" y="495" width="155" height="10" fill="url(#fty-conveyor)" rx="2"/>
-              <rect x="620" y="495" width="155" height="10" fill="url(#fty-conveyor)" rx="2"/>
-              <rect x="495" y="225" width="10" height="155" fill="url(#fty-conveyor)" rx="2" transform="rotate(-90 500 300)"/>
-              <rect x="495" y="620" width="10" height="155" fill="url(#fty-conveyor)" rx="2" transform="rotate(-90 500 700)"/>
-              {/* Animated dots */}
-              <g className="fty-cdash">
-                <circle cx="240" cy="500" r="3" fill="#ffb777" opacity=".9"/>
-                <circle cx="280" cy="500" r="3" fill="#ffb777" opacity=".7"/>
-                <circle cx="320" cy="500" r="3" fill="#ffb777" opacity=".5"/>
-              </g>
-              <g className="fty-cdash-b">
-                <circle cx="500" cy="380" r="3" fill="#8a9bff" opacity=".9"/>
-                <circle cx="500" cy="340" r="3" fill="#8a9bff" opacity=".7"/>
-                <circle cx="500" cy="300" r="3" fill="#8a9bff" opacity=".5"/>
-              </g>
-              <g className="fty-cdash-c">
-                <circle cx="640" cy="500" r="3" fill="#ffe187" opacity=".9"/>
-                <circle cx="680" cy="500" r="3" fill="#ffe187" opacity=".7"/>
-                <circle cx="720" cy="500" r="3" fill="#ffe187" opacity=".5"/>
-              </g>
-              <g className="fty-cdash-d">
-                <circle cx="500" cy="640" r="3" fill="#95efc1" opacity=".9"/>
-                <circle cx="500" cy="680" r="3" fill="#95efc1" opacity=".7"/>
-                <circle cx="500" cy="720" r="3" fill="#95efc1" opacity=".5"/>
-              </g>
-            </g>
-
-            {/* ── ORANGE — Conseil (W) ── */}
-            <g className={`fty-building${activeId === "orange" ? " fty-is-focus" : ""}`}
-               onMouseEnter={() => focus("orange")} onMouseLeave={blur} onClick={() => clickPole("orange")}>
-              <ellipse cx="220" cy="548" rx="115" ry="16" fill="#000" opacity=".35" filter="url(#fty-shadow)"/>
-              <g transform="translate(220 510)">
-                {/* Tall block */}
-                <path d="M 0 -10 L 30 5 L 30 55 L 0 40 Z"   fill="#b7541a"/>
-                <path d="M 0 -10 L -32 5 L -32 55 L 0 40 Z"  fill="#cc6420"/>
-                <path d="M 0 -42 L 30 -27 L 0 -10 L -32 -27 Z" fill="url(#fty-gOrange)"/>
-                <path d="M -32 -27 L -32 -52 L 0 -68 L 0 -42 Z" fill="#cc6420"/>
-                <path d="M 0 -68 L 30 -52 L 30 -27 L 0 -42 Z"   fill="#b7541a" opacity=".85"/>
-                <path d="M -32 -52 L 0 -68 L 30 -52 L 0 -36 Z"  fill="url(#fty-gOrange)"/>
-                <g fill="#fff" opacity=".4">
-                  <path d="M -22 -12 L -10 -18 L -10 -8 L -22 -2 Z"/>
-                  <path d="M -22 6 L -10 0 L -10 10 L -22 16 Z"/>
-                  <path d="M -22 24 L -10 18 L -10 28 L -22 34 Z"/>
-                </g>
-                <g fill="#fff" opacity=".55">
-                  <path d="M 8 -16 L 22 -9 L 22 -1 L 8 -8 Z"/>
-                  <path d="M 8 2 L 22 9 L 22 17 L 8 10 Z"/>
-                  <path d="M 8 20 L 22 27 L 22 35 L 8 28 Z"/>
-                </g>
-                {/* Warehouse */}
-                <g transform="translate(46 12)">
-                  <path d="M 0 0 L 40 20 L 40 50 L 0 30 Z"    fill="#cc6420"/>
-                  <path d="M 40 20 L 76 2 L 76 32 L 40 50 Z"   fill="#b7541a"/>
-                  <path d="M 0 0 L 40 -20 L 76 -2 L 40 20 Z"   fill="url(#fty-gOrange)"/>
-                  <g stroke="#b7541a" strokeWidth="1" opacity=".55" fill="none">
-                    <path d="M 8 -2 L 44 -20"/><path d="M 18 2 L 54 -16"/>
-                    <path d="M 28 6 L 64 -12"/><path d="M 36 12 L 72 -6"/>
-                  </g>
-                  <path d="M 44 28 L 72 14 L 72 22 L 44 36 Z" fill="#fff" opacity=".3"/>
-                </g>
-                {/* Chimney + smoke */}
-                <g transform="translate(-2 -76)">
-                  <ellipse cx="0" cy="0" rx="6" ry="3" fill="#cfd4dc"/>
-                  <path d="M -6 0 L -6 12 L 0 15 L 0 3 Z" fill="#a6abb2"/>
-                  <path d="M 6 0 L 6 12 L 0 15 L 0 3 Z"  fill="#7a808c"/>
-                </g>
-                <g className="fty-smoke">
-                  <circle cx="-4" cy="-92" r="6" fill="#fff" opacity=".6"/>
-                  <circle cx="2"  cy="-100" r="5" fill="#fff" opacity=".45"/>
-                  <circle cx="-1" cy="-108" r="4" fill="#fff" opacity=".3"/>
-                </g>
-                {/* Trees */}
-                <circle cx="-58" cy="55" r="6" fill="#5cc996" opacity=".5"/>
-                <circle cx="62"  cy="59" r="5" fill="#5cc996" opacity=".45"/>
-              </g>
-            </g>
-
-            {/* ── BLUE — Développement (N) ── */}
-            <g className={`fty-building${activeId === "blue" ? " fty-is-focus" : ""}`}
-               onMouseEnter={() => focus("blue")} onMouseLeave={blur} onClick={() => clickPole("blue")}>
-              <ellipse cx="500" cy="256" rx="115" ry="16" fill="#000" opacity=".35" filter="url(#fty-shadow)"/>
-              <g transform="translate(500 220)">
-                {/* Main hall */}
-                <path d="M -50 0 L -50 38 L 0 62 L 0 24 Z"  fill="#2231a6"/>
-                <path d="M 0 24 L 50 0 L 50 38 L 0 62 Z"    fill="#1d2a8f"/>
-                <path d="M -50 0 L 0 -24 L 50 0 L 0 24 Z"   fill="url(#fty-gBlue)"/>
-                <g stroke="rgba(255,255,255,.35)" strokeWidth="1" fill="none">
-                  <path d="M -34 -8 L 16 -32"/><path d="M -18 0 L 32 -24"/>
-                  <path d="M -2 8 L 48 -16"/> <path d="M -34 -8 L -2 8"/>
-                  <path d="M -18 -16 L 14 0"/><path d="M 0 -24 L 32 -8"/>
-                </g>
-                <g fill="#8a9bff" opacity=".7">
-                  <path d="M -44 8 L -32 14 L -32 22 L -44 16 Z"/>
-                  <path d="M -28 16 L -16 22 L -16 30 L -28 24 Z"/>
-                  <path d="M -12 24 L 0 30 L 0 38 L -12 32 Z"/>
-                </g>
-                <g fill="#fff" opacity=".4">
-                  <path d="M 44 8 L 32 14 L 32 22 L 44 16 Z"/>
-                  <path d="M 28 16 L 16 22 L 16 30 L 28 24 Z"/>
-                  <path d="M 12 24 L 0 30 L 0 38 L 12 32 Z"/>
-                </g>
-                {/* Tower */}
-                <g transform="translate(28 -22)">
-                  <path d="M -16 0 L -16 -10 L 0 -18 L 0 -8 Z"   fill="url(#fty-gBlue)"/>
-                  <path d="M 0 -18 L 16 -10 L 16 0 L 0 -8 Z"     fill="url(#fty-gBlue)"/>
-                  <path d="M -16 -10 L 0 -18 L 16 -10 L 0 -2 Z"  fill="#8a9bff"/>
-                  <path d="M -12 -8 L -12 -2 L -2 -6 L -2 -12 Z" fill="#fff" opacity=".55"/>
-                  <path d="M 2 -12 L 2 -6 L 12 -2 L 12 -8 Z"    fill="#fff" opacity=".35"/>
-                </g>
-                {/* Annex */}
-                <g transform="translate(-66 22)">
-                  <path d="M -22 0 L -22 16 L 0 28 L 0 12 Z"  fill="#1d2a8f"/>
-                  <path d="M 0 12 L 22 0 L 22 16 L 0 28 Z"    fill="#16236f"/>
-                  <path d="M -22 0 L 0 -12 L 22 0 L 0 12 Z"   fill="#3b4fde"/>
-                  <path d="M -16 4 L 0 -4 L 16 4 L 0 12 Z"    fill="#fff" opacity=".15"/>
-                </g>
-                {/* Trees */}
-                <circle cx="-78" cy="57" r="6" fill="#5cc996" opacity=".5"/>
-                <circle cx="78"  cy="53" r="5" fill="#5cc996" opacity=".5"/>
-              </g>
-            </g>
-
-            {/* ── YELLOW — DevOps & Infra (E) ── */}
-            <g className={`fty-building${activeId === "yellow" ? " fty-is-focus" : ""}`}
-               onMouseEnter={() => focus("yellow")} onMouseLeave={blur} onClick={() => clickPole("yellow")}>
-              <ellipse cx="780" cy="548" rx="115" ry="16" fill="#000" opacity=".35" filter="url(#fty-shadow)"/>
-              <g transform="translate(780 510)">
-                {/* Hall 1 */}
-                <g transform="translate(-20 6)">
-                  <path d="M -36 -2 L -36 28 L 0 46 L 0 16 Z"  fill="#c3971a"/>
-                  <path d="M 0 16 L 28 0 L 28 30 L 0 46 Z"      fill="#a6810f"/>
-                  <path d="M -36 -2 L 0 -22 L 28 0 L 0 16 Z"   fill="url(#fty-gYellow)"/>
-                  <g stroke="#a6810f" strokeWidth="1.2" opacity=".7" fill="none">
-                    <path d="M -28 -2 L -2 -16"/><path d="M -16 4 L 10 -10"/><path d="M -4 10 L 22 -4"/>
-                  </g>
-                  <path d="M -22 -8 L -16 -11 L -10 -8 L -16 -5 Z" fill="#ffd953"/>
-                  <path d="M -10 -2 L -4 -5 L 2 -2 L -4 1 Z"       fill="#ffd953"/>
-                  <path d="M 2 4 L 8 1 L 14 4 L 8 7 Z"              fill="#ffd953"/>
-                </g>
-                {/* Hall 2 */}
-                <g transform="translate(20 -8)">
-                  <path d="M -36 -2 L -36 28 L 0 46 L 0 16 Z"  fill="#c3971a"/>
-                  <path d="M 0 16 L 28 0 L 28 30 L 0 46 Z"      fill="#a6810f"/>
-                  <path d="M -36 -2 L 0 -22 L 28 0 L 0 16 Z"   fill="url(#fty-gYellow)"/>
-                  <g stroke="#a6810f" strokeWidth="1.2" opacity=".7" fill="none">
-                    <path d="M -28 -2 L -2 -16"/><path d="M -16 4 L 10 -10"/><path d="M -4 10 L 22 -4"/>
-                  </g>
-                  <path d="M -22 -8 L -16 -11 L -10 -8 L -16 -5 Z" fill="#ffd953"/>
-                  <path d="M -10 -2 L -4 -5 L 2 -2 L -4 1 Z"       fill="#ffd953"/>
-                  <path d="M 2 4 L 8 1 L 14 4 L 8 7 Z"              fill="#ffd953"/>
-                </g>
-                {/* Status lights */}
-                <g className="fty-blink">
-                  <circle cx="-30" cy="40" r="1.6" fill="#fff"/>
-                  <circle cx="-22" cy="44" r="1.6" fill="#fff" opacity=".6"/>
-                  <circle cx="-14" cy="48" r="1.6" fill="#fff"/>
-                  <circle cx="14"  cy="36" r="1.6" fill="#fff" opacity=".6"/>
-                  <circle cx="22"  cy="32" r="1.6" fill="#fff"/>
-                  <circle cx="30"  cy="28" r="1.6" fill="#fff" opacity=".6"/>
-                </g>
-                {/* Cooling tower */}
-                <g transform="translate(-58 -16)">
-                  <ellipse cx="0" cy="0" rx="10" ry="5" fill="#cfd4dc"/>
-                  <path d="M -10 0 L -10 22 L 0 27 L 0 5 Z" fill="#7a808c"/>
-                  <path d="M 10 0 L 10 22 L 0 27 L 0 5 Z"  fill="#a6abb2"/>
-                  <circle cx="0" cy="-1" r="3" fill="#f5cb35" opacity=".7"/>
-                </g>
-                {/* Trees */}
-                <circle cx="58"  cy="55" r="6" fill="#5cc996" opacity=".5"/>
-                <circle cx="-72" cy="53" r="5" fill="#5cc996" opacity=".5"/>
-              </g>
-            </g>
-
-            {/* ── GREEN — Agents IA (S) ── */}
-            <g className={`fty-building${activeId === "green" ? " fty-is-focus" : ""}`}
-               onMouseEnter={() => focus("green")} onMouseLeave={blur} onClick={() => clickPole("green")}>
-              <ellipse cx="500" cy="828" rx="115" ry="16" fill="#000" opacity=".35" filter="url(#fty-shadow)"/>
-              <g transform="translate(500 800)">
-                {/* Hex pavilion */}
-                <path d="M -44 0 L -44 22 L -22 38 L -22 16 Z"            fill="#2f8a63"/>
-                <path d="M -22 16 L -22 38 L 22 38 L 22 16 Z"             fill="#287655"/>
-                <path d="M 22 16 L 22 38 L 44 22 L 44 0 Z"                fill="#2f8a63"/>
-                <path d="M -44 0 L -22 -16 L 22 -16 L 44 0 L 22 16 L -22 16 Z" fill="url(#fty-gGreen)"/>
-                <path d="M -28 0 L -14 -10 L 14 -10 L 28 0 L 14 10 L -14 10 Z"
-                      fill="none" stroke="rgba(255,255,255,.45)" strokeWidth="1"/>
-                <path d="M -16 0 L -8 -6 L 8 -6 L 16 0 L 8 6 L -8 6 Z"
-                      fill="none" stroke="rgba(255,255,255,.6)" strokeWidth="1"/>
-                <circle cx="0" cy="0" r="4" fill="#fff"/>
-                <circle cx="0" cy="0" r="9" fill="none" stroke="#fff" strokeWidth="1" opacity=".4"/>
-                {/* Satellite nodes */}
-                <g transform="translate(-62 22)">
-                  <path d="M -8 0 L -8 8 L 0 12 L 0 4 Z" fill="#287655"/>
-                  <path d="M 0 4 L 8 0 L 8 8 L 0 12 Z"   fill="#1f5a40"/>
-                  <path d="M -8 0 L 0 -4 L 8 0 L 0 4 Z"  fill="#5cc996"/>
-                </g>
-                <g transform="translate(62 22)">
-                  <path d="M -8 0 L -8 8 L 0 12 L 0 4 Z" fill="#287655"/>
-                  <path d="M 0 4 L 8 0 L 8 8 L 0 12 Z"   fill="#1f5a40"/>
-                  <path d="M -8 0 L 0 -4 L 8 0 L 0 4 Z"  fill="#5cc996"/>
-                </g>
-                <g transform="translate(0 -38)">
-                  <path d="M -8 0 L -8 8 L 0 12 L 0 4 Z" fill="#287655"/>
-                  <path d="M 0 4 L 8 0 L 8 8 L 0 12 Z"   fill="#1f5a40"/>
-                  <path d="M -8 0 L 0 -4 L 8 0 L 0 4 Z"  fill="#5cc996"/>
-                </g>
-                {/* Connection lines */}
-                <g stroke="rgba(149,239,193,.55)" strokeWidth="1" strokeDasharray="2 3" fill="none">
-                  <path d="M -54 22 L -28 12"/>
-                  <path d="M 54 22 L 28 12"/>
-                  <path d="M 0 -34 L 0 -10"/>
-                </g>
-                {/* Data blink */}
-                <g className="fty-blink" fill="#95efc1">
-                  <circle cx="-30" cy="-22" r="1.5"/>
-                  <circle cx="32"  cy="-26" r="1.5"/>
-                  <circle cx="-40" cy="0"   r="1.5" opacity=".7"/>
-                  <circle cx="40"  cy="-2"  r="1.5" opacity=".7"/>
-                </g>
-                {/* Trees */}
-                <circle cx="-78" cy="45" r="5" fill="#5cc996" opacity=".5"/>
-                <circle cx="78"  cy="43" r="5" fill="#5cc996" opacity=".5"/>
-              </g>
-            </g>
-          </svg>
-
-          {/* Labels — positionnés hors des bâtiments */}
-          {([
-            { id: "orange" as PoleId, left: "2%",  top: "42%", align: "flex-start" },
-            { id: "blue"   as PoleId, left: "50%", top: "1%",  align: "center"     },
-            { id: "yellow" as PoleId, left: "72%", top: "38%", align: "flex-start" },
-            { id: "green"  as PoleId, left: "50%", top: "94%", align: "center"     },
-          ]).map(({ id, left, top, align }) => {
-            const p = POLES[id];
-            const isActive = activeId === id;
-            const names: Record<PoleId, string> = { orange: "Conseil", blue: "Développement", yellow: "DevOps & Infra", green: "Agents IA" };
-            const subs:  Record<PoleId, string> = { orange: "Stratégie & UX", blue: "Build & mobile", yellow: "Hébergement & SRE", green: "Produits & automation" };
-            return (
-              <div
-                key={id}
-                style={{
-                  position: "absolute", left, top,
-                  transform: "translate(-50%, -50%)",
-                  color: p.color, cursor: "pointer", userSelect: "none", zIndex: 10,
-                  display: "flex", flexDirection: "column", alignItems: align,
-                }}
-                onMouseEnter={() => focus(id)}
-                onMouseLeave={blur}
-                onClick={(e) => { e.stopPropagation(); clickPole(id); }}
-              >
-                <div style={{
-                  display: "flex", alignItems: "center", gap: 8,
-                  padding: "6px 12px 6px 8px",
-                  background: "rgba(8,14,36,.75)",
-                  border: `1px solid ${isActive ? p.color : "rgba(255,255,255,.1)"}`,
-                  borderRadius: 999, backdropFilter: "blur(12px)",
-                  boxShadow: isActive ? `0 0 0 1px ${p.color}, 0 0 20px ${p.color}44` : "0 6px 20px rgba(0,0,0,.4)",
-                  whiteSpace: "nowrap",
-                  transform: isActive ? "scale(1.04)" : "scale(1)",
-                  transition: "all .25s ease",
-                }}>
-                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: p.color, boxShadow: `0 0 8px ${p.color}`, flexShrink: 0 }}/>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: "#fff", letterSpacing: ".01em" }}>
-                    {names[id]}
-                  </span>
-                  <span style={{ fontSize: 9, color: "rgba(255,255,255,.4)", textTransform: "uppercase", letterSpacing: ".08em" }}>
-                    {subs[id]}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Detail panel */}
-          {pole && (
-            <div style={{
-              position: "absolute", top: "50%", right: 0,
-              transform: `translateY(-50%) translateX(${detailOpen ? "0" : "20px"})`,
-              width: 260,
-              background: "rgba(8,12,32,.85)", backdropFilter: "blur(20px)",
-              border: "1px solid rgba(255,255,255,.08)", borderRadius: 16,
-              padding: 18, color: "#fff",
-              opacity: detailOpen ? 1 : 0,
-              visibility: detailOpen ? "visible" : "hidden",
-              transition: `opacity .35s ease,transform .45s cubic-bezier(.2,.8,.2,1),visibility 0s linear ${detailOpen ? "0s" : ".35s"}`,
-              boxShadow: "0 24px 50px rgba(0,0,0,.55)", zIndex: 20,
-            }}>
-              <button onClick={clearAll} aria-label="Fermer" style={{
-                position: "absolute", top: 10, right: 10,
-                width: 26, height: 26, background: "rgba(255,255,255,.05)",
-                border: "1px solid rgba(255,255,255,.08)", borderRadius: 7,
-                cursor: "pointer", display: "grid", placeItems: "center", color: "rgba(255,255,255,.55)",
-              }}>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
-                  <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-              </button>
-
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                <div style={{ width: 32, height: 32, borderRadius: 9, background: pole.color, boxShadow: `0 0 20px ${pole.color}88,inset 0 0 0 1px rgba(255,255,255,.18)`, flexShrink: 0 }}/>
-                <div>
-                  <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: ".18em", textTransform: "uppercase", color: "rgba(255,255,255,.45)" }}>{pole.kicker}</div>
-                  <h3 style={{ margin: "2px 0 0", fontSize: 15, fontWeight: 700, letterSpacing: "-.01em" }}>{pole.title}</h3>
-                </div>
-              </div>
-
-              <p style={{ margin: "0 0 14px", fontSize: 12, lineHeight: 1.6, color: "rgba(255,255,255,.7)" }}>{pole.desc}</p>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7, marginBottom: 14 }}>
-                {pole.stats.map((s) => (
-                  <div key={s.k} style={{ background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.06)", borderRadius: 10, padding: "8px 10px" }}>
-                    <div style={{ fontSize: 16, fontWeight: 700, letterSpacing: "-.02em", color: pole.color }}>{s.v}</div>
-                    <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: ".12em", textTransform: "uppercase", color: "rgba(255,255,255,.45)", marginTop: 2 }}>{s.k}</div>
-                  </div>
-                ))}
-              </div>
-
-              <button onClick={() => router.push(pole.href)} style={{
-                appearance: "none", border: 0, cursor: "pointer", width: "100%",
-                background: pole.color, color: "#0a1432",
-                fontFamily: "inherit", fontSize: 12, fontWeight: 700,
-                padding: "10px 12px", borderRadius: 10,
-                display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
-              }}>
-                Découvrir le pôle
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                  <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-    </>
+      <DetailPanel pole={pole} open={detailOpen} onClose={closeAll} onCta={onCta} />
+    </div>
   );
 }
+
+export default FactoryTopDown;
