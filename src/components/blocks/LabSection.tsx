@@ -140,13 +140,31 @@ const PER_PAGE = 3;
 export function LabSection() {
   const [page, setPage] = useState(0);
   const [dir, setDir] = useState(1);
+  const [query, setQuery] = useState("");
 
-  const totalPages = Math.ceil(LAB_ITEMS.length / PER_PAGE);
-  const visible = LAB_ITEMS.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+  const filtered = query.trim()
+    ? LAB_ITEMS.filter((item) => {
+        const q = query.toLowerCase();
+        return (
+          item.title.toLowerCase().includes(q) ||
+          item.description.toLowerCase().includes(q) ||
+          item.tags.some((t) => t.toLowerCase().includes(q))
+        );
+      })
+    : LAB_ITEMS;
+
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  const currentPage = Math.min(page, Math.max(0, totalPages - 1));
+  const visible = filtered.slice(currentPage * PER_PAGE, (currentPage + 1) * PER_PAGE);
 
   function goTo(p: number) {
-    setDir(p > page ? 1 : -1);
+    setDir(p > currentPage ? 1 : -1);
     setPage(p);
+  }
+
+  function handleSearch(q: string) {
+    setQuery(q);
+    setPage(0);
   }
 
   return (
@@ -179,17 +197,53 @@ export function LabSection() {
           >
             Notre BU Infrastructure &amp; Sécurité explore en continu les sujets émergents de l&apos;écosystème cloud-native. Projets internes, retours d&apos;expérience terrain et veille technologique structurée.
           </p>
+
+          {/* Champ de recherche */}
+          <div className="relative flex items-center mt-1 max-w-xs">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 16 16"
+              fill="none"
+              aria-hidden="true"
+              className="absolute left-3 text-white/30 pointer-events-none"
+            >
+              <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.4" />
+              <path d="M10 10l3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            </svg>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="Rechercher…"
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg pl-8 pr-3 py-1.5 font-body text-white/70 placeholder:text-white/25 outline-none focus:border-white/20 transition-colors"
+              style={{ fontSize: "var(--text-nav)" }}
+            />
+            {query && (
+              <button
+                onClick={() => handleSearch("")}
+                className="absolute right-2.5 text-white/30 hover:text-white/60 transition-colors"
+                aria-label="Effacer la recherche"
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Navigation slider */}
         <div className="flex items-center gap-4 shrink-0">
           <span className="font-body text-white/30" style={{ fontSize: 13 }}>
-            {page * PER_PAGE + 1}–{Math.min((page + 1) * PER_PAGE, LAB_ITEMS.length)} / {LAB_ITEMS.length}
+            {filtered.length === 0
+              ? "Aucun résultat"
+              : `${currentPage * PER_PAGE + 1}–${Math.min((currentPage + 1) * PER_PAGE, filtered.length)} / ${filtered.length}`}
           </span>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => goTo(page - 1)}
-              disabled={page === 0}
+              onClick={() => goTo(currentPage - 1)}
+              disabled={currentPage === 0}
               className="flex items-center justify-center size-9 rounded-full border border-white/15 text-white/50 hover:text-white hover:border-white/40 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
               aria-label="Précédent"
             >
@@ -198,8 +252,8 @@ export function LabSection() {
               </svg>
             </button>
             <button
-              onClick={() => goTo(page + 1)}
-              disabled={page === totalPages - 1}
+              onClick={() => goTo(currentPage + 1)}
+              disabled={currentPage === totalPages - 1 || totalPages === 0}
               className="flex items-center justify-center size-9 rounded-full border border-white/15 text-white/50 hover:text-white hover:border-white/40 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
               aria-label="Suivant"
             >
@@ -214,7 +268,7 @@ export function LabSection() {
       {/* Slider */}
       <AnimatePresence mode="wait" custom={dir}>
         <motion.div
-          key={page}
+          key={`${currentPage}-${query}`}
           custom={dir}
           variants={{
             enter: (d: number) => ({ opacity: 0, x: d * 40 }),
@@ -304,11 +358,11 @@ export function LabSection() {
                 </p>
 
                 {/* Footer tags */}
-                <div className="flex gap-2 flex-wrap pt-2 border-t border-white/[0.06]">
+                <div className="flex gap-2 flex-wrap pt-2 border-t border-white/[0.08]">
                   {item.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="font-mono text-white/25 bg-white/[0.04] border border-white/[0.07] px-2 py-0.5 rounded"
+                      className="font-mono text-white/55 bg-white/[0.07] border border-white/[0.14] px-2 py-0.5 rounded"
                       style={{ fontSize: 10 }}
                     >
                       {tag}
@@ -322,21 +376,27 @@ export function LabSection() {
       </AnimatePresence>
 
       {/* Dots */}
-      <div className="flex items-center justify-center gap-2 mt-8">
-        {Array.from({ length: totalPages }).map((_, i) => (
-          <button
-            key={i}
-            onClick={() => goTo(i)}
-            className="transition-all duration-300 rounded-full"
-            style={{
-              width: i === page ? 24 : 6,
-              height: 6,
-              background: i === page ? "var(--color-brand-orange, #ef8336)" : "rgba(255,255,255,0.15)",
-            }}
-            aria-label={`Page ${i + 1}`}
-          />
-        ))}
-      </div>
+      {filtered.length === 0 ? (
+        <p className="text-center font-body text-white/30 mt-8" style={{ fontSize: "var(--text-nav)" }}>
+          Aucun résultat pour « {query} »
+        </p>
+      ) : (
+        <div className="flex items-center justify-center gap-2 mt-8">
+          {Array.from({ length: totalPages }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              className="transition-all duration-300 rounded-full"
+              style={{
+                width: i === currentPage ? 24 : 6,
+                height: 6,
+                background: i === currentPage ? "var(--color-brand-orange, #ef8336)" : "rgba(255,255,255,0.15)",
+              }}
+              aria-label={`Page ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

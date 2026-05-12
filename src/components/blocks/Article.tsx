@@ -1,13 +1,16 @@
 // Article — Carte article pour grille listing actualités
-// Image N&B (16/9) + badge catégorie + date + titre + extrait + CTA arrow
+// Image N&B (16/9) + badge catégorie + tags + date + titre + extrait + CTA arrow
 
 import Image from "next/image";
 
 export interface ArticleProps {
-  imageSrc: string;
+  imageSrc?: string;
+  videoSrc?: string;
   imageAlt?: string;
   /** Catégorie (ex: "Engineering", "IoT") */
   category: string;
+  /** Tags thématiques affichés en pills */
+  tags?: string[];
   /** Date formatée (ex: "12 Mai 2024") */
   date: string;
   /** Temps de lecture en minutes */
@@ -23,8 +26,10 @@ export interface ArticleProps {
 
 export function Article({
   imageSrc,
+  videoSrc,
   imageAlt = "",
   category,
+  tags,
   date,
   readingTime,
   title,
@@ -34,22 +39,29 @@ export function Article({
 }: ArticleProps) {
   return (
     <article className="flex flex-col gap-4 items-start group">
-      {/* Image + badge catégorie */}
+      {/* Media + badge catégorie */}
       <div className="relative bg-article-img-bg rounded-[12px] overflow-hidden w-full aspect-video">
-        <Image
-          src={imageSrc}
-          alt={imageAlt}
-          fill
-          className="object-cover [filter:grayscale(1)] transition-transform duration-500 group-hover:scale-105"
-        />
-        {/* Overlay mix-blend-saturation (renforce le N&B) */}
-        <div className="absolute inset-0 bg-white mix-blend-saturation pointer-events-none" />
+        {videoSrc ? (
+          <video
+            src={videoSrc}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : imageSrc ? (
+          <Image
+            src={imageSrc}
+            alt={imageAlt}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : null}
         {/* Badge catégorie */}
-        <div className="absolute top-4 left-4 px-3 py-[2.5px] rounded-full bg-brand-orange">
-          <span
-            className="font-body font-semibold text-cta-text-dark uppercase tracking-[0.5px]"
-            style={{ fontSize: "10px", lineHeight: "15px" }}
-          >
+        <div className="absolute top-4 left-4 flex items-center gap-2 px-4 py-[6px] rounded-full bg-meta-secondary">
+          <span className="size-2 rounded-full shrink-0 bg-deep-navy" />
+          <span className="font-body font-semibold text-[length:var(--text-badge)] tracking-[var(--text-badge--letter-spacing)] uppercase whitespace-nowrap text-deep-navy">
             {category}
           </span>
         </div>

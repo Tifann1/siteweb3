@@ -1,6 +1,7 @@
 // PodcastPlayerCard — Carte lecteur podcast
 // Figma node I517:3693;427:2507
 // bg card-bg, épisode + barre de progression + contrôles + bouton "Écouter"
+// La carte entière est un lien vers le podcast (target="_blank")
 
 export interface PodcastPlayerCardProps {
   /** Numéro et titre de l'épisode (ex: "EP.3 : L'Usine Cognitive") */
@@ -11,7 +12,7 @@ export interface PodcastPlayerCardProps {
   duration: string;
   /** Progression 0–100 */
   progress?: number;
-  /** Lien Écouter */
+  /** Lien Écouter — ouvre dans un nouvel onglet */
   listenHref?: string;
 }
 
@@ -25,11 +26,17 @@ export function PodcastPlayerCard({
   const progressPct = Math.min(100, Math.max(0, progress));
 
   return (
-    <div className="relative bg-card-bg border border-white/5 rounded-[var(--radius-offer-img)] p-[33px] overflow-hidden shadow-[var(--shadow-card)]">
+    <a
+      href={listenHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Écouter le podcast : ${episodeTitle}`}
+      className="group relative bg-card-bg border border-white/5 rounded-[var(--radius-offer-img)] p-[33px] overflow-hidden shadow-[var(--shadow-card)] block cursor-pointer transition-all duration-300 hover:border-brand-orange-light/20 hover:shadow-[var(--shadow-card),0_0_32px_rgba(255,182,146,0.08)]"
+    >
       {/* Déco coin bas-droit (SVG abstrait) */}
       <div
         aria-hidden="true"
-        className="absolute bottom-[-40px] right-[-40px] size-[133px] opacity-30 pointer-events-none"
+        className="absolute bottom-[-40px] right-[-40px] size-[133px] opacity-30 pointer-events-none transition-opacity duration-300 group-hover:opacity-50"
       >
         <svg viewBox="0 0 133 167" fill="none" className="size-full">
           <circle cx="66" cy="100" r="65" stroke="#FFB692" strokeWidth="2" />
@@ -42,7 +49,7 @@ export function PodcastPlayerCard({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             {/* Bouton lecture rapide */}
-            <div className="bg-brand-orange-light/20 flex items-center justify-center rounded-[8px] size-16 shrink-0">
+            <div className="bg-brand-orange-light/20 flex items-center justify-center rounded-[8px] size-16 shrink-0 transition-colors duration-300 group-hover:bg-brand-orange-light/30">
               <PlayIcon />
             </div>
             {/* Info épisode */}
@@ -88,35 +95,35 @@ export function PodcastPlayerCard({
         {/* Contrôles */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <button aria-label="Précédent" className="text-text-heading opacity-70 hover:opacity-100 transition-opacity">
+            <span aria-hidden="true" className="text-text-heading opacity-70">
               <SkipBackIcon />
-            </button>
-            <button
-              aria-label="Lecture / Pause"
-              className="bg-brand-orange-light flex items-center justify-center rounded-full size-12 hover:opacity-90 transition-opacity"
+            </span>
+            <span
+              aria-hidden="true"
+              className="bg-brand-orange-light flex items-center justify-center rounded-full size-12 transition-transform duration-200 group-hover:scale-105"
             >
               <PlayFillIcon />
-            </button>
-            <button aria-label="Suivant" className="text-text-heading opacity-70 hover:opacity-100 transition-opacity">
+            </span>
+            <span aria-hidden="true" className="text-text-heading opacity-70">
               <SkipForwardIcon />
-            </button>
+            </span>
           </div>
+
           {/* Bouton Écouter */}
-          <a
-            href={listenHref}
-            className="flex items-center gap-2 bg-white/5 rounded-[8px] px-4 py-2 transition-opacity hover:opacity-80"
+          <span
+            className="flex items-center gap-2 bg-white/5 border border-transparent rounded-[8px] px-4 py-2 transition-all duration-200 group-hover:bg-brand-orange-light/15 group-hover:border-brand-orange-light/35"
           >
             <span
-              className="font-body font-semibold text-text-heading uppercase tracking-[0.6px]"
+              className="font-body font-semibold text-text-heading uppercase tracking-[0.6px] transition-colors duration-200 group-hover:text-brand-orange-light"
               style={{ fontSize: "12px", lineHeight: "16px" }}
             >
               Écouter
             </span>
             <ExternalLinkIcon />
-          </a>
+          </span>
         </div>
       </div>
-    </div>
+    </a>
   );
 }
 
@@ -155,7 +162,7 @@ function SkipForwardIcon() {
 function ExternalLinkIcon() {
   return (
     <svg width="8" height="8" viewBox="0 0 8 8" fill="none" aria-hidden="true">
-      <path d="M1 7L7 1M7 1H3M7 1v4" stroke="#DFE1F8" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M1 7L7 1M7 1H3M7 1v4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" className="transition-colors duration-200 group-hover:stroke-brand-orange-light" />
     </svg>
   );
 }

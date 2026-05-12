@@ -5,19 +5,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Link, useRouter } from "@/navigation";
 import { StatTile } from "@/components/ui/StatTile";
-import type { Produit, Agent, Locale } from "@/types";
+import type { Agent, Produit, Locale } from "@/types";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const TRANSITION = { duration: 0.78, ease: EASE };
 
-export interface ProductCarouselProps {
+export interface AgentCarouselProps {
+  agents: Agent[];
   produits: Produit[];
   locale: Locale;
-  agents?: Agent[];
+  initialIndex?: number;
 }
 
-export function ProductCarousel({ produits, locale, agents }: ProductCarouselProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
+export function AgentCarousel({ agents, produits, locale, initialIndex = 0 }: AgentCarouselProps) {
+  const [activeIndex, setActiveIndex] = useState(Math.max(0, Math.min(initialIndex, agents.length - 1)));
   const lockRef = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -26,7 +27,7 @@ export function ProductCarousel({ produits, locale, agents }: ProductCarouselPro
       if (lockRef.current) return;
       const next = activeIndex + dir;
       if (next < 0) return;
-      if (next >= produits.length) {
+      if (next >= agents.length) {
         if (dir === 1) {
           lockRef.current = true;
           window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
@@ -40,7 +41,7 @@ export function ProductCarousel({ produits, locale, agents }: ProductCarouselPro
         lockRef.current = false;
       }, 950);
     },
-    [activeIndex, produits.length],
+    [activeIndex, agents.length],
   );
 
   useEffect(() => {
@@ -56,7 +57,7 @@ export function ProductCarousel({ produits, locale, agents }: ProductCarouselPro
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
-  }, [activeIndex, navigate, produits.length]);
+  }, [activeIndex, navigate, agents.length]);
 
   const touchStart = useRef(0);
 
@@ -80,11 +81,11 @@ export function ProductCarousel({ produits, locale, agents }: ProductCarouselPro
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      {produits.map((produit, index) => {
+      {agents.map((agent, index) => {
         const isActive = index === activeIndex;
         const isNext = index === activeIndex + 1;
         const isPrev = index < activeIndex;
-        const associatedAgent = agents?.find((a) => a.produitSlug === produit.slug);
+        const associatedProduit = produits.find((p) => p.slug === agent.produitSlug);
 
         let y = "120%";
         if (isActive) y = "0%";
@@ -93,7 +94,7 @@ export function ProductCarousel({ produits, locale, agents }: ProductCarouselPro
 
         return (
           <motion.div
-            key={produit.slug}
+            key={agent.slug}
             className="absolute inset-0"
             animate={{
               y,
@@ -102,11 +103,11 @@ export function ProductCarousel({ produits, locale, agents }: ProductCarouselPro
             transition={TRANSITION}
             style={{ willChange: "transform" }}
           >
-            <ProductSlide
-              produit={produit}
+            <AgentSlide
+              agent={agent}
               locale={locale}
               isActive={isActive}
-              associatedAgent={associatedAgent}
+              associatedProduit={associatedProduit}
             />
           </motion.div>
         );
@@ -115,15 +116,15 @@ export function ProductCarousel({ produits, locale, agents }: ProductCarouselPro
       {/* Navigation dots verticaux */}
       <nav
         className="absolute right-8 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-3"
-        aria-label="Navigation produits"
+        aria-label="Navigation agents"
       >
-        {produits.map((p, i) => (
+        {agents.map((a, i) => (
           <button
-            key={p.slug}
+            key={a.slug}
             onClick={() => {
               if (!lockRef.current) setActiveIndex(i);
             }}
-            aria-label={`Produit ${i + 1}`}
+            aria-label={`Agent ${i + 1}`}
             className="flex items-center justify-center w-6 h-6"
           >
             <span
@@ -157,20 +158,20 @@ export function ProductCarousel({ produits, locale, agents }: ProductCarouselPro
           className="font-body text-white/30"
           style={{ fontSize: "1.125rem" }}
         >
-          / {String(produits.length).padStart(2, "0")}
+          / {String(agents.length).padStart(2, "0")}
         </span>
       </div>
 
       {/* Scroll hint */}
       <AnimatePresence>
-        {activeIndex < produits.length - 1 && (
+        {activeIndex < agents.length - 1 && (
           <motion.button
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => navigate(1)}
             className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 text-white/35 hover:text-white/70 transition-colors"
-            aria-label="Produit suivant"
+            aria-label="Agent suivant"
           >
             <span
               className="font-sans uppercase tracking-[2px]"
@@ -188,10 +189,10 @@ export function ProductCarousel({ produits, locale, agents }: ProductCarouselPro
         )}
       </AnimatePresence>
 
-      {/* CTA produit actif — z-30 pour passer au-dessus du scroll hint */}
+      {/* CTA agent actif — z-30 pour passer au-dessus du scroll hint */}
       <AnimatePresence mode="wait">
         <motion.div
-          key={produits[activeIndex]?.slug}
+          key={agents[activeIndex]?.slug}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
@@ -199,11 +200,11 @@ export function ProductCarousel({ produits, locale, agents }: ProductCarouselPro
           className="absolute bottom-10 right-20 z-30"
         >
           <Link
-            href={`/produits/${produits[activeIndex]?.slug}`}
+            href={`/produits/${agents[activeIndex]?.produitSlug}`}
             className="flex items-center gap-2.5 px-5 bg-gradient-to-b from-[var(--color-brand-orange-cta-from)] to-[var(--color-brand-orange-cta-to)] rounded-[var(--radius-cta)] shadow-[var(--shadow-cta)] text-white font-sans whitespace-nowrap"
             style={{ height: "40px", fontSize: "var(--text-nav)" }}
           >
-            En savoir plus
+            Lancer l&apos;agent
             <ArrowIcon />
           </Link>
         </motion.div>
@@ -212,13 +213,13 @@ export function ProductCarousel({ produits, locale, agents }: ProductCarouselPro
   );
 }
 
-// ─── ProductSlide ─────────────────────────────────────────────────────────────
+// ─── AgentSlide ───────────────────────────────────────────────────────────────
 
-interface ProductSlideProps {
-  produit: Produit;
+interface AgentSlideProps {
+  agent: Agent;
   locale: Locale;
   isActive: boolean;
-  associatedAgent?: Agent;
+  associatedProduit?: Produit;
 }
 
 const staggerContainer = {
@@ -238,18 +239,18 @@ const staggerItem = {
   },
 };
 
-function ProductSlide({ produit, locale, isActive, associatedAgent }: ProductSlideProps) {
-  const features = produit.features.map((f) => ({
+function AgentSlide({ agent, locale, isActive, associatedProduit }: AgentSlideProps) {
+  const features = agent.features.map((f) => ({
     title: f.title[locale],
     description: f.description?.[locale],
   }));
 
   return (
     <div className="relative w-full h-full">
-      {/* Background image + dégradé renforcé pour le contraste des caractéristiques */}
+      {/* Background image + dégradé */}
       <div className="absolute inset-0 pointer-events-none">
         <Image
-          src={produit.backgroundImage}
+          src={agent.backgroundImage}
           alt=""
           fill
           className="object-cover object-right"
@@ -264,12 +265,12 @@ function ProductSlide({ produit, locale, isActive, associatedAgent }: ProductSli
         />
       </div>
 
-      {/* Trait supérieur — repère visuel quand carte "next" */}
+      {/* Trait supérieur */}
       <div className="absolute top-0 inset-x-0 h-px bg-white/12" />
 
       {/* Layout */}
       <div className="relative h-full flex items-center">
-        {/* Colonne gauche — carte produit */}
+        {/* Colonne gauche */}
         <motion.div
           animate={{ x: isActive ? -24 : 0 }}
           transition={TRANSITION}
@@ -283,7 +284,7 @@ function ProductSlide({ produit, locale, isActive, associatedAgent }: ProductSli
             className="flex flex-col items-start"
           >
             {/* Badge */}
-            {produit.badge && (
+            {agent.badge && (
               <motion.div variants={staggerItem} className="mb-5">
                 <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-nav-bg border border-white/10">
                   <span
@@ -294,13 +295,13 @@ function ProductSlide({ produit, locale, isActive, associatedAgent }: ProductSli
                     className="font-body font-semibold text-badge-blue tracking-[1.6px]"
                     style={{ fontSize: "var(--text-badge)" }}
                   >
-                    {produit.badge[locale]}
+                    {agent.badge[locale]}
                   </span>
                 </span>
               </motion.div>
             )}
 
-            {/* Titre produit */}
+            {/* Titre agent */}
             <motion.h2
               variants={staggerItem}
               className="font-sans font-bold text-white"
@@ -310,7 +311,7 @@ function ProductSlide({ produit, locale, isActive, associatedAgent }: ProductSli
                 letterSpacing: "-0.025em",
               }}
             >
-              {produit.name[locale]}
+              {agent.name[locale]}
             </motion.h2>
 
             {/* Description */}
@@ -323,12 +324,12 @@ function ProductSlide({ produit, locale, isActive, associatedAgent }: ProductSli
                 maxWidth: "400px",
               }}
             >
-              {produit.description[locale]}
+              {agent.description[locale]}
             </motion.p>
 
             {/* Stats */}
             <motion.div variants={staggerItem} className="flex gap-3 mt-9">
-              {produit.stats.map((stat) => (
+              {agent.stats.map((stat) => (
                 <StatTile
                   key={stat.label[locale]}
                   value={stat.value}
@@ -337,13 +338,13 @@ function ProductSlide({ produit, locale, isActive, associatedAgent }: ProductSli
               ))}
             </motion.div>
 
-            {/* Agent associé — rectangle d'aperçu */}
-            {associatedAgent && (
+            {/* Produit associé — rectangle d'aperçu */}
+            {associatedProduit && (
               <motion.div variants={staggerItem} className="mt-6">
-                <AgentPreviewCard
-                  agent={associatedAgent}
+                <ProduitPreviewCard
+                  produit={associatedProduit}
                   locale={locale}
-                  produitSlug={produit.slug}
+                  agentSlug={agent.slug}
                 />
               </motion.div>
             )}
@@ -378,7 +379,7 @@ function ProductSlide({ produit, locale, isActive, associatedAgent }: ProductSli
                   className="font-sans font-semibold uppercase text-white/35"
                   style={{ fontSize: "10px", letterSpacing: "0.22em" }}
                 >
-                  Fonctionnalités
+                  Capacités
                 </p>
               </motion.div>
 
@@ -392,15 +393,15 @@ function ProductSlide({ produit, locale, isActive, associatedAgent }: ProductSli
   );
 }
 
-// ─── AgentPreviewCard ─────────────────────────────────────────────────────────
+// ─── ProduitPreviewCard ───────────────────────────────────────────────────────
 
-interface AgentPreviewCardProps {
-  agent: Agent;
+interface ProduitPreviewCardProps {
+  produit: Produit;
   locale: Locale;
-  produitSlug: string;
+  agentSlug: string;
 }
 
-function AgentPreviewCard({ agent, locale, produitSlug }: AgentPreviewCardProps) {
+function ProduitPreviewCard({ produit, locale, agentSlug }: ProduitPreviewCardProps) {
   const router = useRouter();
   const [isFlipping, setIsFlipping] = useState(false);
 
@@ -408,7 +409,7 @@ function AgentPreviewCard({ agent, locale, produitSlug }: AgentPreviewCardProps)
     if (isFlipping) return;
     setIsFlipping(true);
     setTimeout(() => {
-      router.push(`/agents?from=${produitSlug}`);
+      router.push(`/produits?from=${agentSlug}`);
     }, 300);
   };
 
@@ -417,7 +418,7 @@ function AgentPreviewCard({ agent, locale, produitSlug }: AgentPreviewCardProps)
       <motion.button
         onClick={handleClick}
         animate={{
-          rotateY: isFlipping ? 90 : 0,
+          rotateY: isFlipping ? -90 : 0,
           opacity: isFlipping ? 0 : 1,
         }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
@@ -427,24 +428,24 @@ function AgentPreviewCard({ agent, locale, produitSlug }: AgentPreviewCardProps)
         style={{
           transformStyle: "preserve-3d",
           width: "100%",
-          border: "1px solid rgba(70, 186, 135, 0.28)",
-          background: "linear-gradient(135deg, rgba(70,186,135,0.10) 0%, rgba(70,186,135,0.04) 100%)",
+          border: "1px solid rgba(255, 182, 146, 0.28)",
+          background: "linear-gradient(135deg, rgba(255,123,50,0.10) 0%, rgba(255,150,96,0.04) 100%)",
         }}
       >
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-4 h-px" style={{ backgroundColor: "rgba(70,186,135,0.7)" }} />
+          <div className="w-4 h-px" style={{ backgroundColor: "rgba(255,182,146,0.6)" }} />
           <span
             className="font-sans uppercase tracking-[1.5px]"
-            style={{ fontSize: "10px", color: "rgba(70,186,135,0.8)" }}
+            style={{ fontSize: "10px", color: "rgba(255,182,146,0.8)" }}
           >
-            Agent associé
+            Produit associé
           </span>
         </div>
         <span
           className="font-sans font-bold text-white"
           style={{ fontSize: "1.05rem" }}
         >
-          {agent.name[locale]}
+          {produit.name[locale]}
         </span>
         <span
           className="font-sans mt-1 line-clamp-2"
@@ -454,16 +455,16 @@ function AgentPreviewCard({ agent, locale, produitSlug }: AgentPreviewCardProps)
             color: "rgba(255,255,255,0.65)",
           }}
         >
-          {agent.description[locale]}
+          {produit.description[locale]}
         </span>
         <div
           className="flex items-center gap-1.5 mt-3 group-hover:gap-2.5 transition-all duration-200"
-          style={{ color: "var(--color-offer-green)" }}
+          style={{ color: "var(--color-brand-orange-light)" }}
         >
           <span className="font-sans uppercase tracking-[1.5px]" style={{ fontSize: "10px" }}>
-            Découvrir l&apos;agent
+            Voir le produit
           </span>
-          <GreenArrowIcon />
+          <ArrowIcon />
         </div>
       </motion.button>
     </div>
@@ -557,20 +558,6 @@ function ArrowIcon() {
       <path
         d="M3 8h10M10 5l3 3-3 3"
         stroke="#FFB692"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function GreenArrowIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M3 8h10M10 5l3 3-3 3"
-        stroke="#46BA87"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"

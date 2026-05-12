@@ -103,14 +103,13 @@ export function PoleSideNav({ sections, accentColor = "var(--color-offer-yellow)
                 {/* Label */}
                 <motion.span
                   animate={{
-                    opacity: isActive || isHovered ? 1 : 0,
-                    x: isActive || isHovered ? 0 : -6,
+                    opacity: isActive ? 1 : isHovered ? 0.85 : 0.35,
                   }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
                   className="font-body text-xs whitespace-nowrap pointer-events-none"
                   style={{
-                    color: isActive ? accentColor : "rgba(255,255,255,0.55)",
-                    fontWeight: isActive ? 600 : 400,
+                    color: isActive ? accentColor : isHovered ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.55)",
+                    fontWeight: isActive ? 600 : isHovered ? 500 : 400,
                     letterSpacing: "0.04em",
                   }}
                 >

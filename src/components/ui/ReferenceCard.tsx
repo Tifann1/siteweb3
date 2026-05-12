@@ -12,8 +12,8 @@ export interface ReferenceCardProps {
   logoAlt?: string;
   category: string;
   title: string;
-  statValue: string;
-  statLabel: string;
+  statValue?: string;
+  statLabel?: string;
   ctaLabel?: string;
   ctaHref?: string;
 }
@@ -106,20 +106,24 @@ export function ReferenceCard({
         </p>
 
         {/* Stat card */}
-        <div className="flex flex-col items-start p-[17px] bg-card-bg border border-white/5 rounded-[8px] w-full">
-          <span
-            className="font-sans font-bold text-white"
-            style={{ fontSize: "32px", lineHeight: "32px" }}
-          >
-            {statValue}
-          </span>
-          <span
-            className="font-body font-normal text-text-light mt-1"
-            style={{ fontSize: "13px" }}
-          >
-            {statLabel}
-          </span>
-        </div>
+        {statValue && (
+          <div className="flex flex-col items-start p-[17px] bg-card-bg border border-white/5 rounded-[8px] w-full">
+            <span
+              className="font-sans font-bold text-white"
+              style={{ fontSize: "32px", lineHeight: "32px" }}
+            >
+              {statValue}
+            </span>
+            {statLabel && (
+              <span
+                className="font-body font-normal text-text-light mt-1"
+                style={{ fontSize: "13px" }}
+              >
+                {statLabel}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* CTA */}
         <div className="flex items-center gap-2 overflow-hidden">

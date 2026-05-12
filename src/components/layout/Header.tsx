@@ -1,16 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { usePathname } from "@/navigation";
 import { Link } from "@/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+
+interface NavChild {
+  label: string;
+  href: string;
+}
 
 interface NavItem {
   label: string;
   href: string;
   /** Préfixe de chemin utilisé pour la détection de l'état actif (sous-routes) */
   matchPrefix?: string;
+  /** Sous-menus dropdown optionnels */
+  children?: NavChild[];
 }
 
 interface HeaderProps {
@@ -22,9 +29,26 @@ interface HeaderProps {
 }
 
 const DEFAULT_NAV_ITEMS: NavItem[] = [
-  { label: "Nos pôles", href: "/nos-poles/conseil", matchPrefix: "/nos-poles" },
+  {
+    label: "Nos pôles",
+    href: "/nos-poles/conseil",
+    matchPrefix: "/nos-poles",
+    children: [
+      { label: "Conseil", href: "/nos-poles/conseil" },
+      { label: "Développement", href: "/nos-poles/developpement" },
+      { label: "Hébergement", href: "/nos-poles/hebergement" },
+    ],
+  },
   { label: "Nos références", href: "/references", matchPrefix: "/references" },
-  { label: "Nos agents", href: "/produits", matchPrefix: "/produits" },
+  {
+    label: "R&D",
+    href: "/produits",
+    matchPrefix: "",
+    children: [
+      { label: "Nos produits", href: "/produits" },
+      { label: "Nos agents", href: "/agents" },
+    ],
+  },
   { label: "Actualités", href: "/actualite" },
 ];
 
@@ -39,6 +63,9 @@ export function Header({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hiddenForOffers, setHiddenForOffers] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileExpandedItem, setMobileExpandedItem] = useState<string | null>(null);
+  const dropdownTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -57,6 +84,15 @@ export function Header({
     observer.observe(offers);
     return () => observer.disconnect();
   }, []);
+
+  const handleDropdownEnter = (label: string) => {
+    if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current);
+    setOpenDropdown(label);
+  };
+
+  const handleDropdownLeave = () => {
+    dropdownTimeout.current = setTimeout(() => setOpenDropdown(null), 120);
+  };
 
   return (
     <>
@@ -98,8 +134,76 @@ export function Header({
             <nav className="flex items-center gap-[35px] pt-[5px]">
               {navItems.map((item) => {
                 const activeBase = item.matchPrefix ?? item.href;
-                const isActive =
-                  pathname === activeBase || pathname.startsWith(activeBase + "/");
+                const isActive = item.children
+                  ? item.children.some(
+                      (c) => pathname === c.href || pathname.startsWith(c.href + "/")
+                    )
+                  : pathname === activeBase || pathname.startsWith(activeBase + "/");
+
+                if (item.children) {
+                  return (
+                    <div
+                      key={item.href}
+                      className="relative"
+                      onMouseEnter={() => handleDropdownEnter(item.label)}
+                      onMouseLeave={handleDropdownLeave}
+                    >
+                      <button
+                        className={[
+                          "flex items-center gap-1.5 h-[26px] shrink-0 text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)] font-sans whitespace-nowrap transition-colors",
+                          isActive
+                            ? "text-brand-orange-light border-b-2 border-brand-orange pb-[6px]"
+                            : "text-text-light pb-[4px] hover:text-brand-orange-light",
+                        ].join(" ")}
+                      >
+                        {item.label}
+                        <motion.span
+                          animate={{ rotate: openDropdown === item.label ? 180 : 0 }}
+                          transition={{ duration: 0.2 }}
+                          style={{ display: "inline-flex", marginTop: "1px" }}
+                        >
+                          <ChevronTinyIcon />
+                        </motion.span>
+                      </button>
+
+                      <AnimatePresence>
+                        {openDropdown === item.label && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -6 }}
+                            transition={{ duration: 0.18, ease: "easeOut" }}
+                            onMouseEnter={() => handleDropdownEnter(item.label)}
+                            onMouseLeave={handleDropdownLeave}
+                            className="absolute top-full left-1/2 -translate-x-1/2 mt-3 py-1.5 min-w-[160px] rounded-xl bg-deep-navy/95 backdrop-blur-md border border-white/10 shadow-lg"
+                          >
+                            {item.children.map((child) => {
+                              const childActive =
+                                pathname === child.href ||
+                                pathname.startsWith(child.href + "/");
+                              return (
+                                <Link
+                                  key={child.href}
+                                  href={child.href}
+                                  className={[
+                                    "block px-4 py-2.5 font-sans transition-colors whitespace-nowrap",
+                                    "text-[length:var(--text-nav)] leading-[var(--text-nav--line-height)]",
+                                    childActive
+                                      ? "text-brand-orange-light"
+                                      : "text-white/70 hover:text-white hover:bg-white/5",
+                                  ].join(" ")}
+                                >
+                                  {child.label}
+                                </Link>
+                              );
+                            })}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                }
+
                 return (
                   <Link
                     key={item.href}
@@ -174,9 +278,64 @@ export function Header({
           {/* Liens nav */}
           <nav className="flex flex-col gap-6 flex-1">
             {navItems.map((item) => {
-              const activeBase = item.matchPrefix ?? item.href;
-              const isActive =
-                pathname === activeBase || pathname.startsWith(activeBase + "/");
+              const isActive = item.children
+                ? item.children.some(
+                    (c) => pathname === c.href || pathname.startsWith(c.href + "/")
+                  )
+                : pathname === (item.matchPrefix ?? item.href) ||
+                  pathname.startsWith((item.matchPrefix ?? item.href) + "/");
+
+              if (item.children) {
+                const expanded = mobileExpandedItem === item.label;
+                return (
+                  <div key={item.href} className="flex flex-col gap-2">
+                    <button
+                      onClick={() =>
+                        setMobileExpandedItem((prev) =>
+                          prev === item.label ? null : item.label
+                        )
+                      }
+                      className={[
+                        "flex items-center justify-between font-sans font-semibold text-[2rem] leading-tight transition-colors text-left",
+                        isActive ? "text-brand-orange-light" : "text-white/70 hover:text-white",
+                      ].join(" ")}
+                    >
+                      {item.label}
+                      <motion.span
+                        animate={{ rotate: expanded ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="mr-2"
+                      >
+                        <ChevronTinyIcon size={20} />
+                      </motion.span>
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {expanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.25, ease: "easeOut" }}
+                          style={{ overflow: "hidden" }}
+                          className="flex flex-col gap-1 pl-4 border-l border-white/15"
+                        >
+                          {item.children.map((child) => (
+                            <Link
+                              key={child.href}
+                              href={child.href}
+                              onClick={() => setMobileOpen(false)}
+                              className="font-sans text-[1.25rem] text-white/60 hover:text-white transition-colors py-1"
+                            >
+                              {child.label}
+                            </Link>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              }
+
               return (
                 <Link
                   key={item.href}
@@ -204,5 +363,19 @@ export function Header({
         </div>
       )}
     </>
+  );
+}
+
+function ChevronTinyIcon({ size = 12 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path
+        d="M2 4l4 4 4-4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

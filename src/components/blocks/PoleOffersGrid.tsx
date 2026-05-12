@@ -433,7 +433,7 @@ function ExpandedPanel({ card, accentColor }: { card: OfferCardProps; accentColo
 
   return (
     <div
-      className="rounded-2xl p-5 mt-2 mb-4 flex flex-col gap-6"
+      className="rounded-2xl p-5 mt-2 mb-4 flex flex-col gap-5"
       style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}
     >
       {/* Carte + contenu */}
@@ -443,38 +443,49 @@ function ExpandedPanel({ card, accentColor }: { card: OfferCardProps; accentColo
           <OfferCard {...card} />
         </div>
 
-        {/* Lab + articles + refs + CTA */}
+        {/* Lab + articles + refs + CTA — colonne droite */}
         <div className="flex flex-col gap-5 flex-1 min-w-0">
-          {/* Lab */}
+          {/* Lab — carrés x1.8 en scroll horizontal */}
           {hasLab && (
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               <span className="font-body font-semibold uppercase tracking-widest text-white/30" style={{ fontSize: 10, letterSpacing: "0.12em" }}>
                 Steamulo Lab
               </span>
-              <div className="flex flex-col gap-2">
+              <div
+                className="flex flex-row gap-3 overflow-x-auto pb-1"
+                style={{ scrollbarWidth: "none" }}
+              >
                 {card.labItems!.map((item) => {
                   const catColor = CAT_COLORS[item.cat] ?? "#fff";
                   const status = STATUS_CONFIG[item.status];
                   return (
                     <div
                       key={item.title}
-                      className="flex flex-col gap-2 p-3 rounded-xl relative overflow-hidden"
-                      style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}
+                      className="shrink-0 flex flex-col justify-between p-5 rounded-xl relative overflow-hidden"
+                      style={{
+                        width: 288,
+                        aspectRatio: "1 / 1",
+                        background: `linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.35) 100%)`,
+                        border: `1px solid rgba(255,255,255,0.08)`,
+                        borderTop: `1px solid ${catColor}50`,
+                      }}
                     >
-                      <div className="absolute top-0 left-0 right-0" style={{ height: 1, background: catColor, opacity: 0.5 }} />
-                      <div className="flex items-start justify-between gap-2">
-                        <span className="font-mono px-2 py-0.5 rounded-full" style={{ fontSize: 9, background: `${catColor}14`, color: catColor, border: `1px solid ${catColor}35` }}>
+                      <div className="flex items-center justify-between gap-2">
+                        <span
+                          className="font-mono px-2.5 py-1 rounded-full"
+                          style={{ fontSize: 13, background: `${catColor}18`, color: catColor, border: `1px solid ${catColor}35` }}
+                        >
                           {CAT_LABELS[item.cat]}
                         </span>
-                        <div className="flex items-center gap-1 shrink-0">
-                          <span className="size-[6px] rounded-full shrink-0" style={{ backgroundColor: status.color, boxShadow: status.glow ? `0 0 5px ${status.color}` : "none" }} />
-                          <span className="font-mono text-white/25 uppercase" style={{ fontSize: 9 }}>{status.label}</span>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <span className="size-[9px] rounded-full" style={{ backgroundColor: status.color, boxShadow: status.glow ? `0 0 6px ${status.color}` : "none" }} />
+                          <span className="font-mono text-white/35 uppercase" style={{ fontSize: 12 }}>{status.label}</span>
                         </div>
                       </div>
-                      <p className="font-sans text-white/80 leading-snug" style={{ fontSize: "var(--text-nav)" }}>{item.title}</p>
-                      <div className="flex gap-1.5 flex-wrap">
-                        {item.tags.map((tag) => (
-                          <span key={tag} className="font-mono text-white/20 bg-white/[0.03] border border-white/[0.06] px-1.5 py-0.5 rounded" style={{ fontSize: 9 }}>{tag}</span>
+                      <p className="font-sans text-white/85 leading-snug line-clamp-3 flex-1 mt-3" style={{ fontSize: 16 }}>{item.title}</p>
+                      <div className="flex gap-2 flex-wrap mt-3">
+                        {item.tags.slice(0, 2).map((tag) => (
+                          <span key={tag} className="font-mono text-white/45 bg-white/[0.07] border border-white/[0.12] px-2.5 py-1 rounded" style={{ fontSize: 12 }}>{tag}</span>
                         ))}
                       </div>
                     </div>
@@ -484,31 +495,42 @@ function ExpandedPanel({ card, accentColor }: { card: OfferCardProps; accentColo
             </div>
           )}
 
-          {/* Actualités liées */}
+          {/* Actualités liées — style journal */}
           {hasArticles && (
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               <span className="font-body font-semibold uppercase tracking-widest text-white/30" style={{ fontSize: 10, letterSpacing: "0.12em" }}>
                 Actualités liées
               </span>
-              <div className="flex flex-col gap-2">
-                {card.articles!.map((article) => (
-                  <Link
-                    key={article.href}
-                    href={article.href}
-                    className="group flex flex-col gap-1.5 p-3 rounded-xl transition-colors"
-                    style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}
+              {card.articles!.map((article) => (
+                <Link
+                  key={article.href}
+                  href={article.href}
+                  className="group flex flex-col gap-2 py-3 px-3 rounded-lg hover:bg-white/[0.04] transition-colors border-l-2"
+                  style={{ borderLeftColor: `${accentColor}55` }}
+                >
+                  <span
+                    className="font-mono uppercase tracking-widest"
+                    style={{ fontSize: 9, color: accentColor, opacity: 0.75, letterSpacing: "0.1em" }}
                   >
-                    <span className="font-mono uppercase tracking-wider" style={{ fontSize: 9, color: accentColor, opacity: 0.8 }}>{article.category}</span>
-                    <p className="font-sans text-white/75 group-hover:text-white transition-colors leading-snug" style={{ fontSize: "var(--text-nav)" }}>{article.title}</p>
-                    <span className="flex items-center gap-1 text-white/25 group-hover:text-white/50 transition-colors" style={{ fontSize: 10 }}>
-                      Lire l&apos;article
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-                        <path d="M1.5 8.5L8.5 1.5M8.5 1.5H4M8.5 1.5V6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </span>
-                  </Link>
-                ))}
-              </div>
+                    {article.category}
+                  </span>
+                  <p
+                    className="font-sans text-white/80 group-hover:text-white transition-colors leading-snug line-clamp-2"
+                    style={{ fontSize: "var(--text-body-lg)" }}
+                  >
+                    {article.title}
+                  </p>
+                  <span
+                    className="flex items-center gap-1.5 text-white/30 group-hover:text-white/55 transition-colors mt-0.5"
+                    style={{ fontSize: 11 }}
+                  >
+                    Lire l&apos;article
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                      <path d="M1.5 8.5L8.5 1.5M8.5 1.5H4M8.5 1.5V6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </span>
+                </Link>
+              ))}
             </div>
           )}
 
@@ -533,11 +555,11 @@ function ExpandedPanel({ card, accentColor }: { card: OfferCardProps; accentColo
             </div>
           )}
 
-          {/* CTA Prendre RDV */}
-          <div className="pt-2 mt-auto">
+          {/* CTA Prendre RDV — bas-droite de la colonne droite */}
+          <div className="flex justify-end mt-auto pt-3 border-t border-white/[0.06]">
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-[var(--radius-cta)] font-sans text-sm font-medium text-white transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[var(--radius-cta)] font-sans text-sm font-medium text-white transition-opacity hover:opacity-90"
               style={{ backgroundColor: accentColor }}
             >
               Prendre RDV

@@ -57,12 +57,40 @@ export interface Produit {
   badge?: LocalizedString;
 }
 
+export interface Agent {
+  slug: string;
+  /** Slug du produit associé */
+  produitSlug: string;
+  name: LocalizedString;
+  description: LocalizedString;
+  features: ProduitFeature[];
+  stats: ProduitStat[];
+  backgroundImage: string;
+  iconSrc?: string;
+  badge?: LocalizedString;
+}
+
+export interface SocialPost {
+  id: string;
+  platform: "linkedin" | "instagram";
+  /** Texte du post */
+  text: string;
+  /** Date ISO */
+  date: string;
+  /** Image du post — URL distante ou chemin local dans /public */
+  imageSrc?: string;
+  /** Lien vers le post original */
+  postUrl: string;
+}
+
 export interface Article {
   slug: string;
   title: LocalizedString;
   excerpt: LocalizedString;
   /** Catégorie (ex: "Engineering", "IoT", "Data") — non traduit */
   category: string;
+  /** Tags thématiques affichés en pills sur les cartes */
+  tags?: string[];
   /** Date ISO (ex: "2024-05-12") */
   date: string;
   /** Temps de lecture estimé en minutes */
@@ -71,4 +99,6 @@ export interface Article {
   imageSrc?: string;
   /** Chemin vers la vidéo de couverture (prioritaire sur imageSrc) */
   videoSrc?: string;
+  /** URL externe vers l'article original — déclenche une redirection côté serveur */
+  externalUrl?: string;
 }

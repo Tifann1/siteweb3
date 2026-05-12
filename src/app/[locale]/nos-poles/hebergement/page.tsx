@@ -25,7 +25,6 @@ import { Link } from "@/navigation";
 const SECTIONS = [
   { id: "pole-presentation", label: "Présentation" },
   { id: "pole-expertises",   label: "Nos expertises" },
-  { id: "pole-savoirfaire",  label: "Savoir-faire" },
   { id: "pole-projets",      label: "Pour vos projets" },
   { id: "pole-offres",       label: "Nos offres" },
   { id: "pole-succes",       label: "Nos succès" },
@@ -163,100 +162,7 @@ export default function PoleHebergementPage() {
           />
         </div>
 
-        {/* 3 — Savoir-faire (horizontales) */}
-        <div id="pole-savoirfaire">
-          <section
-            style={{
-              paddingTop: "6rem",
-              paddingBottom: "6rem",
-              paddingLeft: "var(--page-margin-x)",
-              paddingRight: "var(--page-margin-x)",
-            }}
-          >
-            <div className="flex flex-col gap-4 mb-14">
-              <span
-                className="font-body font-semibold text-brand-orange uppercase tracking-widest"
-                style={{ fontSize: "var(--text-badge)", letterSpacing: "0.12em" }}
-              >
-                Savoir-faire
-              </span>
-              <h2
-                className="font-sans font-bold text-text-heading"
-                style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", letterSpacing: "-0.02em", lineHeight: 1.1 }}
-              >
-                Le lien entre Dev et Ops.
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/8">
-              {[
-                {
-                  label: "Usine logicielle CI/CD",
-                  title: "Déploiements automatisés, livraisons sans friction",
-                  description:
-                    "Nous mettons en place des chaînes CI/CD industrialisées avec GitLab CI, GitHub Actions ou Jenkins. Du commit au déploiement en production, chaque étape est automatisée, versionnée et réversible en quelques secondes.",
-                  accent: "var(--color-offer-yellow)",
-                  tags: ["GitLab CI", "GitHub Actions", "Jenkins", "ArgoCD"],
-                },
-                {
-                  label: "IaC, Migrations & Audits",
-                  title: "Infrastructure as Code et urbanisation du SI",
-                  description:
-                    "Ansible et Terraform pour un infrastructure as code reproductible. Migrations de A à Z, audit de compliance et haute disponibilité, livrables formalisés (DAT, DEX, PAS) et accompagnement de vos équipes dans la durée.",
-                  accent: "var(--color-bento-devops-border)",
-                  tags: ["Ansible", "Terraform", "DAT / DEX", "Audit compliance"],
-                },
-                {
-                  label: "Observabilité & SLA",
-                  title: "Grafana, Prometheus et alerting proactif 24/7",
-                  description:
-                    "Dashboards temps réel, alertes intelligentes, tracing distribué. Nous définissons et tenons des engagements de service contractuels (GTI, GTR, RTO, RPO) avec comités de pilotage technique, sécurité et opérationnel.",
-                  accent: "var(--color-offer-green)",
-                  tags: ["Grafana", "Prometheus", "Loki", "SLA 24/7"],
-                },
-              ].map((item) => (
-                <div key={item.label} className="flex flex-col gap-6 px-0 py-8 md:py-0 md:px-10 first:pl-0 last:pr-0">
-                  <div className="w-8 h-[3px] rounded-full" style={{ backgroundColor: item.accent }} />
-                  <span
-                    className="font-body font-semibold uppercase tracking-widest"
-                    style={{ fontSize: "var(--text-badge)", letterSpacing: "0.1em", color: item.accent }}
-                  >
-                    {item.label}
-                  </span>
-                  <h3
-                    className="font-sans font-bold text-text-heading"
-                    style={{ fontSize: "clamp(1.1rem, 1.5vw, 1.4rem)", lineHeight: 1.25, letterSpacing: "-0.01em" }}
-                  >
-                    {item.title}
-                  </h3>
-                  <p
-                    className="font-body text-text-light/55 flex-1"
-                    style={{ fontSize: "var(--text-body-lg)", lineHeight: "var(--text-body-lg--line-height)" }}
-                  >
-                    {item.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {item.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="font-body text-xs px-2.5 py-1 rounded-full"
-                        style={{
-                          backgroundColor: `${item.accent}14`,
-                          color: item.accent,
-                          border: `1px solid ${item.accent}30`,
-                        }}
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
-
-        {/* 4 — Pour vos projets */}
+        {/* 3 — Pour vos projets */}
         <div id="pole-projets">
           <section className="py-16 md:py-24">
             <SectionAugmentedDev

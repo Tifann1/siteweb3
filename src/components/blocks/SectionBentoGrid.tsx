@@ -232,7 +232,7 @@ function BentoCard({ title, description, variant = "default" }: BentoCardData) {
   return (
     <motion.div
       className={[
-        "rounded-[var(--radius-card)] border flex flex-col gap-[50px] px-[33px] py-[51px] relative cursor-default",
+        "rounded-[var(--radius-card)] border flex flex-col gap-[50px] px-[33px] py-[51px] relative cursor-default overflow-hidden",
         !isAccent && "bg-card-bg",
         borderClass,
       ].filter(Boolean).join(" ")}

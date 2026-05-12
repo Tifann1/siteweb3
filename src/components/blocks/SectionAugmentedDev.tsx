@@ -185,7 +185,7 @@ export function SectionAugmentedDev({
             {heading}
           </h2>
           <p
-            className="font-sans text-text-body-warm text-center max-w-[825px]"
+            className="font-sans text-text-light/60 text-center max-w-[825px]"
             style={{
               fontSize: "var(--text-nav)",
               lineHeight: "var(--text-nav--line-height)",
@@ -243,11 +243,8 @@ export function SectionAugmentedDev({
                   {/* Title — always readable */}
                   <div className="flex flex-col items-start pb-2 w-full">
                     <h3
-                      className="font-sans text-center w-full whitespace-nowrap"
-                      style={{
-                        fontSize: "var(--text-tab)",
-                        color: accentColor,
-                      }}
+                      className="font-sans text-text-heading text-center w-full whitespace-nowrap"
+                      style={{ fontSize: "var(--text-tab)" }}
                     >
                       {step.title}
                     </h3>
@@ -257,7 +254,7 @@ export function SectionAugmentedDev({
                   <motion.p
                     animate={{ opacity: isActive ? 1 : 0.32 }}
                     transition={{ duration: 0.22 }}
-                    className="font-sans text-text-body-warm text-center w-full"
+                    className="font-sans text-text-light/60 text-center w-full"
                     style={{
                       fontSize: "var(--text-nav)",
                       lineHeight: "var(--text-nav--line-height)",

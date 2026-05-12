@@ -1,17 +1,26 @@
-// Page Nos Produits — /[locale]/produits
-// Carousel vertical full-screen : chaque produit occupe 100% de l'espace disponible
-
 import { getLocale } from "next-intl/server";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { ProductCarousel } from "@/components/blocks/ProductCarousel";
+import { AgentCarousel } from "@/components/blocks/AgentCarousel";
 import { CtaBanner } from "@/components/blocks/CtaBanner";
-import { produits } from "@/lib/content/produits";
 import { agents } from "@/lib/content/agents";
+import { produits } from "@/lib/content/produits";
 import type { Locale } from "@/types";
 
-export default async function ProduitsPage() {
+type SearchParams = Promise<{ from?: string }>;
+
+export default async function AgentsPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   const locale = (await getLocale()) as Locale;
+  const params = await searchParams;
+  const fromProduitSlug = params.from;
+
+  const initialIndex = fromProduitSlug
+    ? Math.max(0, agents.findIndex((a) => a.produitSlug === fromProduitSlug))
+    : 0;
 
   return (
     <>
@@ -19,7 +28,12 @@ export default async function ProduitsPage() {
       <div className="h-dvh flex flex-col bg-nav-bg">
         <Header />
         <div className="flex-1 overflow-hidden relative">
-          <ProductCarousel produits={produits} locale={locale} agents={agents} />
+          <AgentCarousel
+            agents={agents}
+            produits={produits}
+            locale={locale}
+            initialIndex={initialIndex}
+          />
         </div>
       </div>
 

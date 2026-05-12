@@ -80,7 +80,7 @@ const MOCK_CARDS: MockCard[] = [
 // ──────────────────────────────────────────────────────────────────────────
 
 // ─── ANIMATION HELPERS ────────────────────────────────────────────────────
-function spring(delay: number, damping = CONFIG.springDamping, stiffness = CONFIG.springStiffness) {
+function spring(delay: number, damping: number = CONFIG.springDamping, stiffness: number = CONFIG.springStiffness) {
   return { delay, type: "spring" as const, damping, stiffness };
 }
 

@@ -14,6 +14,7 @@ export interface RecentArticleItemProps {
   title: string;
   /** Lien vers l'article */
   href?: string;
+  target?: string;
 }
 
 export function RecentArticleItem({
@@ -22,10 +23,13 @@ export function RecentArticleItem({
   category,
   title,
   href = "#",
+  target,
 }: RecentArticleItemProps) {
   return (
     <a
       href={href}
+      target={target}
+      rel={target === "_blank" ? "noopener noreferrer" : undefined}
       className="flex gap-4 items-start w-full group transition-opacity hover:opacity-80"
     >
       {/* Miniature N&B */}
@@ -35,10 +39,9 @@ export function RecentArticleItem({
             src={imageSrc}
             alt={imageAlt}
             fill
-            className="object-cover [filter:grayscale(1)]"
+            className="object-cover"
           />
         )}
-        <div className="absolute inset-0 bg-white mix-blend-saturation pointer-events-none" />
       </div>
 
       {/* Textes */}

@@ -23,6 +23,7 @@ export interface ArticleCardProps {
   /** Libellé CTA (défaut: "Lire plus") */
   ctaLabel?: string;
   ctaHref?: string;
+  ctaTarget?: string;
 }
 
 export function ArticleCard({
@@ -36,6 +37,7 @@ export function ArticleCard({
   excerpt,
   ctaLabel = "Lire plus",
   ctaHref = "#",
+  ctaTarget,
 }: ArticleCardProps) {
   return (
     <article className="flex flex-col gap-6 items-start">
@@ -48,24 +50,20 @@ export function ArticleCard({
             muted
             loop
             playsInline
-            className="absolute inset-0 w-full h-full object-cover [filter:grayscale(1)]"
+            className="absolute inset-0 w-full h-full object-cover"
           />
         ) : imageSrc ? (
           <Image
             src={imageSrc}
             alt={imageAlt}
             fill
-            className="object-cover [filter:grayscale(1)]"
+            className="object-cover"
           />
         ) : null}
-        {/* Overlay mix-blend-saturation (renforce le N&B) */}
-        <div className="absolute inset-0 bg-white mix-blend-saturation pointer-events-none" />
         {/* Badge catégorie */}
-        <div className="absolute top-[21px] left-6 flex flex-col items-start px-3 py-[2.5px] rounded-full bg-brand-orange">
-          <span
-            className="font-body font-semibold text-cta-text-dark uppercase tracking-[0.5px]"
-            style={{ fontSize: "10px", lineHeight: "15px" }}
-          >
+        <div className="absolute top-[21px] left-6 flex items-center gap-2 px-4 py-[6px] rounded-full bg-meta-secondary">
+          <span className="size-2 rounded-full shrink-0 bg-deep-navy" />
+          <span className="font-body font-semibold text-[length:var(--text-badge)] tracking-[var(--text-badge--letter-spacing)] uppercase whitespace-nowrap text-deep-navy">
             {category}
           </span>
         </div>
@@ -119,6 +117,8 @@ export function ArticleCard({
         {/* CTA */}
         <a
           href={ctaHref}
+          target={ctaTarget}
+          rel={ctaTarget === "_blank" ? "noopener noreferrer" : undefined}
           className="flex items-center gap-2 pt-2 group transition-opacity hover:opacity-80"
         >
           <span
