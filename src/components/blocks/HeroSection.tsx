@@ -2,6 +2,7 @@ import React from "react";
 import { HeroHalos } from "./HeroHalos";
 import { RevealTitle } from "@/components/ui/RevealTitle";
 import { FactoryTopDown } from "@/components/ui/FactoryTopDown";
+import { HeroScrollIndicator } from "@/components/ui/HeroScrollIndicator";
 
 interface HeroSectionProps {
   /** Texte du badge en haut */
@@ -43,6 +44,8 @@ interface HeroSectionProps {
   sizeMode?: "fill" | "flex";
   /** Afficher l'animation usine — uniquement sur la page d'accueil */
   showFactory?: boolean;
+  /** Afficher l'indicateur de scroll en bas de la section */
+  showScrollIndicator?: boolean;
 }
 
 export function HeroSection({
@@ -56,6 +59,7 @@ export function HeroSection({
   titleSize = "default",
   sizeMode = "fill",
   showFactory = false,
+  showScrollIndicator = false,
 }: HeroSectionProps) {
   const isRight = align === "right";
   const isCompact = titleSize === "compact";
@@ -148,6 +152,8 @@ export function HeroSection({
           <FactoryTopDown />
         </div>
       )}
+
+      {showScrollIndicator && <HeroScrollIndicator />}
     </section>
   );
 }

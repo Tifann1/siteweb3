@@ -31,3 +31,11 @@ export const SansAttribution: Story = {
       "L'IA n'est pas un outil de remplacement, c'est un levier d'amplification humaine.",
   },
 };
+
+export const SteveJobs: Story = {
+  args: {
+    quote:
+      "Parfois, quand vous innovez, vous faites des erreurs. Celui qui n'a jamais commis d'erreurs, n'a jamais tenté d'innover.",
+    attribution: "Steve Jobs",
+  },
+};

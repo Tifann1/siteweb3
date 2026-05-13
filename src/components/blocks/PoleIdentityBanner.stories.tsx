@@ -80,3 +80,26 @@ export const IA: Story = {
     keywords: ["LLM", "RAG", "MLOps", "Computer Vision", "Data engineering"],
   },
 };
+
+/** Pôle R&D — accent vert IA (--color-offer-green) */
+export const RD: Story = {
+  args: {
+    poleLabel: "R&D",
+    accentColor: "var(--color-offer-green)",
+    accentColorLight: "var(--color-offer-green)",
+    tagline: "Partenaire de vos innovations.",
+    description:
+      "Nous souhaitons dans notre démarche être force de proposition et d'accompagnement technique auprès de nos clients afin de pouvoir les accompagner au quotidien sur leurs projets d'innovations.",
+    stats: [
+      { value: "10 ans", label: "Agréments CIR & CII" },
+      { value: "2", label: "Domaines d'action R&D" },
+      { value: "3", label: "Produits internes en production" },
+    ],
+    keywords: [
+      "Labs d'innovation clients",
+      "Projets R&D internes",
+      "IA factory",
+      "Pôle produit",
+    ],
+  },
+};

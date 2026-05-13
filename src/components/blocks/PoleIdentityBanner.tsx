@@ -15,6 +15,8 @@ export interface PoleIdentityBannerProps {
   accentColorLight: string;
   /** Phrase d'accroche du pôle — ex: "Architecture IA. Performance réelle." */
   tagline: string;
+  /** Texte de positionnement — affiché entre le tagline et les keywords */
+  description?: string;
   /** Métriques clés — max 3 affichées */
   stats: { value: string; label: string }[];
   /** Mots-clés du pôle — 3 à 5 items */
@@ -37,6 +39,7 @@ export function PoleIdentityBanner({
   accentColor,
   accentColorLight,
   tagline,
+  description,
   stats,
   keywords,
   className,
@@ -115,6 +118,24 @@ export function PoleIdentityBanner({
               >
                 {tagline}
               </motion.h2>
+
+              {/* Description positionnement */}
+              {description && (
+                <motion.p
+                  className="font-sans text-text-light/70"
+                  style={{
+                    fontSize: "var(--text-nav)",
+                    lineHeight: "var(--text-nav--line-height)",
+                    maxWidth: "48ch",
+                  }}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
+                >
+                  {description}
+                </motion.p>
+              )}
 
               {/* Keywords pills */}
               <motion.div

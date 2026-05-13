@@ -12,6 +12,42 @@ export interface Pole {
   services: LocalizedString[];
 }
 
+export interface ReferenceExpert {
+  imageSrc: string;
+  name: string;
+  role: string;
+  bio: string;
+}
+
+export interface ReferenceStat {
+  value: string;
+  label: string;
+  highlight?: boolean;
+}
+
+export interface ReferenceFeatureItem {
+  title: string;
+  description: string;
+}
+
+export interface ReferenceAugmentedFeature {
+  iconSrc?: string;
+  iconAlt?: string;
+  title: string;
+  description: string;
+}
+
+export interface ReferenceAugmentedStep {
+  number: string;
+  title: string;
+  accent?: "orange" | "blue";
+  detail?: {
+    heading?: string;
+    description: string;
+    points?: string[];
+  };
+}
+
 export interface Reference {
   slug: string;
   client: string;
@@ -22,6 +58,21 @@ export interface Reference {
   imageSrc?: string;
   /** Logo du client */
   logoSrc?: string;
+  /** Chef de projet mis en avant sur la page détail */
+  expert: ReferenceExpert;
+  /** Citation mise en avant (section sticky scroll) */
+  quote: string;
+  quoteAttribution?: string;
+  stats?: ReferenceStat[];
+  featureCard?: { title: string; items: ReferenceFeatureItem[] };
+  ethos?: { title: string; description: string };
+  augmented?: {
+    eyebrow?: string;
+    title: string;
+    description: string;
+    features: ReferenceAugmentedFeature[];
+    steps: ReferenceAugmentedStep[];
+  };
 }
 
 export interface ProduitStat {

@@ -69,3 +69,18 @@ export const Produits: Story = {
     titleSize: "compact",
   },
 };
+
+/** Variante page R&D — accent vert IA, scroll indicator */
+export const RD: Story = {
+  args: {
+    eyebrow: "PÔLE R&D — AGRÉMENTS CIR & CII DEPUIS 10 ANS",
+    title: "De l'idée\nau produit,\nen partenaires.",
+    highlightWord: "partenaires",
+    highlightStyle: "solid",
+    highlightColor: "#46BA87",
+    description:
+      "Nos équipes R&D structurent chaque projet d'innovation avec rigueur — de l'identification des opportunités au prototypage, pour nos clients et en interne.",
+    titleSize: "compact",
+    showScrollIndicator: true,
+  },
+};

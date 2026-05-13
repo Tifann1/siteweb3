@@ -11,7 +11,7 @@ import {
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-interface Project {
+export interface Project {
   id: string;
   client: string;
   title: string;
@@ -21,7 +21,7 @@ interface Project {
   wide?: boolean;
 }
 
-const PROJECTS: Project[] = [
+const DEFAULT_PROJECTS: Project[] = [
   {
     id: "fdj",
     client: "FDJ",
@@ -62,13 +62,15 @@ const PROJECTS: Project[] = [
   },
 ];
 
+interface WorkShowcaseProps {
+  projects?: Project[];
+  sectionLabel?: string;
+  titleNode?: React.ReactNode;
+  labelColor?: string;
+}
+
 /**
  * T01 + T02 — Tilt 3D au hover + clip-path reveal à l'entrée
- *
- * Structure :
- * motion.div  ← clip-path entrance animation (T02)
- *   div[perspective]  ← perspective pour le 3D + mouse events
- *     motion.article[rotateX, rotateY]  ← tilt 3D (T01)
  */
 function TiltCard({
   project,
@@ -114,7 +116,7 @@ function TiltCard({
           className="group relative rounded-[var(--radius-card)] overflow-hidden border border-white/8 h-full cursor-default bg-deep-navy"
           style={{ rotateX, rotateY }}
         >
-          {/* Accent tint ambiant — toujours visible, subtil */}
+          {/* Accent tint ambiant */}
           <div
             className="pointer-events-none absolute inset-0"
             style={{
@@ -144,7 +146,6 @@ function TiltCard({
             className="relative z-10 flex flex-col gap-6 p-8"
             style={{ minHeight: project.wide ? "280px" : "260px" }}
           >
-            {/* Client */}
             <span
               className="font-body font-semibold uppercase tracking-widest"
               style={{
@@ -156,7 +157,6 @@ function TiltCard({
               {project.client}
             </span>
 
-            {/* Titre */}
             <h3
               className="font-sans font-bold text-text-heading"
               style={{ fontSize: "clamp(1.25rem, 2vw, 2rem)", lineHeight: 1.2 }}
@@ -164,7 +164,6 @@ function TiltCard({
               {project.title}
             </h3>
 
-            {/* Description */}
             <p
               className="font-body text-text-light/50"
               style={{
@@ -175,7 +174,6 @@ function TiltCard({
               {project.description}
             </p>
 
-            {/* Footer : tags + arrow */}
             <div className="mt-auto flex items-end justify-between gap-4">
               <div className="flex flex-wrap gap-2">
                 {project.tags.map((tag) => (
@@ -211,7 +209,26 @@ function TiltCard({
   );
 }
 
-export function WorkShowcase() {
+export function WorkShowcase({
+  projects = DEFAULT_PROJECTS,
+  sectionLabel = "Réalisations",
+  titleNode,
+  labelColor = "var(--color-brand-orange)",
+}: WorkShowcaseProps) {
+  const defaultTitle = (
+    <>
+      Des projets qui{" "}
+      <span
+        className="bg-clip-text text-transparent"
+        style={{
+          backgroundImage: "linear-gradient(162.47deg, #FFB692 0%, #FF7E33 100%)",
+        }}
+      >
+        durent.
+      </span>
+    </>
+  );
+
   return (
     <MotionConfig reducedMotion="user">
       <section
@@ -224,17 +241,16 @@ export function WorkShowcase() {
         }}
         aria-label="Nos réalisations"
       >
-        {/* Header section */}
         <div className="flex flex-col gap-4 mb-14">
           <motion.span
-            className="font-body font-semibold text-brand-orange uppercase tracking-widest"
-            style={{ fontSize: "var(--text-badge)", letterSpacing: "0.12em" }}
+            className="font-body font-semibold uppercase tracking-widest"
+            style={{ fontSize: "var(--text-badge)", letterSpacing: "0.12em", color: labelColor }}
             initial={{ opacity: 0, x: -12 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5 }}
           >
-            Réalisations
+            {sectionLabel}
           </motion.span>
 
           <motion.h2
@@ -249,22 +265,12 @@ export function WorkShowcase() {
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.55, ease: EASE, delay: 0.1 }}
           >
-            Des projets qui{" "}
-            <span
-              className="bg-clip-text text-transparent"
-              style={{
-                backgroundImage:
-                  "linear-gradient(162.47deg, #FFB692 0%, #FF7E33 100%)",
-              }}
-            >
-              durent.
-            </span>
+            {titleNode ?? defaultTitle}
           </motion.h2>
         </div>
 
-        {/* Grille bento 3 colonnes */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {PROJECTS.map((project, i) => (
+          {projects.map((project, i) => (
             <TiltCard key={project.id} project={project} index={i} />
           ))}
         </div>

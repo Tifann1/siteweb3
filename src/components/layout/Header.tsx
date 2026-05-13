@@ -42,9 +42,10 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
   { label: "Nos références", href: "/references", matchPrefix: "/references" },
   {
     label: "R&D",
-    href: "/produits",
+    href: "/rd",
     matchPrefix: "",
     children: [
+      { label: "Démarche R&D", href: "/rd" },
       { label: "Nos produits", href: "/produits" },
       { label: "Nos agents", href: "/agents" },
     ],

@@ -15,12 +15,12 @@ const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 /** Pixels de scroll consommés par étape */
 const SCROLL_PER_STEP = 700;
 
-interface PipelinePhase {
+export interface PipelinePhase {
   label: string;
   description: string;
 }
 
-interface Step {
+export interface Step {
   id: string;
   num: string;
   title: string;
@@ -30,7 +30,7 @@ interface Step {
   pipeline?: PipelinePhase[];
 }
 
-const STEPS: Step[] = [
+const DEFAULT_STEPS: Step[] = [
   {
     id: "web",
     num: "01",
@@ -72,10 +72,13 @@ const STEPS: Step[] = [
   },
 ];
 
-const N = STEPS.length;
-
-// Hauteur de la zone de scroll : 100vh pour l'affichage sticky + N étapes × SCROLL_PER_STEP
-const OUTER_HEIGHT = `calc(100vh + ${N * SCROLL_PER_STEP}px)`;
+interface ProcessStepperProps {
+  steps?: Step[];
+  sectionLabel?: string;
+  titleText?: string;
+  highlightWord?: string;
+  labelColor?: string;
+}
 
 /**
  * Bouton de navigation d'étape.
@@ -164,7 +167,6 @@ function StepButton({
 
 /**
  * Panneau de contenu actif.
- * T05 — spotlight cursor dont la couleur correspond à l'étape active.
  * AnimatePresence mode="wait" pour des transitions propres entre steps.
  */
 function ContentPanel({ step }: { step: Step }) {
@@ -192,7 +194,7 @@ function ContentPanel({ step }: { step: Step }) {
       {/* Fond de base */}
       <div className="absolute inset-0 bg-nav-bg" aria-hidden="true" />
 
-      {/* T05 — Spotlight cursor (couleur = accent de l'étape) */}
+      {/* Spotlight cursor (couleur = accent de l'étape) */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -203,7 +205,7 @@ function ContentPanel({ step }: { step: Step }) {
         aria-hidden="true"
       />
 
-      {/* Ligne accent en haut — couleur change avec le step */}
+      {/* Ligne accent en haut */}
       <motion.div
         className="absolute top-0 left-0 right-0 h-px pointer-events-none"
         style={{
@@ -214,7 +216,6 @@ function ContentPanel({ step }: { step: Step }) {
         aria-hidden="true"
       />
 
-      {/* AnimatePresence — le contenu entre/sort avec blur + y */}
       <AnimatePresence mode="wait">
         <motion.div
           key={step.id}
@@ -333,7 +334,7 @@ function ContentPanel({ step }: { step: Step }) {
 }
 
 /**
- * ProcessStepper — Notre méthode de collaboration en 4 étapes.
+ * ProcessStepper — progression numérotée en sticky-scroll.
  *
  * Architecture sticky-scroll :
  *   - L'outer div crée l'espace de scroll (100vh + N × SCROLL_PER_STEP)
@@ -341,15 +342,28 @@ function ContentPanel({ step }: { step: Step }) {
  *   - Le scroll listener calcule rawProgress [0,1] → stepIndex + stepProgress
  *   - Les MotionValues des barres sont mises à jour directement (pas d'animation)
  *   - Le clic sur une étape scroll vers la position correspondante
+ *
+ * Supporte jusqu'à 4 étapes (contrainte des hooks — useMotionValue ne peut pas être dans une boucle).
  */
-export function ProcessStepper() {
+export function ProcessStepper({
+  steps = DEFAULT_STEPS,
+  sectionLabel = "Nos expertises",
+  titleText = "Notre savoir-faire.",
+  highlightWord = "savoir-faire.",
+  labelColor = "var(--color-brand-orange)",
+}: ProcessStepperProps) {
+  const N = steps.length;
+  const outerHeight = `calc(100vh + ${N * SCROLL_PER_STEP}px)`;
+
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // Un MotionValue par étape — initialisé en dehors de tout callback (règle des hooks)
+  // Hardcodé à 4 max — useMotionValue ne peut pas être appelé dans une boucle
   const p0 = useMotionValue(0);
   const p1 = useMotionValue(0);
-  const progressValues: MotionValue<number>[] = [p0, p1];
+  const p2 = useMotionValue(0);
+  const p3 = useMotionValue(0);
+  const progressValues = [p0, p1, p2, p3].slice(0, N);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -386,9 +400,8 @@ export function ProcessStepper() {
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
-    // progressValues refs are stable — intentionally omitted from deps
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [N]);
 
   function scrollToStep(index: number) {
     const el = containerRef.current;
@@ -403,12 +416,13 @@ export function ProcessStepper() {
     });
   }
 
-  const activeStep = STEPS[activeIndex];
+  const activeStep = steps[activeIndex];
 
   return (
     <MotionConfig reducedMotion="user">
-      <div ref={containerRef} className="relative" style={{ height: OUTER_HEIGHT }}>
-        <div className="sticky top-0 h-screen bg-deep-navy flex flex-col justify-center"
+      <div ref={containerRef} className="relative" style={{ height: outerHeight }}>
+        <div
+          className="sticky top-0 h-screen bg-deep-navy flex flex-col justify-center"
           style={{
             paddingTop: "6rem",
             paddingBottom: "6rem",
@@ -419,19 +433,23 @@ export function ProcessStepper() {
           {/* Header section */}
           <div className="flex flex-col gap-4 mb-14">
             <motion.span
-              className="font-body font-semibold text-brand-orange uppercase tracking-widest"
-              style={{ fontSize: "var(--text-badge)", letterSpacing: "0.12em" }}
+              className="font-body font-semibold uppercase tracking-widest"
+              style={{
+                fontSize: "var(--text-badge)",
+                letterSpacing: "0.12em",
+                color: labelColor,
+              }}
               initial={{ opacity: 0, x: -12 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5 }}
             >
-              Nos expertises
+              {sectionLabel}
             </motion.span>
 
             <RevealTitle
-              text="Notre savoir-faire."
-              highlightWord="savoir-faire."
+              text={titleText}
+              highlightWord={highlightWord}
               delay={0.1}
               className="font-sans font-bold text-text-heading"
               style={{
@@ -452,7 +470,7 @@ export function ProcessStepper() {
           >
             {/* Navigation des étapes */}
             <div className="md:col-span-2 flex flex-col">
-              {STEPS.map((step, i) => (
+              {steps.map((step, i) => (
                 <StepButton
                   key={step.id}
                   step={step}
